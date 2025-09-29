@@ -28,6 +28,18 @@ import PaymentMethodsModal from '../screens/PaymentMethodsModal';
 import AddCardModal from '../screens/AddCardModal';
 import ProcessingBookingModal from '../screens/ProcessingBookingModal';
 import EnRoutePickupModal from '../screens/EnRoutePickupModal'
+import EditProfileModal from '../screens/EditProfileModal'
+import MyRidesModal from '../screens/MyRidesModal'
+import RideDetailsModal from '../screens/RideDetailsModal';
+import NotificationsScreen from '../screens/NotificationsScreen';
+import WalletScreen from '../screens/WalletScreen';
+import PaymentScreen from '../screens/PaymentScreen';
+import CreditCardsModal from '../screens/CreditCardsModal';
+import GooglePayModal from '../screens/GooglePayModal';
+import AddPaymentMethodModal from '../screens/AddPaymentMethodModal';
+import SettingsModal from '../screens/SettingsModal';
+import AccountSettingsModal from '../screens/AccountSettingsModal';
+import FavouriteAddressesModal from '../screens/FavouriteAddressesModal';
 import AppDrawer from './AppDrawer';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -53,6 +65,11 @@ export default function RootNavigator() {
       <Stack.Screen name="MapTracking" component={MapTrackingScreen} />
       <Stack.Screen name="Trip" component={TripScreen} options={{ headerShown: false }} />
       <Stack.Screen name="AirportDetails" component={AirportDetailsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Wallet" component={WalletScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Payment" component={PaymentScreen} options={{ headerShown: false }} />
+
+
 
 
       {/* Transparent/bottom-sheet modals */}
@@ -92,6 +109,88 @@ export default function RootNavigator() {
             contentStyle: { backgroundColor: 'transparent' }, // map stays visible
           }}
         />
+        <Stack.Screen
+          name="EditProfile"
+          component={EditProfileModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
+        <Stack.Screen
+          name="MyRides"
+          component={MyRidesModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
+        <Stack.Screen
+          name="RideDetails"
+          component={RideDetailsModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
+        <Stack.Screen
+        name="CreditCards"
+        component={CreditCardsModal}
+        options={{
+          presentation: 'transparentModal',
+          headerShown: false,
+          contentStyle: { backgroundColor: 'transparent' },
+        }}
+      />
+      <Stack.Screen
+          name="GooglePay"
+          component={GooglePayModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
+        <Stack.Screen
+        name="AddPaymentMethod"
+        component={AddPaymentMethodModal}
+        options={{
+          presentation: 'transparentModal',
+          headerShown: false,
+          contentStyle: { backgroundColor: 'transparent' },
+        }}
+      />
+      <Stack.Screen
+        name="Settings"
+        component={SettingsModal}
+        options={{
+          presentation: 'transparentModal',
+          headerShown: false,
+          contentStyle: { backgroundColor: 'transparent' },
+        }}
+      />
+      <Stack.Screen
+          name="AccountSettings"
+          component={AccountSettingsModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
+
+        <Stack.Screen
+        name="FavouriteAddresses"
+        component={FavouriteAddressesModal}
+        options={{
+          presentation: 'transparentModal',
+          headerShown: false,
+          contentStyle: { backgroundColor: 'transparent' },
+        }}
+      />
 
       </Stack.Group>
     </Stack.Navigator>

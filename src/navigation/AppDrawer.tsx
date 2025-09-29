@@ -89,10 +89,26 @@ function CustomDrawerContent(props: any) {
       {/* Profile */}
       <View style={{ paddingHorizontal: 16, paddingTop: insets.top + 8, paddingBottom: 16 }}>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
+        <Pressable style={styles.linkRow} onPress={() => { navigation.navigate('EditProfile', {
+            initial: {
+              name: 'Maqbool',
+              email: 'maqbool@urapptech.com',
+              dial: '+1',
+              phone: '1234567890',
+              whatsappSame: true,
+              referral: '456789',
+              avatarUrl: '',
+            },
+            onSave: (payload) => {
+              // call your API, update profile in state, etc.
+            },
+          }); }}>
           <Image
             source={{ uri: 'https://i.pravatar.cc/100?img=5' }}
             style={{ width: 44, height: 44, borderRadius: 22 }}
           />
+          </Pressable>
+
           <View>
             <Text style={styles.name}>Paula Lewis</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
@@ -113,7 +129,7 @@ function CustomDrawerContent(props: any) {
         <Row
           icon={<Ionicons name="car-outline" size={18} color="#fff" />}
           label="My Rides"
-          onPress={() => navigation.getParent()?.navigate('SaveFavorite')}
+          onPress={() => navigation.getParent()?.navigate('MyRides')}
         />
         {/* navigation.dispatch(DrawerActions.toggleDrawer()); */}
         <Row
@@ -130,7 +146,30 @@ function CustomDrawerContent(props: any) {
         <Row
           icon={<MaterialCommunityIcons name="crown-outline" size={18} color="#fff" />}
           label="Loyalty Program"
-          onPress={() => navigation.navigate('Loyalty')}
+          onPress={() => navigation.navigate('RideDetails',{
+            
+                ride: {
+                    id: 'item.id',
+                    status: 'Upcoming',
+                    whenLabel: 'Today, 5:19 PM',
+                    from: 'Toronto Pearson Airport - T 1',
+                    to: 'Hamill Avenue San Diego, CA 929',
+                    distanceKm: 12.5,
+                    timeLabel: '30 - 40 min',
+                    fare: 256,
+                    driver: {
+                      name: 'Jonas',
+                      rating: 4.2,
+                      carPlate: 'ERS 8579',
+                      carModel: 'Toyota Camry',
+                      // avatar: require('...'),
+                    },
+                  },
+                  onCancel: (id) => console.log('cancel ride', id),
+
+
+
+          })}
         />
         <Row
           icon={<Ionicons name="notifications-outline" size={18} color="#fff" />}

@@ -115,6 +115,60 @@ Policies:
     onSupport?: () => void;
     onPolicies?: () => void;
   } | undefined;
+
+  EditProfile:
+    | {
+        initial?: EditProfilePayload;
+        onSave?: (p: EditProfilePayload) => void;
+      }
+    | undefined;
+
+    MyRides: undefined; 
+    RideDetails: {
+    ride: RideDetails;
+    onCancel?: (id: string) => void;
+  };
+  Notifications: undefined;
+  Wallet: undefined;
+  Payment: undefined;
+  // AddCard: undefined; // if you already have an Add Card flow
+  CreditCards: undefined;
+  GooglePay: { email?: string } | undefined;
+  AddPaymentMethod: undefined;
+  Settings:undefined;
+  AccountSettings: undefined;
+  FavouriteAddresses: undefined;
+
+};
+
+export type DriverMini = {
+  name: string;
+  rating: number;     // 4.2
+  avatar?: any;       // ImageSourcePropType
+  carPlate?: string;  // "ERS 8579"
+  carModel?: string;  // "Toyota Camry"
+};
+
+export type RideDetails = {
+  id: string;
+  status: 'Upcoming' | 'Completed' | 'Canceled';
+  whenLabel: string;         // "Today, 5:19 PM"
+  from: string;              // "Toronto Pearson Airport - T1"
+  to: string;                // "Hamill Avenue San Diego, CA 929"
+  distanceKm: number;        // 12.5
+  timeLabel: string;         // "30 - 40 min"
+  fare: number;              // 46.24
+  driver: DriverMini;
+};
+
+export type EditProfilePayload = {
+  name: string;
+  email: string;
+  dial: string;        // e.g. "+1"
+  phone: string;
+  whatsappSame: boolean;
+  referral: string;
+  avatarUrl?: string;
 };
 
 
