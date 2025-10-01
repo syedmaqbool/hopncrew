@@ -99,10 +99,9 @@ export async function saveToken(token: string) {
 
 
 export async function loadToken(): Promise<string | null> {
-  const creds = await Keychain.getGenericPassword({ service: KEY });
-  const token = ''//creds?.password ?? null;
-  if (token) api.defaults.headers.common.Authorization = `Bearer ${token}`;
-  return token;
+   const creds = await Keychain.getGenericPassword({ service: 'auth_token' });
+  if (!creds) return null;                
+  return creds.password;  
 }
 
   // const r = await Keychain.getGenericPassword({ service: SERVICE });

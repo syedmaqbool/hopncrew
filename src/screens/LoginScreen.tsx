@@ -6,6 +6,7 @@ import {
   Pressable,
   Modal,
   StyleSheet,
+  ActivityIndicator,
   SafeAreaView,
 } from 'react-native';
 
@@ -25,6 +26,9 @@ import {
 import { Alert } from 'react-native';
 import ReactNativeBiometrics from 'react-native-biometrics';
 import * as Keychain from 'react-native-keychain';
+import { login } from '../services/login';
+import { useAuth } from '../context/AuthContext';
+
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
@@ -38,11 +42,18 @@ const COUNTRIES: Country[] = [
 ];
 
 export default function LoginScreen({ navigation }: Props) {
+  const { signIn } = useAuth();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [country, setCountry] = useState<Country>(COUNTRIES[0]); // default US
   const [phone, setPhone] = useState('');
+   const [email, setEmail] = useState('');
+   const [password,  setPassword]  = useState('');
+
   const [canBiometricLogin, setCanBiometricLogin] = useState(false);
   const [bioLabel, setBioLabel] = useState('Biometric');
+  const [loading, setLoading]   = useState(false);
+
+  const canSubmit = /\S+@\S+\.\S+/.test(email) && password.length >= 8;
 
 // useEffect(() => {
 //   (async () => {
@@ -75,10 +86,39 @@ const readStoredToken = async (): Promise<string | null> => {
 
   const isValid = useMemo(() => phone.trim().length >= 7, [phone]);
 
-  const onSubmit = () => {
-    // TODO: call your OTP API here
-    console.log('sign in with', country.dial, phone);
-    navigation.navigate('Otp', { dial: country.dial, phone });
+  // const onSubmit = async () => {
+  //   // TODO: call your OTP API here
+
+  //   try {
+  //     const res = await login(email, password);
+
+  //      await saveToken(res.data.token);
+  //     navigation.reset({ index: 0, routes: [{ name: 'Home' }] });
+  //     // console.log(result);
+  //     // navigation.navigate('Main');
+  //   } catch (e: any) {
+  //     Alert.alert('Sign in failed', String(e.message || e));
+  //   }
+  //   console.log('sign in with', country.dial, phone);
+  //   // navigation.navigate('Otp', { dial: country.dial, phone });
+  // };
+  const onEmailLogin = async () => {
+    if (!canSubmit || loading) return;
+    setLoading(true);
+    try {
+      const res = await login(email.trim(), password);
+      // Persist {token,user} via AuthContext (which also sets axios Authorization)
+      await signIn({
+        token: res.data.token,
+        user : res.data.user,
+      });
+      // Go to your main app
+      navigation.reset({ index: 0, routes: [{ name: 'App' }] }); // or 'App' (drawer) if you prefer
+    } catch (e: any) {
+      Alert.alert('Login failed', String(e.message || e));
+    } finally {
+      setLoading(false);
+    }
   };
 
   const onFaceIdPress = async () => {
@@ -161,13 +201,31 @@ const readStoredToken = async (): Promise<string | null> => {
             onChangeText={setPhone}
             placeholderTextColor="#9AA0A6"
           />
+          
         </View>
 
+         <View style={styles.inputRow}> 
+
+          <TextInput
+                    style={styles.input}
+                    placeholder="Your Email ID"
+                    placeholderTextColor="#9AA0A6"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                    value={email}
+                    onChangeText={setEmail}
+                  />
+          
+
+         </View>
+       <View style={styles.inputRow}> 
+          <TextInput style={styles.input} placeholder="Password (min 8)" value={password} onChangeText={setPassword} secureTextEntry />
+      </View>
         {/* Sign in */}
         <Pressable
-          style={[styles.signInBtn, !isValid && { opacity: 0.5 }]}
-          onPress={onSubmit}
-          disabled={!isValid}
+          style={[styles.signInBtn, (!canSubmit || loading)   && { opacity: 0.5 }]}
+          onPress={onEmailLogin}
+          disabled={!canSubmit }
         >
           <Text style={styles.signInText}>Sign in</Text>
           <View style={styles.signInArrow}>
@@ -207,7 +265,7 @@ const readStoredToken = async (): Promise<string | null> => {
   <MaterialCommunityIcons name="face-recognition" size={24} color="#111" />
   <Text style={styles.faceIdText}>Login with Face</Text>
 </Pressable> */}
-
+    {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnTxt}>Login</Text>}
 
       </View>
 
@@ -249,7 +307,7 @@ const styles = StyleSheet.create({
   },
   titleWrap: { paddingHorizontal: 16, marginTop: 12 },
   title: { fontSize: 24, lineHeight: 30, fontWeight: '700', color: '#111' },
-
+  btnTxt: { color: '#fff', fontWeight: '700' },
   card: {
     flex: 1,
     backgroundColor: CARD_BG,

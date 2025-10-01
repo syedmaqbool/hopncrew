@@ -43,11 +43,12 @@ import FavouriteAddressesModal from '../screens/FavouriteAddressesModal';
 import AppDrawer from './AppDrawer';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function RootNavigator() {
+export default function RootNavigator({ initialRoute = 'Login' as keyof RootStackParamList }) {
   return (
 
 //     </Stack.Navigator>
-<Stack.Navigator initialRouteName="Login" screenOptions={{ headerShown: false }}>
+
+<Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
       {/* Auth */}
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />

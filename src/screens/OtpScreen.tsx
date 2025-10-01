@@ -9,20 +9,23 @@ import type { RootStackParamList } from '../navigation/types';
 import { verifyOtp } from '../services/api';
 import { saveToken } from '../services/auth';
 import { saveRefreshToken } from '../utils/biometricAuth';
-
+import { useAuth } from '../context/AuthContext';
+import { register  } from '../services/auth';
 type Props = NativeStackScreenProps<RootStackParamList, 'Otp'>;
 
 const MINT = '#B9FBE7';
 
+
 export default function OtpScreen({ route, navigation }: Props) {
   // const { dial, phone } = route.params;
-  const { email } = route.params; // make sure you pass email from Signup
+  const { signIn } = useAuth();
+  const { email, user } = route.params; 
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [cells, setCells] = useState<string[]>(['', '', '', '']); // 4-digit demo
+  const [cells, setCells] = useState<string[]>(['', '', '', '','','']); // 4-digit demo
   const [sec, setSec] = useState(56);
-  const inputs = [useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null)];
+  const inputs = [useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null),useRef<TextInput>(null),useRef<TextInput>(null)];
 
   useEffect(() => {
     const t = setInterval(() => setSec(s => (s > 0 ? s - 1 : 0)), 1000);
@@ -39,6 +42,7 @@ export default function OtpScreen({ route, navigation }: Props) {
     if (nums.length > 1) {
       nums.forEach((d, k) => (next[i + k] = d));
       setCells(next);
+      setOtp(next.join(''));
       const jumpTo = Math.min(i + nums.length, cells.length - 1);
       inputs[jumpTo].current?.focus();
       return;
@@ -70,13 +74,20 @@ export default function OtpScreen({ route, navigation }: Props) {
   // };
 
   const onVerify = async () => {
-    if (otp.trim().length < 4) return; // or 6—match your backend
+   const currentOtp = cells.join('').trim();
+   if (currentOtp.trim().length < 6) {
+             return;
+            } // or 6—match your backend
     setLoading(true);
     try {
-      const res = await verifyOtp(email, otp.trim());
+      const res = await verifyOtp(email, currentOtp.trim());
       // success
       await saveToken(res.data.token);
       Alert.alert('Verified', 'OTP verified successfully');
+      await signIn({
+        token: res.data.token,
+        user : res.data.user,
+      });
       navigation.reset({ index: 0, routes: [{ name: 'App' }] });
     } catch (e: any) {
       // API returns 4xx with your error shape
@@ -91,10 +102,26 @@ export default function OtpScreen({ route, navigation }: Props) {
   };
 
 
-  const resend = () => {
+  const resend = async () => {
     // TODO: call resend API
     console.log('Resend OTP to', email);
     setSec(56);
+    setLoading(true);
+     try {
+          const res = await register({
+             email:user.email,
+            password:user.password,
+            password_confirmation: user.password_confirm,
+            first_name: user.firstName,
+            last_name: user.lastName,
+          });
+
+        }
+        catch (e: any) {
+              Alert.alert('Registration failed', String(e.message || e));
+            } finally {
+              setLoading(false);
+            }
   };
 
   return (

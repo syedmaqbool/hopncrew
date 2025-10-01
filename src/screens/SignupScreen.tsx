@@ -115,7 +115,7 @@ const onSubmit = async () => {
           onPress: () =>
             navigation.replace('Otp', {
               email: user.email,            // adjust to your OtpScreen params
-              userId: user.id,
+              user: user,
             }),
         },
       ]);

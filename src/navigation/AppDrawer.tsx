@@ -5,7 +5,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
+import { useAuth } from '../context/AuthContext';
 // 👉 screens (replace placeholders with your actual ones)
 import HomeScreen from '../screens/HomeScreen';
 // You can add real screens later:
@@ -29,6 +29,7 @@ export type AppDrawerParamList = {
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
 export default function AppDrawer() {
+
   return (
     <Drawer.Navigator
     // sceneContainerStyle={{ backgroundColor: 'transparent' }}
@@ -60,6 +61,7 @@ export default function AppDrawer() {
 
 function CustomDrawerContent(props: any) {
   const { navigation } = props;
+    const { signOut } = useAuth();
   const insets = useSafeAreaInsets();
 
   const Row = ({
@@ -191,6 +193,9 @@ function CustomDrawerContent(props: any) {
         <View style={styles.hr} />
 
         {/* Secondary actions */}
+        <Pressable style={styles.linkRow} onPress={async () => { console.log('logout');await signOut();navigation.reset({ index: 0, routes: [{ name: 'Login' }] });  }}>
+          <Text style={styles.link}>Logout</Text>
+        </Pressable>
         <Pressable style={styles.linkRow} onPress={() => { /* share / refer flow */ }}>
           <Text style={styles.link}>Refer a Friend</Text>
         </Pressable>

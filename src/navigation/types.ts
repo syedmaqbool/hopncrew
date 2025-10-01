@@ -4,7 +4,7 @@ export type RootStackParamList = {
   Home: { dest?: Destination } | undefined;   // ← Home can receive { dest }
   Details: { id?: string } | undefined;
   // Otp: { dial: string; phone: string };
-   Otp: { email: string; userId: number } | { email: string } | undefined;
+   Otp: { email: string, user: User } | undefined;
   Signup: undefined;
   Location: undefined;
   MapTracking: undefined;
@@ -149,6 +149,17 @@ export type DriverMini = {
   carPlate?: string;  // "ERS 8579"
   carModel?: string;  // "Toyota Camry"
 };
+
+export type User = {
+  id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  password?: string;
+  password_confirmation?: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export type RideDetails = {
   id: string;
