@@ -2,9 +2,9 @@ import axios, { AxiosHeaders, InternalAxiosRequestConfig } from 'axios';
 import { Platform } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 
-const BASE_URL = Platform.OS === 'android' ? 'http://192.168.8.165:3000' : 'http://192.168.8.165:3000';
+const BASE_URL = Platform.OS === 'android' ? 'https://portal.airporttaxiairportlimo.com/api/v1/' : 'https://portal.airporttaxiairportlimo.com/api/v1/';
 
-export const api = axios.create({ baseURL: BASE_URL, timeout: 15000 });
+export const api = axios.create({ baseURL: BASE_URL, timeout: 15000, headers: { Accept: 'application/vnd.api+json' } });
 
 let inMemToken: string | null = null;
 
@@ -50,3 +50,37 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   }
   return config;
 });
+
+
+export type OtpVerifySuccess = {
+  status: 'Success';
+  key: 'otp_verified';
+  message: string;
+  data: {
+    user: {
+      id: number; first_name: string; last_name: string; email: string;
+      email_verified_at: string | null; created_at: string; updated_at: string;
+    };
+    token: string; // <<— bearer token
+  };
+};
+
+export type ApiErrorShape = {
+  status: 'Error';
+  key: string;
+  message: string;
+  data: unknown;
+};
+
+export async function verifyOtp(email: string, otp: string) {
+  // API expects x-www-form-urlencoded
+  const body = new URLSearchParams({ email, otp }).toString();
+  const { data } = await api.post<OtpVerifySuccess>(
+    '/register/verify-otp',
+    body,
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } },
+  );
+  return data;
+}
+
+

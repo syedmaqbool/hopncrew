@@ -3,7 +3,8 @@ export type RootStackParamList = {
   App : undefined
   Home: { dest?: Destination } | undefined;   // ← Home can receive { dest }
   Details: { id?: string } | undefined;
-  Otp: { dial: string; phone: string };
+  // Otp: { dial: string; phone: string };
+   Otp: { email: string; userId: number } | { email: string } | undefined;
   Signup: undefined;
   Location: undefined;
   MapTracking: undefined;

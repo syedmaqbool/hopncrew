@@ -1,6 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
-  View, Text, TextInput, Pressable, Modal, StyleSheet, SafeAreaView, Image, Linking, Alert,
+  View, Text, TextInput, Pressable, Modal, StyleSheet, SafeAreaView, Image, Linking, Alert,KeyboardAvoidingView,Platform, ScrollView, ActivityIndicator
 } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -9,7 +9,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
-import { signup } from '../services/auth';
+import { signup,register  } from '../services/auth';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Signup'>;
 
@@ -35,12 +35,22 @@ export default function SignupScreen({ navigation }: Props) {
   const [phone, setPhone]       = useState('');
   const [sameWhatsapp, setSameWhatsapp] = useState(true);
   const [avatarUri, setAvatarUri] = useState<string | null>(null);
+  const [firstName, setFirstName] = useState('');
+  const [lastName,  setLastName]  = useState('');
+  const [password,  setPassword]  = useState('');
+  const [confirm,   setConfirm]   = useState('');
   const [loading, setLoading] = useState(false);
 
   const isValid = useMemo(() => {
     const emailOk = !email || /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     return name.trim().length >= 2 && phone.trim().length >= 7 && emailOk;
   }, [name, phone, email]);
+
+   const canSubmit =
+    firstName.trim() && lastName.trim() &&
+    /\S+@\S+\.\S+/.test(email) &&
+    password.length >= 8 &&
+    confirm === password;
 
   const pickImage = async () => {
     try {
@@ -57,32 +67,67 @@ export default function SignupScreen({ navigation }: Props) {
     }
   };
 
- const onSubmit = async () => {
-    // if (!isValid) return;
-    // console.log('signup', { name, email, dial: country.dial, phone, sameWhatsapp, avatarUri });
-    // // TODO: call your signup API; then maybe go to OTP:
-    // // navigation.navigate('Otp', { dial: country.dial, phone });
-    // navigation.navigate('Location');
-     if (!isValid) return;
+//  const onSubmit = async () => {
+//     // if (!isValid) return;
+//     // console.log('signup', { name, email, dial: country.dial, phone, sameWhatsapp, avatarUri });
+//     // // TODO: call your signup API; then maybe go to OTP:
+//     // // navigation.navigate('Otp', { dial: country.dial, phone });
+//     // navigation.navigate('Location');
+//      if (!isValid) return;
+//     setLoading(true);
+//     try {
+//       console.log( 'login', { name, email, dial: country.dial, phone, sameWhatsapp, avatarUri });
+//       const user = await signup({ name: name.trim(), email: email.trim(), number: phone.trim() });
+//       console.log('user', user);
+//       // TODO: stash user in your app state if you have an AuthContext
+//       navigation.replace('App'); // or wherever you want to land post-signup
+//     } catch (e: any) {
+//       const msg =
+//         e?.response?.data?.message ||
+//         e?.message ||
+//         'Unable to sign up right now. Please try again.';
+//       Alert.alert('Signup failed', msg);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+
+const onSubmit = async () => {
+    if (!canSubmit || loading) return;
     setLoading(true);
     try {
-      console.log( 'login', { name, email, dial: country.dial, phone, sameWhatsapp, avatarUri });
-      const user = await signup({ name: name.trim(), email: email.trim(), number: phone.trim() });
-      console.log('user', user);
-      // TODO: stash user in your app state if you have an AuthContext
-      navigation.replace('App'); // or wherever you want to land post-signup
+      const res = await register({
+        email,
+        password,
+        password_confirmation: confirm,
+        first_name: firstName,
+        last_name: lastName,
+      });
+
+      // Success → navigate to OTP flow, pass email/userId
+      const user = res.data.user;
+      const serverMsg = res.data.message ?? 'Please verify the OTP sent to your email.';
+
+      Alert.alert('Registration Successful', serverMsg, [
+        {
+          text: 'Verify OTP',
+          onPress: () =>
+            navigation.replace('Otp', {
+              email: user.email,            // adjust to your OtpScreen params
+              userId: user.id,
+            }),
+        },
+      ]);
     } catch (e: any) {
-      const msg =
-        e?.response?.data?.message ||
-        e?.message ||
-        'Unable to sign up right now. Please try again.';
-      Alert.alert('Signup failed', msg);
+      Alert.alert('Registration failed', String(e.message || e));
     } finally {
       setLoading(false);
     }
   };
 
   return (
+    
     <SafeAreaView style={styles.safe}>
       {/* Header */}
       <View style={styles.header}>
@@ -90,6 +135,11 @@ export default function SignupScreen({ navigation }: Props) {
           <Ionicons name="chevron-back" size={26} color="#111" />
         </Pressable>
       </View>
+
+   
+
+   <KeyboardAvoidingView style={{ flex: 1 }} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView contentContainerStyle={styles.container} keyboardShouldPersistTaps="handled">
 
       {/* Decorative top */}
       <View style={styles.hero} />
@@ -121,6 +171,11 @@ export default function SignupScreen({ navigation }: Props) {
           value={name}
           onChangeText={setName}
         />
+
+        <TextInput style={styles.input} placeholder="First name" value={firstName} onChangeText={setFirstName} autoCapitalize="words" />
+        <TextInput style={styles.input} placeholder="Last name"  value={lastName}  onChangeText={setLastName}  autoCapitalize="words" />
+
+
         <TextInput
           style={styles.input}
           placeholder="Your Email ID"
@@ -147,6 +202,10 @@ export default function SignupScreen({ navigation }: Props) {
           />
         </View>
 
+        <TextInput style={styles.input} placeholder="Password (min 8)" value={password} onChangeText={setPassword} secureTextEntry />
+        <TextInput style={styles.input} placeholder="Confirm password" value={confirm} onChangeText={setConfirm} secureTextEntry />
+
+
         {/* WhatsApp checkbox */}
         <Pressable style={styles.checkboxRow} onPress={() => setSameWhatsapp(v => !v)}>
           <View style={[styles.checkboxBox, sameWhatsapp && styles.checkboxChecked]}>
@@ -165,9 +224,9 @@ export default function SignupScreen({ navigation }: Props) {
 
         {/* Sign up button */}
         <Pressable
-          style={[styles.signUpBtn, !isValid && { opacity: 0.5 }]}
+          style={[styles.signUpBtn, !canSubmit && { opacity: 0.5 }]}
           onPress={onSubmit}
-          disabled={!isValid}
+          disabled={!canSubmit || loading}
         >
           <Text style={styles.signUpText}>Sign up</Text>
           <View style={styles.signUpArrow}>
@@ -185,6 +244,14 @@ export default function SignupScreen({ navigation }: Props) {
           <Pressable style={styles.social}><AntDesign name="apple1" size={18} color="#000" /></Pressable>
         </View>
       </View>
+
+      {loading && (
+        <View style={styles.loadingOverlay}>
+          <ActivityIndicator size="large" />
+        </View>
+      )}
+          </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* Country picker modal */}
       <Modal transparent visible={pickerOpen} animationType="fade" onRequestClose={() => setPickerOpen(false)}>
@@ -211,6 +278,7 @@ export default function SignupScreen({ navigation }: Props) {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: MINT },
+  container: { padding: 16, paddingTop: 24 },
   header: { paddingHorizontal: 16, paddingTop: 54 },
   hero: {
     height: 96, marginHorizontal: 16, marginTop: 8,
@@ -247,7 +315,12 @@ const styles = StyleSheet.create({
     borderRadius: 24, paddingVertical: 10, paddingHorizontal: 12,
   },
   ccText: { fontSize: 14, color: '#111' },
-
+    loadingOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: 'rgba(0,0,0,0.25)',
+        alignItems: 'center',
+        justifyContent: 'center',
+      },
   checkboxRow: { flexDirection: 'row', alignItems: 'center', marginTop: 12, gap: 8 },
   checkboxBox: {
     width: 20, height: 20, borderRadius: 4, borderWidth: 1, borderColor: '#E0E0E0',

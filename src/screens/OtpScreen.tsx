@@ -1,11 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  View, Text, TextInput, Pressable, StyleSheet, SafeAreaView
+  View, Text, TextInput, Pressable, StyleSheet, SafeAreaView,ActivityIndicator, Alert
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
+import { verifyOtp } from '../services/api';
+import { saveToken } from '../services/auth';
 import { saveRefreshToken } from '../utils/biometricAuth';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Otp'>;
@@ -13,7 +15,10 @@ type Props = NativeStackScreenProps<RootStackParamList, 'Otp'>;
 const MINT = '#B9FBE7';
 
 export default function OtpScreen({ route, navigation }: Props) {
-  const { dial, phone } = route.params;
+  // const { dial, phone } = route.params;
+  const { email } = route.params; // make sure you pass email from Signup
+  const [otp, setOtp] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const [cells, setCells] = useState<string[]>(['', '', '', '']); // 4-digit demo
   const [sec, setSec] = useState(56);
@@ -47,26 +52,48 @@ export default function OtpScreen({ route, navigation }: Props) {
     if (key === 'Backspace' && !cells[i] && i > 0) inputs[i - 1].current?.focus();
   };
 
-  const onContinue = async  () => {
-    // TODO: verify OTP here
-    console.log('Verify OTP:', code, 'for', dial, phone);
-    // navigation.replace('Home'); // or wherever next
-    // 1) verify OTP -> get real refresh token from API
-  const refreshToken = 'demo-refresh-token-abc123'; // replace with real
+  // const onContinue = async  () => {
+  //   // TODO: verify OTP here
+  //   console.log('Verify OTP:', code, 'for', dial, phone);
+  //   // navigation.replace('Home'); // or wherever next
+  //   // 1) verify OTP -> get real refresh token from API
+  // const refreshToken = 'demo-refresh-token-abc123'; // replace with real
 
-  // 2) persist it (so biometrics can unlock it next time)
-  const ok = await saveRefreshToken(refreshToken);
-  if (!ok) {
-    // optional: show a toast here
-  }
+  // // 2) persist it (so biometrics can unlock it next time)
+  // const ok = await saveRefreshToken(refreshToken);
+  // if (!ok) {
+  //   // optional: show a toast here
+  // }
 
-  // 3) proceed to app
-  navigation.replace('App');
+  // // 3) proceed to app
+  // navigation.replace('App');
+  // };
+
+  const onVerify = async () => {
+    if (otp.trim().length < 4) return; // or 6—match your backend
+    setLoading(true);
+    try {
+      const res = await verifyOtp(email, otp.trim());
+      // success
+      await saveToken(res.data.token);
+      Alert.alert('Verified', 'OTP verified successfully');
+      navigation.reset({ index: 0, routes: [{ name: 'App' }] });
+    } catch (e: any) {
+      // API returns 4xx with your error shape
+      const msg =
+        e?.response?.data?.message ||
+        e?.message ||
+        'Invalid or expired OTP. Please try again.';
+      Alert.alert('Verification failed', msg);
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   const resend = () => {
     // TODO: call resend API
-    console.log('Resend OTP to', dial, phone);
+    console.log('Resend OTP to', email);
     setSec(56);
   };
 
@@ -86,8 +113,8 @@ export default function OtpScreen({ route, navigation }: Props) {
       <View style={styles.card}>
         <Text style={styles.title}>OTP Verification</Text>
         <Text style={styles.sub}>
-          We have sent an OTP on given number{'\n'}
-          <Text style={{ fontWeight: '700', color: '#111' }}>{dial} {phone}</Text>
+          We have sent an OTP on given email{'\n'}
+          <Text style={{ fontWeight: '700', color: '#111' }}>{email}</Text>
         </Text>
 
         <Text style={styles.label}>Enter OTP Code</Text>
@@ -117,7 +144,7 @@ export default function OtpScreen({ route, navigation }: Props) {
         {/* Continue */}
         <Pressable
           style={[styles.cta, !isReady && { opacity: 0.5 }]}
-          onPress={onContinue}
+          onPress={onVerify}
           disabled={!isReady}
         >
           <Text style={styles.ctaText}>Continue</Text>
@@ -143,6 +170,8 @@ export default function OtpScreen({ route, navigation }: Props) {
           Didn’t receive the OTP? <Text style={styles.resendLink} onPress={sec === 0 ? resend : undefined}>Resend</Text>
         </Text>
       </View>
+      {loading ? <ActivityIndicator color="#fff" /> : <Text style={{ color: '#fff', fontWeight: '700' }}>Verify</Text>}
+      
     </SafeAreaView>
   );
 }
