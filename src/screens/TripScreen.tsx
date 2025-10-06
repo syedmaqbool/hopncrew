@@ -246,7 +246,7 @@ const styles = StyleSheet.create({
   },
   rowTextWrap: { flex: 1 },
   rowLabel: { fontSize: 12, color: '#888' },
-  rowValue: { fontSize: 14, color: '#111', fontWeight: '600' },
+  rowValue: { fontSize: 14, color: '#111', fontWeight: '600'  },
   plusBadge: {
     width: 26, height: 26, borderRadius: 13,
     backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',
@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
   ctaText: { color: '#fff', fontWeight: '700' },
   ctaArrow: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',  position: 'absolute', right: 10,
     marginLeft: 6,
   },
 

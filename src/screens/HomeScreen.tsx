@@ -7,6 +7,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  Image,
 } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,6 +20,7 @@ import type { RootStackParamList,Destination } from '../navigation/types';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { DrawerNavigationProp } from '@react-navigation/drawer';
 import type { AppDrawerParamList } from '../navigation/AppDrawer';
+import assets from '../../assets';
 
 // 
 // const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -155,7 +157,11 @@ export default function HomeScreen({ navigation, route }: Props) {
 
         {/* top-left menu button */}
         <Pressable style={styles.iconBtnTL} onPress={() => { openMenu(); }}>
-          <Ionicons name="menu" size={18} color="#111" />
+          {/* <Ionicons name="menu" size={18} color="#111" /> */}
+           <Image
+                        source={assets.images.hamIcon}// <-- **Direct require with correct path**
+                        style={{ width: 40, height: 40, borderRadius: 20 }}
+                      />
         </Pressable>
 
         {/* top-right recenter button */}
@@ -167,7 +173,7 @@ export default function HomeScreen({ navigation, route }: Props) {
       {/* Content */}
       <ScrollView
         style={styles.content}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={{ paddingBottom: 32, }}
         showsVerticalScrollIndicator={false}
       >
         <Text style={styles.greeting}>Good afternoon, Saqib</Text>
@@ -243,64 +249,66 @@ export default function HomeScreen({ navigation, route }: Props) {
 const MINT = '#B9FBE7';
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
+  safe: { flex: 1, backgroundColor: '#000'   },
 
   // Map occupies the top ~40–45% with rounded bottom corners
   mapWrap: {
-    height: 260,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
+    height: 300,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     overflow: 'hidden',
     backgroundColor: MINT,
   },
 
   iconBtnTL: {
-    position: 'absolute', top: 32, left: 12,
+    position: 'absolute', top: 45, left: 12,
     width: 36, height: 36, borderRadius: 18,
     backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center',
     elevation: 2,
   },
   iconBtnTR: {
-    position: 'absolute', top: 12, right: 12,
+    position: 'absolute', top: 45, right: 12,
     width: 36, height: 36, borderRadius: 18,
     backgroundColor: '#fff', alignItems: 'center', justifyContent: 'center',
     elevation: 2,
   },
 
-  content: { flex: 1, paddingHorizontal: 16, paddingTop: 14 },
+  content: { flex: 1, backgroundColor: '#fff',   paddingHorizontal: 16, paddingTop: 14 , borderTopLeftRadius: 35, borderTopRightRadius: 35,  },
 
-  greeting: { fontSize: 18, fontWeight: '700', color: '#111', marginBottom: 10 },
+  greeting: { fontSize: 18, fontWeight: '500',  color: '#111', marginTop: 12, marginBottom: 20, },
 
   searchRow: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
     backgroundColor: '#fff', borderRadius: 24, paddingHorizontal: 14, height: 44,
-    borderWidth: 1, borderColor: '#EEE', elevation: 1,
+    borderWidth: 0, borderColor: '#EEE', elevation: 1,
   },
-  searchInput: { flex: 1, color: '#111', paddingVertical: 0 },
+  searchInput: { flex: 1, color: '#111', paddingVertical: 0, },
 
   card: {
+    marginTop: 20,
     width: 230,
     padding: 12,
     marginRight: 12,
     borderRadius: 16,
     backgroundColor: '#fff',
-    borderWidth: 1, borderColor: '#EFEFEF',
-    elevation: 2,
+    borderWidth: 0, borderColor: '#EFEFEF',
+    elevation: 1,
+    marginBottom: 16,
   },
   avatar: {
     width: 32, height: 32, borderRadius: 16, backgroundColor: '#EAEAEA',
   },
-  cardTitle: { fontWeight: '700', color: '#111' },
+  cardTitle: { fontWeight: '500', color: '#111' },
   cardSub: { color: '#888', fontSize: 12 },
   cardBody: { marginTop: 8, color: '#444' },
   starsRow: { flexDirection: 'row', gap: 4, marginTop: 10 },
 
   quickList: { marginTop: 8, gap: 10 },
   quickItem: {
-    flexDirection: 'row', alignItems: 'center', gap: 10,
+    flexDirection: 'row', alignItems: 'center', gap: 5,
     paddingVertical: 12, paddingHorizontal: 10,
     borderRadius: 12, backgroundColor: '#fff',
-    borderWidth: 1, borderColor: '#EFEFEF',
+    borderWidth: 0, borderColor: '#EFEFEF',
   },
   quickText: { color: '#111', fontWeight: '600' },
 });
