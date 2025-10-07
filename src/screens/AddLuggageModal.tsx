@@ -248,7 +248,7 @@ const styles = StyleSheet.create({
     width: 36, height: 36, borderRadius: 18, backgroundColor: MINT,
     alignItems: 'center', justifyContent: 'center',
   },
-  scanText: { color: '#111', fontWeight: '600' },
+  scanText: { color: '#111', fontWeight: '600', marginVertical: 30, },
 
   sizeChip: {
     borderWidth: 1, borderColor: '#E6E6E6', borderRadius: 12,
@@ -269,6 +269,6 @@ const styles = StyleSheet.create({
   ctaText: { color: '#fff', fontWeight: '700' },
   ctaIcon: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',  position: 'absolute', right: 10,
   },
 });

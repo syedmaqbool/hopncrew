@@ -1,11 +1,17 @@
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useMemo, useRef, useState } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, FlatList, ViewToken, Switch, Platform,
+  FlatList,
+  Image,
+  Pressable,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import assets from '../../assets';
 import type { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ScheduleRide'>;
@@ -76,18 +82,18 @@ export default function ScheduleRideScreen({ navigation, route }: Props) {
     // route.params?.onPick?.(selectedDate);
     // navigation.goBack();
     navigation.navigate('FareOptions', {
-  etaMinutes: 18,
-  quotes: [
-    { id: 'esc', tier: 'Escalade', price: 51, oldPrice: 85, seatText: 'Or Similar' },
-    { id: 'prm', tier: 'Premium',  price: 32, oldPrice: 55, seatText: 'Sedan X2' },
-    { id: 'eco', tier: 'Economy',  price: 43, oldPrice: 67, seatText: 'SUV X2' },
-  ],
-  payMethod: 'Card',
-  onConfirm: (q, opts) => {
-    console.log('Chosen quote:', q, opts);
-    // continue to booking request…
-  },
-});
+      etaMinutes: 18,
+      quotes: [
+        { id: 'esc', tier: 'Escalade', price: 51, oldPrice: 85, seatText: 'Or Similar' },
+        { id: 'prm', tier: 'Premium', price: 32, oldPrice: 55, seatText: 'Sedan X2' },
+        { id: 'eco', tier: 'Economy', price: 43, oldPrice: 67, seatText: 'SUV X2' },
+      ],
+      payMethod: 'Card',
+      onConfirm: (q, opts) => {
+        console.log('Chosen quote:', q, opts);
+        // continue to booking request…
+      },
+    });
   };
 
   return (
@@ -127,7 +133,13 @@ export default function ScheduleRideScreen({ navigation, route }: Props) {
 
       {/* info rows */}
       <View style={styles.infoRow}>
-        <Ionicons name="location-outline" size={18} color="#111" />
+        {/* <Ionicons name="location-outline" size={18} color="#111" /> */}
+        <Image
+          source={assets.images.dropoffIcon}// <-- **Direct require with correct path**
+          style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+        />
+
+
         <View style={{ marginLeft: 10, flex: 1 }}>
           <Text style={styles.infoTitle}>Estimated drop-off time</Text>
           <Text style={styles.infoSub}>Arrive at destination at approx. {dropOff}</Text>
@@ -135,7 +147,11 @@ export default function ScheduleRideScreen({ navigation, route }: Props) {
       </View>
 
       <View style={styles.infoRow}>
-        <Ionicons name="reload-outline" size={18} color="#111" />
+        {/* <Ionicons name="reload-outline" size={18} color="#111" /> */}
+        <Image
+          source={assets.images.plansIcon}// <-- **Direct require with correct path**
+          style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+        />
         <View style={{ marginLeft: 10, flex: 1 }}>
           <Text style={styles.infoTitle}>Change of plans? No worries!</Text>
           <Text style={styles.infoSub}>Cancel or modify free of charge up to 1 hour before pickup</Text>
@@ -144,10 +160,14 @@ export default function ScheduleRideScreen({ navigation, route }: Props) {
 
       {/* toggle pill */}
       <View style={styles.toggleCard}>
-        <Ionicons name="checkbox-outline" size={18} color="#111" />
+        {/* <Ionicons name="checkbox-outline" size={18} color="#111" /> */}
+        <Image
+          source={assets.images.squareIcon}// <-- **Direct require with correct path**
+          style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+        />
         <Text style={styles.toggleTxt}>Square hold funds and charge after drop-off</Text>
         <Ionicons name="information-circle-outline" size={16} color="#9AA0A6" />
-       
+
       </View>
 
       {/* bottom CTA */}
@@ -223,7 +243,7 @@ const styles = StyleSheet.create({
   },
   badgeTxt: { color: '#111', fontWeight: '700', fontSize: 12 },
 
-  bigTitle: { fontSize: 18, fontWeight: '700', color: '#111', paddingHorizontal: 16, marginBottom: 12 },
+  bigTitle: { fontSize: 18, fontWeight: '700', color: '#111', paddingHorizontal: 16, marginVertical: 20, textAlign: 'center', },
 
   wheelsWrap: {
     flexDirection: 'row', alignItems: 'stretch', gap: 8, paddingHorizontal: 16, marginBottom: 104,
@@ -245,14 +265,14 @@ const styles = StyleSheet.create({
   toggleCard: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
     marginHorizontal: 16, marginTop: 6, padding: 12,
-    borderRadius: 12, borderWidth: 1, borderColor: '#EFEFEF', backgroundColor: MINT,
+    borderRadius: 20, borderWidth: 1, borderColor: '#EFEFEF', backgroundColor: MINT,
   },
-  toggleTxt: { color: '#111', fontWeight: '700', flexShrink: 1 },
+  toggleTxt: { color: '#111', fontSize: 12, fontWeight: '400', flexShrink: 1, },
 
   cta: {
     marginTop: 16, marginHorizontal: 16, height: 48, borderRadius: 28, backgroundColor: '#111',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
-  ctaIcon: { width: 30, height: 30, borderRadius: 15, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center' },
+  ctaText: { color: '#fff', fontWeight: '400' },
+  ctaIcon: { width: 30, height: 30, borderRadius: 15, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10, },
 });

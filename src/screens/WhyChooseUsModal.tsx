@@ -124,14 +124,16 @@ const styles = StyleSheet.create({
   brandPill: {
     alignSelf: 'flex-start',
     backgroundColor: MINT,
-    paddingHorizontal: 12,
+    paddingHorizontal: 20,
     paddingVertical: 6,
-    borderRadius: 12,
+    borderRadius: 20,
     marginBottom: 10,
+    width: 140,
+    textAlign: 'center',
   },
-  brandText: { fontWeight: '800', color: '#111' },
+  brandText: {  fontSize: 20, fontWeight: '800', color: '#111', textAlign: 'center' },
 
-  h1: { fontSize: 28, fontWeight: '800', color: '#111', lineHeight: 32, marginBottom: 12 },
+  h1: { fontSize: 38, fontWeight: '800', color: '#111', lineHeight: 46, marginBottom: 12 },
 
   row: {
     flexDirection: 'row',

@@ -228,6 +228,6 @@ const styles = StyleSheet.create({
   ctaText: { color: '#fff', fontWeight: '800' },
   ctaIcon: {
     width: 32, height: 32, borderRadius: 16, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
   },
 });

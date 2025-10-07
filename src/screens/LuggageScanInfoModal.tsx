@@ -113,13 +113,13 @@ const styles = StyleSheet.create({
   ctaText: { color: '#fff', fontWeight: '700' },
   ctaIcon: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
   },
 });
 
 const stepStyles = StyleSheet.create({
   wrap: { flexDirection: 'row', gap: 10 },
-  bullet: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#111', marginTop: 8 },
+  bullet: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#fff', marginTop: 8 },
   title: { color: '#111', fontWeight: '700' },
   body: { color: '#666', marginTop: 4, lineHeight: 18 },
 });

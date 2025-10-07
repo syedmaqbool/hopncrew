@@ -1,7 +1,7 @@
 // src/screens/ConfirmRequestScreen.tsx
 import React, { useMemo, useState } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, TextInput, ScrollView, Alert,
+  View, Text, StyleSheet, Pressable, TextInput, ScrollView, Alert, Image
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -10,6 +10,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import type { NativeStackScreenProps, NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList, FareQuote, SpecialRequestPayload, PayMethodKey, SavedCard } from '../navigation/types';
 import { useNavigation } from '@react-navigation/native';
+import assets from '../../assets';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ConfirmRequest'>;
 const MINT = '#B9FBE7';
@@ -95,9 +96,11 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
               <View style={styles.carCard}>
                 {q.image ? (
                   // <Image source={q.image} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
-                  <MaterialCommunityIcons name="car-estate" size={64} color="#111" />
+                  // <MaterialCommunityIcons name="car-estate" size={64} color="#111" />
+                      <Image source={assets.images.escaladeIcon} style={{ width: 168, height: 50 }} resizeMode="contain" />
                 ) : (
-                  <MaterialCommunityIcons name="car-estate" size={64} color="#111" />
+                  // <MaterialCommunityIcons name="car-estate" size={64} color="#111" />
+                      <Image source={assets.images.escaladeIcon} style={{ width: 168, height: 50 }} resizeMode="contain" />
                 )}
               </View>
               <View style={styles.priceCard}>
@@ -177,19 +180,19 @@ const styles = StyleSheet.create({
   rowHead: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 14 },
   section: { color: '#111', fontWeight: '800' },
 
-  carRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 10 },
+  carRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 10, paddingVertical: 0, backgroundColor: '#EFEFEF', borderRadius: 10, },
   carCard: {
-    flex: 1, height: 92, borderRadius: 14,
+    width: 200, height: 92, borderRadius: 0,borderTopRightRadius: 24, borderBottomRightRadius: 24, 
     backgroundColor: '#fff', borderWidth: 1, borderColor: '#EEE',
-    alignItems: 'center', justifyContent: 'center', elevation: 1,
+    alignItems: 'center', justifyContent: 'center', elevation: 2,
   },
   priceCard: {
-    width: 120, borderRadius: 14, backgroundColor: '#F6F7F8',
-    padding: 10, alignItems: 'flex-end', borderWidth: 1, borderColor: '#EEE',
+   flex: 1, maxWidth: 150, borderRadius: 14, backgroundColor: 'transparent',
+    padding: 10, alignItems: 'flex-end', borderWidth: 0, borderColor: '#EEE',
   },
-  taxTxt: { color: '#777', fontSize: 12, alignSelf: 'flex-start' },
+  taxTxt: { color: '#777', fontSize: 12, alignSelf: 'flex-end', marginBottom : 5, },
   priceNow: { color: '#111', fontSize: 28, fontWeight: '800', lineHeight: 30 },
-  tiny: { color: '#777', marginTop: 2 },
+  tiny: { color: '#777', marginTop: 5 },
 
   policyPill: {
     marginTop: 12,
@@ -225,5 +228,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
   ctaText: { color: '#fff', fontWeight: '700' },
-  ctaIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center' },
+  ctaIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',  position: 'absolute', right: 10, },
 });

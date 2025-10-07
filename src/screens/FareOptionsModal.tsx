@@ -1,7 +1,7 @@
 // src/screens/FareOptionsModal.tsx
 import React, { useMemo, useState } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, ScrollView, TextInput, Switch,
+  View, Text, StyleSheet, Pressable, ScrollView, TextInput, Switch, Image
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -11,6 +11,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList, FareQuote, SpecialRequestPayload } from '../navigation/types';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import assets from '../../assets';
 type Props = NativeStackScreenProps<RootStackParamList, 'FareOptions'>;
 
 const MINT = '#B9FBE7';
@@ -171,7 +172,7 @@ function FareCard({
       onPress={onPress}
       style={[
         styles.card,
-        selected && { borderColor: '#111', backgroundColor: '#fff' },
+        selected && { borderColor: '#111', backgroundColor: ''   },
       ]}
     >
       {/* left price slab */}
@@ -187,11 +188,13 @@ function FareCard({
         <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: 6 }}>
           {quote.image ? (
             // eslint-disable-next-line react-native/no-inline-styles
-            <View style={{ width: 88, height: 40, overflow: 'hidden', borderRadius: 8 }}>
+            <View style={{ width: 88, height: 40 , overflow: 'hidden', borderRadius: 8 }}>
               {/* <Image source={quote.image} style={{ width: '100%', height: '100%' }} resizeMode="cover" /> */}
             </View>
           ) : (
-            <MaterialCommunityIcons name="car-estate" size={56} color="#111" />
+            // <MaterialCommunityIcons name="car-estate" size={56} color="#111" />
+              <Image source={assets.images.escaladeIcon} style={{ width: 168, height: 50 }} resizeMode="contain" />
+            // <Image source={quote.image} style={{ width: 100, height: '100%' }} resizeMode="cover" /> 
           )}
         </View>
         
@@ -227,18 +230,19 @@ const styles = StyleSheet.create({
 
   card: {
     flexDirection: 'row',
-    borderRadius: 16, borderWidth: 1, borderColor: '#EFEFEF', overflow: 'hidden', backgroundColor: '#FAFAFA',
+    borderRadius: 16, borderWidth: 1, borderColor: '#EFEFEF', overflow: 'hidden', backgroundColor: '#EFEFEF',
   },
   priceSlab: {
-    paddingHorizontal: 14, paddingVertical: 12, backgroundColor: '#111', justifyContent: 'center', alignItems: 'center', minWidth: 92,
+    paddingHorizontal: 14, paddingVertical: 12, backgroundColor: '#EEEEEF', justifyContent: 'center', alignItems: 'center', flex: 1,
   },
-  priceNow: { color: '#fff', fontSize: 28, fontWeight: '800' },
-  priceOld: { color: '#B9BDC2', textDecorationLine: 'line-through', marginTop: 2 },
+  priceNow: { color: '#000', fontSize: 28, fontWeight: '800' },
+  priceOld: { color: '#000', textDecorationLine: 'line-through', marginTop: 2 },
 
   carTile: {
-    flex: 1, backgroundColor: '#fff', padding: 10, justifyContent: 'center',
+    minWidth: 92, elevation: 2 , shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4,
+    backgroundColor: '#fff', padding: 10, justifyContent: 'center', borderTopLeftRadius: 24, borderBottomLeftRadius: 24, 
   },
-  tierTitle: { color: '#111', fontWeight: '800' },
+  tierTitle: { color: '#111', fontWeight: '800' , textAlign: 'center' },
   tierSub: { color: '#6C7075', fontWeight: '600' },
 
   chip: {
@@ -264,5 +268,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
   ctaText: { color: '#fff', fontWeight: '700' },
-  ctaIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center' },
+  ctaIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center' , position: 'absolute', right: 10, },
+
 });

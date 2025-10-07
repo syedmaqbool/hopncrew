@@ -1,16 +1,20 @@
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useRef, useState } from 'react';
 import {
-  View, Text, TextInput, Pressable, StyleSheet,
-  KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import type { GooglePlacesAutocompleteRef } from 'react-native-google-places-autocomplete';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList, FavouritePayload } from '../navigation/types';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import type { FavouritePayload, RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SaveFavoriteDetails'>;
 
@@ -51,10 +55,13 @@ export default function SaveFavoriteDetailsModal({ navigation, route }: Props) {
       <KeyboardAvoidingView
         style={styles.fill}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top : 0}
+        // Safe-area padding is now INSIDE the sheet, so no extra keyboard offset needed here
+        keyboardVerticalOffset={0}
       >
-        <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
-          <View style={styles.sheet}>
+        {/* Anchor container to screen edges and push content to bottom */}
+        <View style={styles.sheetWrap}>
+          {/* Put safe-area padding INSIDE the white card */}
+          <SafeAreaView edges={['bottom']} style={styles.sheet}>
             {/* header */}
             <View style={styles.header}>
               <View style={styles.menuBtn}>
@@ -69,7 +76,8 @@ export default function SaveFavoriteDetailsModal({ navigation, route }: Props) {
             {/* address (Google Places Autocomplete) */}
             <View style={styles.inputRow}>
               <View style={{ flex: 1 }}>
-                {/* <GooglePlacesAutocomplete
+                {/* 
+                <GooglePlacesAutocomplete
                   ref={ref}
                   placeholder="Search address"
                   fetchDetails
@@ -86,11 +94,16 @@ export default function SaveFavoriteDetailsModal({ navigation, route }: Props) {
                     placeholderTextColor: '#9AA0A6',
                   }}
                   onPress={(data, details) => {
-                    const line = data.description || data.structured_formatting?.main_text || '';
+                    const line =
+                      data.description || data.structured_formatting?.main_text || '';
                     setAddress(line);
                     if (details?.geometry?.location) {
                       const { lat, lng } = details.geometry.location;
-                      setCoords({ latitude: lat, longitude: lng, placeId: data.place_id });
+                      setCoords({
+                        latitude: lat,
+                        longitude: lng,
+                        placeId: data.place_id,
+                      });
                     }
                   }}
                   styles={{
@@ -101,7 +114,8 @@ export default function SaveFavoriteDetailsModal({ navigation, route }: Props) {
                     description: { color: '#111' },
                     separator: { height: 1, backgroundColor: '#EFEFEF' },
                   }}
-                /> */}
+                />
+                */}
               </View>
               <View style={styles.heartBtn}>
                 <AntDesign name="heart" size={18} color="#111" />
@@ -156,8 +170,8 @@ export default function SaveFavoriteDetailsModal({ navigation, route }: Props) {
             <Pressable style={{ alignItems: 'center', marginTop: 10 }} onPress={() => navigation.goBack()}>
               <Text style={{ color: '#111', fontWeight: '600' }}>Cancel</Text>
             </Pressable>
-          </View>
-        </SafeAreaView>
+          </SafeAreaView>
+        </View>
       </KeyboardAvoidingView>
     </View>
   );
@@ -185,7 +199,14 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'transparent' },
 
-  sheetWrap: { flex: 1, justifyContent: 'flex-end', backgroundColor: 'transparent' },
+  // absolutely fill the screen and stick children to bottom
+  sheetWrap: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: 'flex-end',
+    backgroundColor: 'transparent',
+  },
+
+  // the bottom sheet (safe-area now applied inside this card)
   sheet: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 24,
@@ -193,7 +214,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 22,
-    shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: -4 },
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: -4 },
     elevation: 10,
   },
 
@@ -240,5 +264,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
   saveText: { color: '#fff', fontWeight: '700' },
-  saveArrow: { width: 30, height: 30, borderRadius: 15, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center' },
+  saveArrow: {
+    width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
+    alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
+  },
 });

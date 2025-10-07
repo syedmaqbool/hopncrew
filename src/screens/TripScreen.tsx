@@ -1,20 +1,21 @@
 // src/screens/TripScreen.tsx
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useMemo, useState } from 'react';
 import {
-  View,
-  Text,
+  Image,
   Pressable,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
   Switch,
+  Text,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList, Destination, LuggageItem } from '../navigation/types';
-import type { PassengerCounts } from '../navigation/types'; // <- from earlier
+import assets from '../../assets';
+import type { Destination, LuggageItem, PassengerCounts, RootStackParamList } from '../navigation/types';
 import { summarizeLuggage } from '../utils/luggage';
 type Props = NativeStackScreenProps<RootStackParamList, 'Trip'>;
 
@@ -31,11 +32,11 @@ const DEFAULT_PAX: PassengerCounts = {
 export default function TripScreen({ navigation, route }: Props) {
   const [start, setStart] = useState<Destination | null>(
     route.params?.start ??
-      {
-        description: "Toronto Pearson International Airport (YYZ)",
-        latitude: 43.6777,
-        longitude: -79.6248,
-      }
+    {
+      description: "Toronto Pearson International Airport (YYZ)",
+      latitude: 43.6777,
+      longitude: -79.6248,
+    }
   );
   const [passengers, setPassengers] = useState<PassengerCounts>(DEFAULT_PAX);
   const [dest, setDest] = useState<Destination | null>(route.params?.dest ?? null);
@@ -43,7 +44,7 @@ export default function TripScreen({ navigation, route }: Props) {
   const [luggage, setLuggage] = useState<LuggageItem[]>([]);
 
 
-   const { totalPassengers, totalSeats, chipText } = useMemo(() => {
+  const { totalPassengers, totalSeats, chipText } = useMemo(() => {
     const totalP =
       passengers.adults + passengers.children + passengers.infants;
     const totalS = Object.values(passengers.seats || {}).reduce(
@@ -72,14 +73,14 @@ export default function TripScreen({ navigation, route }: Props) {
     //   onDone: (data) => setPassengers(data), // <-- update Trip state
     // });
     navigation.navigate('AddPassenger', {
-    initial: passengers,
-    luggage,                        // give current luggage to the modal
-    onDone: setPassengers,          // refresh passenger details on close
-    onEditLuggage: setLuggage,      // when “Add Luggage” finishes
-  });
+      initial: passengers,
+      luggage,                        // give current luggage to the modal
+      onDone: setPassengers,          // refresh passenger details on close
+      onEditLuggage: setLuggage,      // when “Add Luggage” finishes
+    });
   };
 
-    const summary = useMemo(() => {
+  const summary = useMemo(() => {
     const total =
       passengers.adults + passengers.children + passengers.infants;
     const seats =
@@ -141,10 +142,12 @@ export default function TripScreen({ navigation, route }: Props) {
           {/* small helper text */}
           <View style={styles.helper}>
             <Text style={styles.helperText}>Want to pick someone else?</Text>
-            <Pressable onPress={() => {navigation.navigate('ScheduleRide', {
-                    initial: new Date(),
-                    onPick: (when) => { /* store in Trip state / query fare */ },
-                    });}}>
+            <Pressable onPress={() => {
+              navigation.navigate('ScheduleRide', {
+                initial: new Date(),
+                onPick: (when) => { /* store in Trip state / query fare */ },
+              });
+            }}>
               <AntDesign name="pluscircleo" size={16} color="#111" />
             </Pressable>
           </View>
@@ -152,7 +155,11 @@ export default function TripScreen({ navigation, route }: Props) {
 
         {/* Set on pin */}
         <Pressable style={styles.pinRow} onPress={() => setSetOnPin(!setOnPin)}>
-          <Ionicons name="pin-outline" size={18} color="#111" />
+          {/* <Ionicons name="pin-outline" size={18} color="#111" /> */}
+          <Image
+            source={assets.images.locationPin}// <-- **Direct require with correct path**
+            style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+          />
           <Text style={styles.pinText}>Set location on pin</Text>
           <View style={{ flex: 1 }} />
           <Switch value={setOnPin} onValueChange={setSetOnPin} />
@@ -161,25 +168,29 @@ export default function TripScreen({ navigation, route }: Props) {
 
 
         {/* Passenger summary chip */}
-            {(totalPassengers > 0 || totalSeats > 0) && (
-                <Pressable style={styles.summaryChip} onPress={openAddPassenger}>
-                <Ionicons name="people-outline" size={16} color="#111" />
-                <Text style={styles.summaryText}>{chipText}</Text>
-                <Text style={styles.summaryEdit}>Edit</Text>
-                </Pressable>
-            )}
+        {(totalPassengers > 0 || totalSeats > 0) && (
+          <Pressable style={styles.summaryChip} onPress={openAddPassenger}>
+            <Ionicons name="people-outline" size={16} color="#111" />
+            <Text style={styles.summaryText}>{chipText}</Text>
+            <Text style={styles.summaryEdit}>Edit</Text>
+          </Pressable>
+        )}
 
-            <Text>{`Adults ${passengers.adults} · Children ${passengers.children} · Infants ${passengers.infants}`}</Text>
+        <Text>{`Adults ${passengers.adults} · Children ${passengers.children} · Infants ${passengers.infants}`}</Text>
 
-            <Text style={styles.summaryText}>
-            {summarizeLuggage(luggage)}   {/* e.g., “L 1 · Carry-on 2 · Golf 1” */}
-            </Text>
+        <Text style={styles.summaryText}>
+          {summarizeLuggage(luggage)}   {/* e.g., “L 1 · Carry-on 2 · Golf 1” */}
+        </Text>
 
 
         {/* Info bullets */}
         <View style={{ marginTop: 155, gap: 14 }}>
           <View style={styles.bullet}>
-            <Ionicons name="time-outline" size={18} color="#111" />
+            {/* <Ionicons name="time-outline" size={18} color="#111" /> */}
+            <Image
+              source={assets.images.traffic}// <-- **Direct require with correct path**
+              style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+            />
             <View style={{ flex: 1 }}>
               <Text style={styles.bTitle}>Traffic or Rush Hour? Flat Rate!</Text>
               <Text style={styles.bBody}>
@@ -189,11 +200,16 @@ export default function TripScreen({ navigation, route }: Props) {
           </View>
 
           <View style={styles.bullet}>
-            <Ionicons name="shield-checkmark-outline" size={18} color="#111" />
+            {/* <Ionicons name="shield-checkmark-outline" size={18} color="#111" /> */}
+            <Image
+              source={assets.images.securityIcon}// <-- **Direct require with correct path**
+              style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+            />
             <View style={{ flex: 1 }}>
               <Text style={styles.bTitle}>Guaranteed</Text>
               <Text style={styles.bBody}>
-                20+ Years of Reliable Pickups. hop’n guarantees on-time service with no cancellations.
+                20+ Years of Reliable Pickups.
+                 hop’n guarantees on-time service with no cancellations.
               </Text>
             </View>
           </View>
@@ -202,7 +218,7 @@ export default function TripScreen({ navigation, route }: Props) {
 
       {/* Bottom CTA */}
       <View style={styles.bottom}>
-        <Pressable style={styles.cta} onPress={() => {openAddPassenger ()}}>
+        <Pressable style={styles.cta} onPress={() => { openAddPassenger() }}>
           <Text style={styles.ctaText}>+ Add Passenger</Text>
           <View style={styles.ctaArrow}>
             <AntDesign name="arrowright" size={18} color="#111" />
@@ -246,7 +262,7 @@ const styles = StyleSheet.create({
   },
   rowTextWrap: { flex: 1 },
   rowLabel: { fontSize: 12, color: '#888' },
-  rowValue: { fontSize: 14, color: '#111', fontWeight: '600'  },
+  rowValue: { fontSize: 14, color: '#111', fontWeight: '600' },
   plusBadge: {
     width: 26, height: 26, borderRadius: 13,
     backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',
@@ -254,10 +270,10 @@ const styles = StyleSheet.create({
   },
   helper: {
     flexDirection: 'row', alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end', gap: 6,
     paddingHorizontal: 6, marginTop: 8,
   },
-  helperText: { color: '#666' },
+  helperText: { color: '#000', textAlign: 'right', paddingVertical: 3, fontWeight: '500' },
 
   pinRow: {
     flexDirection: 'row', alignItems: 'center',
@@ -280,7 +296,7 @@ const styles = StyleSheet.create({
   ctaText: { color: '#fff', fontWeight: '700' },
   ctaArrow: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',  position: 'absolute', right: 10,
+    alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
     marginLeft: 6,
   },
 

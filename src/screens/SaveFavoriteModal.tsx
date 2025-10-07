@@ -1,32 +1,36 @@
 // src/screens/SaveFavoriteModal.tsx
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, Pressable, StyleSheet, KeyboardAvoidingView, Platform,
+  KeyboardAvoidingView, Platform,
+  Pressable, StyleSheet,
+  Text, TextInput,
+  View, Image,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets  } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList, Favourite } from '../navigation/types';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import type { RootStackParamList } from '../navigation/types';
+import assets from '../../assets';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SaveFavorite'>;
 
 const MINT = '#B9FBE7';
 
 export default function SaveFavoriteModal({ navigation, route }: Props) {
-    const insets = useSafeAreaInsets();            // ← for proper offset on notch devices
+  const insets = useSafeAreaInsets();            // ← for proper offset on notch devices
   const [address, setAddress] = useState(route.params?.address ?? '');
   const [star, setStar] = useState(true);
 
   const onSave = () => {
-   navigation.replace('SaveFavoriteDetails', {
-  initialAddress: address.trim(),
-  isStarred: star,
-  onConfirm: (payload) => {
-    // bubble to original caller if they provided onSave
-    route.params?.onSave?.(payload);
-  },
-});
+    navigation.replace('SaveFavoriteDetails', {
+      initialAddress: address.trim(),
+      isStarred: star,
+      onConfirm: (payload) => {
+        // bubble to original caller if they provided onSave
+        route.params?.onSave?.(payload);
+      },
+    });
   };
 
   return (
@@ -34,7 +38,7 @@ export default function SaveFavoriteModal({ navigation, route }: Props) {
       {/* tap outside to dismiss */}
       <Pressable style={styles.backdrop} onPress={() => navigation.goBack()} />
 
-        <KeyboardAvoidingView
+      <KeyboardAvoidingView
         style={styles.fill}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'} // ← important for Android
         keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top : 0}
@@ -44,9 +48,13 @@ export default function SaveFavoriteModal({ navigation, route }: Props) {
             {/* header */}
             <View style={styles.header}>
               <View style={styles.menuBtn}>
-                <Ionicons name="menu" size={18} color="#111" />
+                {/* <Ionicons name="menu" size={18} color="#111" /> */}
+                <Image
+            source={assets.images.hamIcon}// <-- **Direct require with correct path**
+            style={{ width: 40, height: 40, borderRadius: 20 }}
+          />
               </View>
-              <Text style={styles.title}>Save as Favourite</Text>
+              <Text style={styles.title}>Favourite</Text>
               <Pressable style={styles.closeBtn} onPress={() => navigation.goBack()}>
                 <Ionicons name="close" size={18} color="#111" />
               </Pressable>
@@ -66,21 +74,25 @@ export default function SaveFavoriteModal({ navigation, route }: Props) {
               </Pressable>
             </View>
 
-            {/* save */}
-            <Pressable
-              style={[styles.saveBtn, !address.trim() && { opacity: 0.5 }]}
-              onPress={onSave}
-              disabled={!address.trim()}
-            >
-              <Text style={styles.saveText}>Save</Text>
-              <View style={styles.saveArrow}>
-                <AntDesign name="arrowright" size={18} color="#111" />
-              </View>
-            </Pressable>
+            <View style={{ position: 'absolute', bottom: 20, left: 16, right: 16, flexDirection: 'column',}}>
+              {/* save */}
+              <Pressable
+                style={[styles.saveBtn, !address.trim() && { opacity: 0.5 }]}
+                onPress={onSave}
+                disabled={!address.trim()}
+              >
+                <Text style={styles.saveText}>Save</Text>
+                <View style={styles.saveArrow}>
+                  <AntDesign name="arrowright" size={18} color="#111" />
+                </View>
+              </Pressable>
 
-            <Pressable style={styles.cancel} onPress={() => navigation.goBack()}>
-              <Text style={styles.cancelText}>Cancel</Text>
-            </Pressable>
+              <Pressable style={styles.cancel} onPress={() => navigation.goBack()}>
+                <Text style={styles.cancelText}>Cancel</Text>
+              </Pressable>
+
+            </View>
+
           </View>
         </SafeAreaView>
       </KeyboardAvoidingView>
@@ -89,13 +101,14 @@ export default function SaveFavoriteModal({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  fill: { flex: 1 },
+  fill: { flex: 1, },
   backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'transparent' }, // keep map visible
 
   sheetWrap: {
     flex: 1,
     justifyContent: 'flex-end',          // bottom sheet
     backgroundColor: 'transparent',
+
   },
   sheet: {
     backgroundColor: '#fff',
@@ -104,6 +117,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
     paddingBottom: 22,
+    height: 460,
     // subtle shadow/elevation
     shadowColor: '#000', shadowOpacity: 0.1, shadowRadius: 12, shadowOffset: { width: 0, height: -4 },
     elevation: 10,
@@ -147,7 +161,7 @@ const styles = StyleSheet.create({
   saveText: { color: '#fff', fontWeight: '700' },
   saveArrow: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
   },
 
   cancel: { marginTop: 12, alignItems: 'center' },

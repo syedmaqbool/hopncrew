@@ -1,26 +1,33 @@
-import React, { useMemo, useRef, useState } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 
+import { useFocusEffect } from '@react-navigation/native';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
-  View, Text, Pressable, StyleSheet, ScrollView, FlatList,
+  BackHandler,
+  FlatList,
+  Image,
   KeyboardAvoidingView, Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList, PassengerCounts, LuggageItem, LuggageSize   } from '../navigation/types';
-import { BackHandler } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
+import assets from '../../assets';
+import type { PassengerCounts, RootStackParamList } from '../navigation/types';
 type Props = NativeStackScreenProps<RootStackParamList, 'AddPassenger'>;
 
 const MINT = '#B9FBE7';
 
 const SEATS = [
-  { id: 'infantRear',  title: 'Infant Rear Face',  icon: 'baby-bottle-outline' },
+  { id: 'infantRear', title: 'Infant Rear Face', icon: 'baby-bottle-outline' },
   { id: 'toddlerRear', title: 'Toddler Rear Face', icon: 'baby-carriage' },
-  { id: 'toddlerFront',title: 'Toddler Front Face',icon: 'seat-passenger' },
+  { id: 'toddlerFront', title: 'Toddler Front Face', icon: 'seat-passenger' },
 ];
 
 export default function AddPassengerModal({ navigation, route }: Props) {
@@ -33,20 +40,20 @@ export default function AddPassengerModal({ navigation, route }: Props) {
   const [seats, setSeats] = useState<Record<string, number>>(
     route.params?.initial?.seats ?? { infantRear: 0, toddlerRear: 0, toddlerFront: 0 }
   );
-//   const [luggage, setLuggage] = useState<LuggageItem[]>(route.params?.initial?.luggage ?? []);
+  //   const [luggage, setLuggage] = useState<LuggageItem[]>(route.params?.initial?.luggage ?? []);
   const payload: PassengerCounts = useMemo(
     () => ({ adults, children, infants, seats }),
     [adults, children, infants, seats]
   );
 
   const change = (
-  setter: Dispatch<SetStateAction<number>>,
-  dir: -1 | 1,
-  min = 0,
-  max = 8
-) => {
-  setter(prev => Math.max(min, Math.min(max, prev + dir)));
-};
+    setter: Dispatch<SetStateAction<number>>,
+    dir: -1 | 1,
+    min = 0,
+    max = 8
+  ) => {
+    setter(prev => Math.max(min, Math.min(max, prev + dir)));
+  };
 
   const changeSeat = (id: string, dir: -1 | 1) =>
     setSeats((cur) => {
@@ -62,20 +69,20 @@ export default function AddPassengerModal({ navigation, route }: Props) {
   };
 
   const exit = (emit = true) => {
-  if (emit) route.params?.onDone?.(payload);   // payload = { adults, children, infants, seats }
-  navigation.goBack();
-};
+    if (emit) route.params?.onDone?.(payload);   // payload = { adults, children, infants, seats }
+    navigation.goBack();
+  };
 
-// Handle Android hardware back
-useFocusEffect(
-  React.useCallback(() => {
-    const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-      exit(true);
-      return true;
-    });
-    return () => sub.remove();
-  }, [payload])
-);
+  // Handle Android hardware back
+  useFocusEffect(
+    React.useCallback(() => {
+      const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+        exit(true);
+        return true;
+      });
+      return () => sub.remove();
+    }, [payload])
+  );
 
 
   return (
@@ -109,7 +116,10 @@ useFocusEffect(
               {/* Counters */}
               <View style={styles.block}>
                 <Row
-                  icon={<Ionicons name="people-outline" size={18} color="#111" />}
+                  icon={<Image
+                    source={assets.images.adultIcon}// <-- **Direct require with correct path**
+                    style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+                  />}
                   title="Adults"
                   subtitle="Ages 13 or above"
                   value={adults}
@@ -118,7 +128,10 @@ useFocusEffect(
                 />
                 <Separator />
                 <Row
-                  icon={<Ionicons name="happy-outline" size={18} color="#111" />}
+                  icon={<Image
+                    source={assets.images.childrenIcon}// <-- **Direct require with correct path**
+                    style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+                  />}
                   title="Children"
                   subtitle="Ages 2 or 12"
                   value={children}
@@ -127,7 +140,10 @@ useFocusEffect(
                 />
                 <Separator />
                 <Row
-                  icon={<Ionicons name="happy" size={18} color="#111" />}
+                  icon={<Image
+                    source={assets.images.infantIcon}// <-- **Direct require with correct path**
+                    style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+                  />}
                   title="Infants"
                   subtitle="Under 2"
                   value={infants}
@@ -173,12 +189,12 @@ useFocusEffect(
             <View style={styles.bottomRow}>
               <Pressable style={styles.luggageBtn}
                 onPress={() =>
-                    navigation.navigate('AddLuggage', {
+                  navigation.navigate('AddLuggage', {
                     initial: route.params?.luggage ?? [],
-                   onDone: (items) => route.params?.onEditLuggage?.(items),
-                    })
+                    onDone: (items) => route.params?.onEditLuggage?.(items),
+                  })
                 }
-                >
+              >
                 <Text style={styles.luggageText}>+ Add Luggage</Text>
                 <View style={styles.mintCircle}>
                   <AntDesign name="arrowright" size={18} color="#111" />
@@ -216,7 +232,7 @@ function Row({
   );
 }
 
-function Stepper({ value, onMinus, onPlus }:{
+function Stepper({ value, onMinus, onPlus }: {
   value: number; onMinus: () => void; onPlus: () => void
 }) {
   return (
@@ -294,7 +310,7 @@ const styles = StyleSheet.create({
   },
   row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 10, paddingHorizontal: 8 },
   rowIcon: {
-    width: 32, height: 32, borderRadius: 16, backgroundColor: MINT,
+    width: 40, height: 40, borderRadius: 16, backgroundColor: '#fff',
     alignItems: 'center', justifyContent: 'center', marginRight: 10,
   },
   rowTitle: { color: '#111', fontWeight: '700' },
@@ -340,7 +356,7 @@ const styles = StyleSheet.create({
   luggageText: { color: '#fff', fontWeight: '700' },
   mintCircle: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
   },
   skip: { color: '#111', fontWeight: '700' },
 });
