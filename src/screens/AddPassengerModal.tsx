@@ -256,8 +256,11 @@ function SeatCard({
 }) {
   return (
     <View style={styles.seatCard}>
-      <View style={{ alignItems: 'center', marginBottom: 8 }}>{icon}</View>
-      <Text style={styles.seatTitleSmall} numberOfLines={2}>{title}</Text>
+
+        <View style={{ width: '100%' ,textAlign: 'center', marginBottom: 8 }}>{icon}</View>
+        <Text style={styles.seatTitleSmall} numberOfLines={2}>{title}</Text>
+     
+
       <View style={styles.seatStepper}>
         <Pressable style={styles.seatBtn} onPress={onMinus}>
           <AntDesign name="minus" size={12} color="#111" />

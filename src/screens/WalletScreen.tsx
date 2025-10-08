@@ -1,14 +1,16 @@
 // src/screens/WalletScreen.tsx
 import React, { useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  SectionList,
+  Image,
   Pressable,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import assets from '../../assets';
 import AddMoneyModal from './AddMoneyModal';
 
 
@@ -50,7 +52,7 @@ const seed: Section[] = [
 export default function WalletScreen() {
   const [sections] = useState<Section[]>(seed);
   const [showAdd, setShowAdd] = useState(false);
-    const onAddMoney = () => setShowAdd(true);
+  const onAddMoney = () => setShowAdd(true);
 
   const balance = useMemo(() => {
     // you’d typically fetch this; demo sum here
@@ -58,10 +60,10 @@ export default function WalletScreen() {
     return 486.24 + sum; // seed base
   }, [sections]);
 
-//   const onAddMoney = () => {
-//     // navigate to Add Money / Payment screen or show bottom sheet
-//     console.log('Add Money tapped');
-//   };
+  //   const onAddMoney = () => {
+  //     // navigate to Add Money / Payment screen or show bottom sheet
+  //     console.log('Add Money tapped');
+  //   };
 
   const renderTxn = ({ item }: { item: Txn }) => {
     const amtStr = `${item.amount >= 0 ? '+' : '-'} $${Math.abs(item.amount).toFixed(2)}`;
@@ -83,7 +85,10 @@ export default function WalletScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Pressable style={styles.roundBtn} onPress={() => console.log('open drawer')}>
-          <Ionicons name="menu" size={18} color="#111" />
+          <Image
+            source={assets.images.hamIcon}// <-- **Direct require with correct path**
+            style={{ width: 40, height: 40, borderRadius: 20 }}
+          />
         </Pressable>
         <Text style={styles.headerTitle}>Wallet</Text>
         <View style={{ width: 34 }} />
@@ -96,18 +101,18 @@ export default function WalletScreen() {
           <Text style={styles.balanceLabel}>Available Balance</Text>
         </View>
         <Pressable style={styles.addBtn} onPress={onAddMoney}>
-        <Ionicons name="add" size={18} color="#111" />
-        <Text style={styles.addBtnText}>Add Money</Text>
+          <Ionicons name="add" size={18} color="#111" />
+          <Text style={styles.addBtnText}>Add Money</Text>
         </Pressable>
 
         <AddMoneyModal
-                visible={showAdd}
-                onClose={() => setShowAdd(false)}
-                onAdd={(amt) => {
-                    // TODO: call your API, then update balance/transactions locally
-                    console.log('add', amt);
-                }}
-                />
+          visible={showAdd}
+          onClose={() => setShowAdd(false)}
+          onAdd={(amt) => {
+            // TODO: call your API, then update balance/transactions locally
+            console.log('add', amt);
+          }}
+        />
       </View>
 
       {/* Transactions */}
@@ -136,12 +141,13 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingTop: 6,
     justifyContent: 'space-between',
+    marginVertical: 10,
   },
   roundBtn: {
     width: 34, height: 34, borderRadius: 17,
     backgroundColor: '#F3F4F5', alignItems: 'center', justifyContent: 'center',
   },
-  headerTitle: { color: '#111', fontWeight: '800', fontSize: 18 },
+  headerTitle: { color: '#111', fontWeight: '400', fontSize: 18, textAlign: 'left' },
 
   balanceCard: {
     marginHorizontal: 16,

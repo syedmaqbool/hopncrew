@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    maxHeight: '80%',
+    height: 400,
   },
 
   cardRow: {
@@ -127,6 +127,6 @@ const styles = StyleSheet.create({
   addText: { color: '#fff', fontWeight: '700' },
   addIcon: {
     width: 32, height: 32, borderRadius: 16,
-    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',
+    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
   },
 });

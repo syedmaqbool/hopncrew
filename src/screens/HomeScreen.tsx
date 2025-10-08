@@ -180,7 +180,7 @@ export default function HomeScreen({ navigation, route }: Props) {
         <View style={styles.searchRow}>
           <Ionicons name="search" size={18} color="#9AA0A6" />
           <Pressable style={{ flex: 1 }} onPress={() => openPlaces()}>
-            <Text style={{ color: '#9AA0A6' }}>Where are you going?</Text>
+            <Text style={{ color: '#000000' }}>Where are you going?</Text>
           </Pressable>
           <Pressable onPress={() => {
             navigation.navigate('SaveFavorite', {
@@ -205,7 +205,12 @@ export default function HomeScreen({ navigation, route }: Props) {
           {MOCK_POSTS.map(p => (
             <View key={p.id} style={styles.card}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 8 }}>
-                <View style={styles.avatar} />
+                <View  >
+                  <Image
+                    source={assets.images.avatarMan}// <-- **Direct require with correct path**
+                    style={{ width: 40, height: 40, borderRadius: 20 }}
+                  />
+                </View>
                 <View>
                   <Text style={styles.cardTitle}>{p.author}</Text>
                   <Text style={styles.cardSub}>Post on <Text style={styles.googleText}>Google</Text></Text>
@@ -220,22 +225,22 @@ export default function HomeScreen({ navigation, route }: Props) {
               <Text numberOfLines={2} style={styles.cardBody}>{p.body}</Text>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-end', gap: 8 }}>
 
- <View style={styles.starsRow}>
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <Ionicons
-                    key={i}
-                    name={i < p.stars ? 'star' : 'star-outline'}
-                    size={14}
-                    color="#FFC107"
-                  />
-                ))}
+                <View style={styles.starsRow}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Ionicons
+                      key={i}
+                      name={i < p.stars ? 'star' : 'star-outline'}
+                      size={14}
+                      color="#FFC107"
+                    />
+                  ))}
+                </View>
+
+
+                <Text style={styles.cardSub}>15 November</Text>
+
               </View>
 
-            
-                <Text style={styles.cardSub}>15 November</Text>
-             
-              </View>
-             
             </View>
           ))}
         </ScrollView>
@@ -288,7 +293,7 @@ const styles = StyleSheet.create({
   content: { flex: 1, backgroundColor: '#fff', paddingHorizontal: 16, paddingTop: 14, borderTopLeftRadius: 35, borderTopRightRadius: 35, },
 
   greeting: { fontSize: 18, fontWeight: '500', color: '#111', marginTop: 12, marginBottom: 20, },
-  googleText:{
+  googleText: {
     color: '#1976D2',
   },
   searchRow: {

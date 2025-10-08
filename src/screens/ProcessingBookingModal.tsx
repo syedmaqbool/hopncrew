@@ -1,25 +1,36 @@
 // src/screens/ProcessingBookingModal.tsx
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useMemo, useRef } from 'react';
 import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  SafeAreaView,
   Animated,
   Easing,
+  Image,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import type { RootStackParamList } from '../navigation/types';
+// import { Image } from 'react-native/types_generated/index';
+import assets from '../../assets';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Processing'>;
 
 const MINT = '#B9FBE7';
-
+const avatarImages = [
+  assets.images.avatar1,
+  assets.images.avatar2,
+  assets.images.avatar3,
+  assets.images.avatar4,
+  assets.images.avatar1,
+  assets.images.avatar2,
+  assets.images.avatar3,
+  assets.images.avatar4,
+];
 export default function ProcessingBookingModal({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const durationMs = route.params?.durationMs ?? 10000;
@@ -66,18 +77,17 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
   // 8 avatars around a circle
   const dots = useMemo(
     () =>
-      Array.from({ length: 8 }).map((_, i) => {
-        const angle = (i / 8) * 2 * Math.PI;
+      Array.from({ length: avatarImages.length }).map((_, i) => {
+        const angle = (i / avatarImages.length) * 2 * Math.PI;
         const r = 54;
         return {
-          left: 54 + r * Math.cos(angle) - 12,
-          top: 54 + r * Math.sin(angle) - 12,
+          left: 54 + r * Math.cos(angle) - 16,
+          top: 54 + r * Math.sin(angle) - 16,
           key: i.toString(),
         };
       }),
-    [],
+    [avatarImages.length]
   );
-
   return (
     <View style={styles.fill}>
       {/* tap outside to close (optional) */}
@@ -95,18 +105,15 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
         <View style={styles.sheet}>
           {/* circle animation */}
           <View style={styles.ringWrap}>
-            <Animated.View
-              style={[styles.ring, { transform: [{ rotate: spinDeg }] }]}
-            >
-              {dots.map(d => (
+            <Animated.View style={[styles.ring, { transform: [{ rotate: spinDeg }] }]}>
+              {dots.map((d, i) => (
                 <View
                   key={d.key}
                   style={[styles.dot, { left: d.left, top: d.top }]}
                 >
-                  <MaterialCommunityIcons
-                    name="account"
-                    size={16}
-                    color="#fff"
+                  <Image
+                    source={avatarImages[i % avatarImages.length]} // ✅ pick image safely
+                    style={styles.avatarImg} // ✅ add style
                   />
                 </View>
               ))}
@@ -225,4 +232,10 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   identityTxt: { color: '#111', fontWeight: '600' },
+  avatarImg: {
+  width: 24,
+  height: 24,
+  borderRadius: 12,
+  resizeMode: 'cover',
+},
 });

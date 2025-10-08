@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
   switchLabel: { color: '#111', fontWeight: '600' },
 
   cta: {
-    margin: 16,
+    margin: 20,
     height: 50,
     borderRadius: 28,
     backgroundColor: '#111',
@@ -340,7 +340,7 @@ const styles = StyleSheet.create({
   ctaTxt: { color: '#fff', fontWeight: '700' },
   ctaIcon: {
     width: 32, height: 32, borderRadius: 16,
-    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',
+    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
   },
 
   modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.25)', justifyContent: 'flex-end' },

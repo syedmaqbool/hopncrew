@@ -1,13 +1,14 @@
 // src/screens/PaymentMethodsModal.tsx
 import React, { useMemo, useState } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, ScrollView,
+  View, Text, StyleSheet, Pressable, ScrollView, Image
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList, SavedCard, PayMethodKey } from '../navigation/types';
+import assets from '../../assets';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PaymentMethods'>;
 
@@ -84,7 +85,10 @@ export default function PaymentMethodsModal({ navigation, route }: Props) {
               onPress={() => setMethod('wallet')}
             />
             <RadioRow
-              icon={<Ionicons name="cash-outline" size={22} color="#111" />}
+              icon={  <Image
+            source={assets.images.dollarIcon}// <-- **Direct require with correct path**
+            style={{ width: '25', height: '25', resizeMode: 'contain', maxWidth: '100%' }}
+          />}
               label="Cash"
               checked={method === 'cash'}
               onPress={() => setMethod('cash')}
@@ -124,7 +128,11 @@ export default function PaymentMethodsModal({ navigation, route }: Props) {
             {/* Square info pill */}
             <View style={styles.squarePill}>
               <View style={styles.squareLogo}>
-                <Text style={{ color: '#111', fontWeight: '800' }}>■</Text>
+                {/* <Text style={{ color: '#111', fontWeight: '800' }}>■</Text> */}
+                  <Image
+            source={assets.images.sqaureTwoIcon}// <-- **Direct require with correct path**
+            style={{ width: '40', height: '40', resizeMode: 'contain', maxWidth: '100%' }}
+          />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.squareTxt}>
@@ -216,10 +224,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 10,
   },
   squareLogo: {
-    width: 28, height: 28, borderRadius: 6, backgroundColor: '#fff',
+    width: 28, height: 28, borderRadius: 6, backgroundColor: ' ',
     alignItems: 'center', justifyContent: 'center',
   },
-  squareTxt: { color: '#111' },
+  squareTxt: { color: '#111' , fontWeight: 500},
 
   cta: {
     margin: 16, height: 50, borderRadius: 28, backgroundColor: '#111',

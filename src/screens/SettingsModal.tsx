@@ -115,12 +115,15 @@ const styles = StyleSheet.create({
   headerTitle: { fontSize: 16, fontWeight: '800', color: '#111' },
 
   /* section header (black pill + “ear”) */
-  tabWrap: { height: 32, marginLeft: 8, flexDirection: 'row', alignItems: 'center' },
+  tabWrap: { height: 50, marginLeft: 8, flexDirection: 'row', alignItems: 'center' },
   tabPill: {
     backgroundColor: INK,
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    borderRadius: 0,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 40,
+    borderBottomRightRadius: 0,
+    paddingHorizontal: 30,
+    paddingVertical: 10,
   },
   tabText: { color: '#fff', fontWeight: '800', fontSize: 12 },
   tabEar: {
