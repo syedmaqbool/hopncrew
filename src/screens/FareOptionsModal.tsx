@@ -92,7 +92,7 @@ export default function FareOptionsModal({ navigation, route }: Props) {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ gap: 8, marginTop: 14,marginLeft: 50 }}
             >
-              {['Late Arrival- Waiting Time - No Show ->'].map((p) => (
+              {[' - Waiting Time - No Show ->'].map((p) => (
                 <Pressable onPress={() => { navigation.navigate('Policies', {
                 onSelect: (id) => console.log('open policy details for', id),
                 });}}>
@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
   },
 
   blurb: {
-    color: '#111', backgroundColor: '#F6F7F8', borderRadius: 12, padding: 12, lineHeight: 18,
+    color: '#111', fontSize: 12, fontWeight: '400', backgroundColor: '#F6F7F8', borderRadius: 12, padding: 5, lineHeight: 18,
   },
 
   card: {

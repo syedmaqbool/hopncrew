@@ -97,10 +97,10 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
                 {q.image ? (
                   // <Image source={q.image} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
                   // <MaterialCommunityIcons name="car-estate" size={64} color="#111" />
-                      <Image source={assets.images.escaladeIcon} style={{ width: 168, height: 50 }} resizeMode="contain" />
+                      <Image source={assets.images.escaladeIcon} style={{ width: 200, height: 80 }} resizeMode="contain" />
                 ) : (
                   // <MaterialCommunityIcons name="car-estate" size={64} color="#111" />
-                      <Image source={assets.images.escaladeIcon} style={{ width: 168, height: 50 }} resizeMode="contain" />
+                      <Image source={assets.images.escaladeIcon} style={{ width: 200, height: 80 }} resizeMode="contain" />
                 )}
               </View>
               <View style={styles.priceCard}>

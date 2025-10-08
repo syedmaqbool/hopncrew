@@ -132,6 +132,6 @@ const styles = StyleSheet.create({
   ctaText: { color: '#fff', fontWeight: '700' },
   ctaIcon: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
+    alignItems: 'center', justifyContent: 'center',position: 'absolute', right: 10,
   },
 });

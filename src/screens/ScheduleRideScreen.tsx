@@ -234,10 +234,10 @@ const styles = StyleSheet.create({
 
   topBar: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingTop: 6, marginBottom: 8,
+    paddingHorizontal: 16, paddingTop: 0, marginBottom: 0, marginTop : 7,
   },
   badge: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
+    flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 5,
     backgroundColor: '#F6F7F8', borderRadius: 16, paddingHorizontal: 10, paddingVertical: 6,
     borderWidth: 1, borderColor: '#EEE',
   },
@@ -252,7 +252,7 @@ const styles = StyleSheet.create({
   highlight: {
     position: 'absolute', top: (ITEM_H * (VISIBLE_ROWS - 1)) / 2, height: ITEM_H,
     left: 0, right: 0, borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#EAEAEA',
-    backgroundColor: '#FDFDFD',
+    backgroundColor: ' #00000015',
   },
   item: { height: ITEM_H, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8 },
   itemTxt: { color: '#777' },
