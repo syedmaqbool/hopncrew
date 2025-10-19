@@ -5,8 +5,22 @@
  * @format
  */
 
+if (__DEV__) {
+  require('./src/services/reactotronConfig');
+  require('./src/services/axios-tron');
+}
+
 import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, Text, TextInput, Platform, View, ActivityIndicator } from 'react-native';
+import {
+  StatusBar,
+  StyleSheet,
+  useColorScheme,
+  Text,
+  TextInput,
+  Platform,
+  View,
+  ActivityIndicator,
+} from 'react-native';
 import {
   SafeAreaProvider,
   useSafeAreaInsets,
@@ -24,10 +38,13 @@ import assets from '../../assets';
 // ---------- GLOBAL FONT SETUP (runs before any render) ----------
 const FONTS = {
   // If your font’s internal family is just "Biennale", change these to "Biennale"
-  regular: Platform.select({ ios: 'BiennaleRegular', android: 'BiennaleRegular' }),
+  regular: Platform.select({
+    ios: 'BiennaleRegular',
+    android: 'BiennaleRegular',
+  }),
   // Add these if you have the files; otherwise you can remove them where unused
-  medium : Platform.select({ ios: 'BiennaleMedium',  android: 'BiennaleMedium'  }),
-  bold   : Platform.select({ ios: 'BiennaleBold',    android: 'BiennaleBold'    }),
+  medium: Platform.select({ ios: 'BiennaleMedium', android: 'BiennaleMedium' }),
+  bold: Platform.select({ ios: 'BiennaleBold', android: 'BiennaleBold' }),
 };
 
 // TypeScript-safe defaultProps helper
@@ -45,7 +62,7 @@ setDefaultFont(TextInput as any, FONTS.regular!);
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
- useEffect(() => {
+  useEffect(() => {
     RNBootSplash.hide({ fade: true }); // hide after your app mounts (or after async init)
   }, []);
   return (
@@ -58,8 +75,6 @@ function App() {
         <AppGate />
       </NavigationContainer>
     </AuthProvider>
-
-
   );
 }
 export default App;

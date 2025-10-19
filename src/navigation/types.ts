@@ -1,121 +1,148 @@
 export type RootStackParamList = {
   Login: undefined;
-  App : undefined
-  Home: { dest?: Destination } | undefined;   // ← Home can receive { dest }
+  App: undefined;
+  Home: { dest?: Destination } | undefined; // ← Home can receive { dest }
   Details: { id?: string } | undefined;
   // Otp: { dial: string; phone: string };
-   Otp: { email: string, user: User } | undefined;
+  Otp: { email: string; user: User } | undefined;
   Signup: undefined;
   Location: undefined;
   MapTracking: undefined;
-   PlaceSearch: { onPick?: (d: Destination) => void } | undefined;
-   Trip: { start?: Destination; dest?: Destination } | undefined;
-   AirportDetails: {
-    airportCode?: string;
-    title?: string;
-    items?: AirportPOI[];
-    onPick?: (poi: AirportPOI) => void;
-  } | undefined;
- SaveFavorite: { address?: string; onSave?: (f: FavouritePayload) => void } | undefined;
-  SaveFavoriteDetails: {
-    initialAddress?: string;
-    isStarred?: boolean;
-    onConfirm?: (f: FavouritePayload) => void;
-  } | undefined;
-   AddPassenger: {
-    initial?: PassengerCounts;
-    // pass current luggage separately (optional)
-    luggage?: LuggageItem[];
-    onDone?: (p: PassengerCounts) => void;
-    onEditLuggage?: (items: LuggageItem[]) => void;
-  } | undefined;
-   AddLuggage: {
-    initial?: LuggageItem[];
-    onDone?: (items: LuggageItem[]) => void;
-  } | undefined;
-  LuggageScanInfo: {
-    onStartScan?: () => void;   // optional callback when user taps “Scan now”
-  } | undefined;
+  PlaceSearch: { onPick?: (d: Destination) => void } | undefined;
+  Trip: { start?: Destination; dest?: Destination } | undefined;
+  AirportDetails:
+    | {
+        airportCode?: string;
+        title?: string;
+        items?: AirportPOI[];
+        onPick?: (poi: AirportPOI) => void;
+      }
+    | undefined;
+  SaveFavorite:
+    | { address?: string; onSave?: (f: FavouritePayload) => void }
+    | undefined;
+  SaveFavoriteDetails:
+    | {
+        initialAddress?: string;
+        isStarred?: boolean;
+        onConfirm?: (f: FavouritePayload) => void;
+      }
+    | undefined;
+  AddPassenger:
+    | {
+        initial?: PassengerCounts;
+        // pass current luggage separately (optional)
+        luggage?: LuggageItem[];
+        onDone?: (p: PassengerCounts) => void;
+        onEditLuggage?: (items: LuggageItem[]) => void;
+      }
+    | undefined;
+  AddLuggage:
+    | {
+        initial?: LuggageItem[];
+        onDone?: (items: LuggageItem[]) => void;
+      }
+    | undefined;
+  LuggageScanInfo:
+    | {
+        onStartScan?: () => void; // optional callback when user taps “Scan now”
+      }
+    | undefined;
 
-  OversizedLuggage: {
-    initial?: OversizedItemCounts;
-    onDone?: (items: OversizedItemCounts) => void;
-  } | undefined;
+  OversizedLuggage:
+    | {
+        initial?: OversizedItemCounts;
+        onDone?: (items: OversizedItemCounts) => void;
+      }
+    | undefined;
 
-    ScheduleRide: {
-    initial?: Date;
-    onPick?: (when: Date) => void;
-  } | undefined;
+  // ScheduleRide:
+  //   | {
+  //       initial?: Date;
+  //       onPick?: (when: Date) => void;
+  //     }
+  //   | undefined;
   WhyChooseUs: { onClose?: () => void } | undefined;
 
-  FareOptions: {
-    etaMinutes?: number;
-    quotes: FareQuote[];
-    payMethod?: string; // e.g., "Card"
-    onConfirm?: (quote: FareQuote, opts: { specialRequest?: string; payMethod: string }) => void;
-  } | undefined;
+  FareOptions:
+    | {
+        etaMinutes?: number;
+        quotes: FareQuote[];
+        payMethod?: string; // e.g., "Card"
+        onConfirm?: (
+          quote: FareQuote,
+          opts: { specialRequest?: string; payMethod: string },
+        ) => void;
+      }
+    | undefined;
 
-  SpecialRequest: {
-    initial?: SpecialRequestPayload;
-    onDone?: (p: SpecialRequestPayload) => void;
-    onCancel?: () => void;
-  } | undefined;
+  SpecialRequest:
+    | {
+        initial?: SpecialRequestPayload;
+        onDone?: (p: SpecialRequestPayload) => void;
+        onCancel?: () => void;
+      }
+    | undefined;
 
-Policies:
+  Policies:
     | {
         onClose?: () => void;
         onSelect?: (id: string) => void; // optional callback when a row is tapped
       }
     | undefined;
-  ConfirmRequest: {
-    quote: FareQuote;
-    payMethod?: string;
-    special?: SpecialRequestPayload | null;
-    onConfirm?: (p: {
-      quote: FareQuote;
-      payMethod: string;
-      special?: SpecialRequestPayload | null;
-      coupon?: string | null;
-    }) => void;
-  } | undefined;
+  ConfirmRequest:
+    | {
+        quote: FareQuote;
+        payMethod?: string;
+        special?: SpecialRequestPayload | null;
+        onConfirm?: (p: {
+          quote: FareQuote;
+          payMethod: string;
+          special?: SpecialRequestPayload | null;
+          coupon?: string | null;
+        }) => void;
+      }
+    | undefined;
 
   PaymentBreakdown: {
     title?: string;
     rows: PaymentRow[];
     footnote?: string;
     currency?: string; // e.g. 'USD'
-    locale?: string;   // e.g. 'en-US'
+    locale?: string; // e.g. 'en-US'
   };
   PaymentMethods: {
     selected?: PayMethodKey;
     cards?: SavedCard[];
     onSelect?: (p: { method: PayMethodKey; cardId?: string }) => void;
   };
-   AddCard: {
+  AddCard: {
     onAdded?: (card: SavedCard) => void;
   };
   Processing: { durationMs?: number; onDone?: () => void } | undefined;
-  EnRoute: {
-    etaMinutes?: number;
-    riderName?: string;
-    driver?: {
-      name: string;
-      rating: number;
-      years: number;
-      km: string;
-      verified?: boolean;
-      avatar?: string;
-    };
-    vehicle?: {
-      label: string;
-      plate: string;
-      image?: string;
-    };
-    onContact?: () => void;
-    onCancel?: () => void;
-    onSupport?: () => void;
-    onPolicies?: () => void;
-  } | undefined;
+  EnRoute:
+    | {
+        etaMinutes?: number;
+        riderName?: string;
+        driver?: {
+          name: string;
+          rating: number;
+          years: number;
+          km: string;
+          verified?: boolean;
+          avatar?: string;
+        };
+        vehicle?: {
+          label: string;
+          plate: string;
+          image?: string;
+        };
+        onContact?: () => void;
+        onCancel?: () => void;
+        onSupport?: () => void;
+        onPolicies?: () => void;
+      }
+    | undefined;
 
   EditProfile:
     | {
@@ -124,8 +151,8 @@ Policies:
       }
     | undefined;
 
-    MyRides: undefined; 
-    RideDetails: {
+  MyRides: undefined;
+  RideDetails: {
     ride: RideDetails;
     onCancel?: (id: string) => void;
   };
@@ -136,18 +163,21 @@ Policies:
   CreditCards: undefined;
   GooglePay: { email?: string } | undefined;
   AddPaymentMethod: undefined;
-  Settings:undefined;
+  Settings: undefined;
   AccountSettings: undefined;
   FavouriteAddresses: undefined;
-
+  ScheduleRide: {
+    initial?: Date;
+    onPick?: (when: Date, holdFunds: boolean) => void;
+  };
 };
 
 export type DriverMini = {
   name: string;
-  rating: number;     // 4.2
-  avatar?: any;       // ImageSourcePropType
-  carPlate?: string;  // "ERS 8579"
-  carModel?: string;  // "Toyota Camry"
+  rating: number; // 4.2
+  avatar?: any; // ImageSourcePropType
+  carPlate?: string; // "ERS 8579"
+  carModel?: string; // "Toyota Camry"
 };
 
 export type User = {
@@ -159,30 +189,29 @@ export type User = {
   password_confirmation?: string;
   created_at: string;
   updated_at: string;
-}
+};
 
 export type RideDetails = {
   id: string;
   status: 'Upcoming' | 'Completed' | 'Canceled';
-  whenLabel: string;         // "Today, 5:19 PM"
-  from: string;              // "Toronto Pearson Airport - T1"
-  to: string;                // "Hamill Avenue San Diego, CA 929"
-  distanceKm: number;        // 12.5
-  timeLabel: string;         // "30 - 40 min"
-  fare: number;              // 46.24
+  whenLabel: string; // "Today, 5:19 PM"
+  from: string; // "Toronto Pearson Airport - T1"
+  to: string; // "Hamill Avenue San Diego, CA 929"
+  distanceKm: number; // 12.5
+  timeLabel: string; // "30 - 40 min"
+  fare: number; // 46.24
   driver: DriverMini;
 };
 
 export type EditProfilePayload = {
   name: string;
   email: string;
-  dial: string;        // e.g. "+1"
+  dial: string; // e.g. "+1"
   phone: string;
   whatsappSame: boolean;
   referral: string;
   avatarUrl?: string;
 };
-
 
 export type Destination = {
   latitude: number;
@@ -194,7 +223,7 @@ export type Destination = {
 export type AirportPOI = {
   id: string;
   title: string;
-  subtitle: string;  // address / terminal / gate, etc.
+  subtitle: string; // address / terminal / gate, etc.
   lat?: number;
   lon?: number;
 };
@@ -217,8 +246,6 @@ export type PassengerCounts = {
 };
 
 export type LuggageSize = 'XL' | 'L' | 'M' | 'S' | 'Carry-on' | 'Oversized';
-
-
 
 export type LuggageItem = {
   size: LuggageSize;
@@ -260,8 +287,8 @@ export type SpecialRequestPayload = {
 export type PaymentRow = {
   label: string;
   value: number | string; // money or plain text like "1 hr"
-  money?: boolean;        // format as currency when true (default: true for numbers)
-  bold?: boolean;         // emphasize right value
+  money?: boolean; // format as currency when true (default: true for numbers)
+  bold?: boolean; // emphasize right value
 };
 
 export type SavedCard = {
@@ -269,16 +296,7 @@ export type SavedCard = {
   brand: 'visa' | 'mastercard' | 'amex' | 'discover' | 'generic';
   last4: string;
   exp: string; // MM/YY
-   holder?: string;
+  holder?: string;
 };
 
 export type PayMethodKey = 'card' | 'wallet' | 'cash';
-
-
-
-
-
-
-
-
-

@@ -1,6 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
-  View, Text, TextInput, Pressable, StyleSheet, SafeAreaView,ActivityIndicator, Alert
+  View,
+  Text,
+  TextInput,
+  Pressable,
+  StyleSheet,
+  SafeAreaView,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -10,22 +17,28 @@ import { verifyOtp } from '../services/api';
 import { saveToken } from '../services/auth';
 import { saveRefreshToken } from '../utils/biometricAuth';
 import { useAuth } from '../context/AuthContext';
-import { register  } from '../services/auth';
+import { register } from '../services/auth';
 type Props = NativeStackScreenProps<RootStackParamList, 'Otp'>;
 
 const MINT = '#B9FBE7';
 
-
 export default function OtpScreen({ route, navigation }: Props) {
   // const { dial, phone } = route.params;
   const { signIn } = useAuth();
-  const { email, user } = route.params; 
+  const { email, user } = route.params;
   const [otp, setOtp] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const [cells, setCells] = useState<string[]>(['', '', '', '','','']); // 4-digit demo
+  const [cells, setCells] = useState<string[]>(['', '', '', '', '', '']); // 4-digit demo
   const [sec, setSec] = useState(56);
-  const inputs = [useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null), useRef<TextInput>(null),useRef<TextInput>(null),useRef<TextInput>(null)];
+  const inputs = [
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+    useRef<TextInput>(null),
+  ];
 
   useEffect(() => {
     const t = setInterval(() => setSec(s => (s > 0 ? s - 1 : 0)), 1000);
@@ -37,7 +50,10 @@ export default function OtpScreen({ route, navigation }: Props) {
 
   const setDigit = (i: number, text: string) => {
     // allow paste of multiple digits
-    const nums = text.replace(/\D/g, '').slice(0, cells.length - i).split('');
+    const nums = text
+      .replace(/\D/g, '')
+      .slice(0, cells.length - i)
+      .split('');
     const next = [...cells];
     if (nums.length > 1) {
       nums.forEach((d, k) => (next[i + k] = d));
@@ -53,7 +69,8 @@ export default function OtpScreen({ route, navigation }: Props) {
   };
 
   const onKeyPress = (i: number, key: string) => {
-    if (key === 'Backspace' && !cells[i] && i > 0) inputs[i - 1].current?.focus();
+    if (key === 'Backspace' && !cells[i] && i > 0)
+      inputs[i - 1].current?.focus();
   };
 
   // const onContinue = async  () => {
@@ -74,10 +91,10 @@ export default function OtpScreen({ route, navigation }: Props) {
   // };
 
   const onVerify = async () => {
-   const currentOtp = cells.join('').trim();
-   if (currentOtp.trim().length < 6) {
-             return;
-            } // or 6—match your backend
+    const currentOtp = cells.join('').trim();
+    if (currentOtp.trim().length < 6) {
+      return;
+    } // or 6—match your backend
     setLoading(true);
     try {
       const res = await verifyOtp(email, currentOtp.trim());
@@ -86,7 +103,7 @@ export default function OtpScreen({ route, navigation }: Props) {
       Alert.alert('Verified', 'OTP verified successfully');
       await signIn({
         token: res.data.token,
-        user : res.data.user,
+        user: res.data.user,
       });
       navigation.reset({ index: 0, routes: [{ name: 'App' }] });
     } catch (e: any) {
@@ -101,34 +118,31 @@ export default function OtpScreen({ route, navigation }: Props) {
     }
   };
 
-
   const resend = async () => {
     // TODO: call resend API
     console.log('Resend OTP to', email);
     setSec(56);
     setLoading(true);
-     try {
-          const res = await register({
-             email:user.email,
-            password:user.password,
-            password_confirmation: user.password_confirm,
-            first_name: user.firstName,
-            last_name: user.lastName,
-          });
-
-        }
-        catch (e: any) {
-              Alert.alert('Registration failed', String(e.message || e));
-            } finally {
-              setLoading(false);
-            }
+    try {
+      const res = await register({
+        email: user.email,
+        password: user.password,
+        password_confirmation: user.password_confirm,
+        first_name: user.firstName,
+        last_name: user.lastName,
+      });
+    } catch (e: any) {
+      Alert.alert('Registration failed', String(e.message || e));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: MINT }}>
       {/* Header */}
       <View style={{ paddingHorizontal: 16, paddingTop: 54 }}>
-        <Pressable onPress={() => navigation.goBack()}>
+        <Pressable onPress={() => navigation.replace('Login')}>
           <Ionicons name="chevron-back" size={26} color="#111" />
         </Pressable>
       </View>
@@ -153,7 +167,7 @@ export default function OtpScreen({ route, navigation }: Props) {
               key={i}
               ref={inputs[i]}
               value={v}
-              onChangeText={(t) => setDigit(i, t)}
+              onChangeText={t => setDigit(i, t)}
               onKeyPress={({ nativeEvent }) => onKeyPress(i, nativeEvent.key)}
               style={styles.cell}
               keyboardType="number-pad"
@@ -194,49 +208,92 @@ export default function OtpScreen({ route, navigation }: Props) {
         </View>
 
         <Text style={styles.footerText}>
-          Didn’t receive the OTP? <Text style={styles.resendLink} onPress={sec === 0 ? resend : undefined}>Resend</Text>
+          Didn’t receive the OTP?{' '}
+          <Text
+            style={styles.resendLink}
+            onPress={sec === 0 ? resend : undefined}
+          >
+            Resend
+          </Text>
         </Text>
       </View>
-      {loading ? <ActivityIndicator color="#fff" /> : <Text style={{ color: '#fff', fontWeight: '700' }}>Verify</Text>}
-      
+      {loading ? (
+        <ActivityIndicator color="#fff" />
+      ) : (
+        <Text style={{ color: '#fff', fontWeight: '700' }}>Verify</Text>
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   hero: {
-    height: 96, marginHorizontal: 16, marginTop: 8,
-    borderRadius: 20, backgroundColor: '#CFFCED',
+    height: 96,
+    marginHorizontal: 16,
+    marginTop: 8,
+    borderRadius: 20,
+    backgroundColor: '#CFFCED',
   },
   card: {
-    flex: 1, backgroundColor: '#fff', marginTop: 16,
-    borderTopLeftRadius: 24, borderTopRightRadius: 24, padding: 16,
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: 16,
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    padding: 16,
   },
   title: { fontSize: 22, fontWeight: '700', color: '#111' },
   sub: { color: '#444', marginTop: 6, lineHeight: 20 },
-  label: { marginTop: 18, marginBottom: 8, fontWeight: '600', color: '#111',marginLeft:30 },
+  label: {
+    marginTop: 18,
+    marginBottom: 8,
+    fontWeight: '600',
+    color: '#111',
+    marginLeft: 30,
+  },
 
-  cells: { flexDirection: 'row', gap: 18, marginBottom: 12, marginLeft:30 },
+  cells: { flexDirection: 'row', gap: 18, marginBottom: 12, marginLeft: 30 },
   cell: {
-    width: 56, height: 56, borderRadius: 12,
-    borderWidth: 1, borderColor: '#E6E6E6', backgroundColor: '#fff',
-    fontSize: 22, color: '#111',
+    width: 56,
+    height: 56,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#E6E6E6',
+    backgroundColor: '#fff',
+    fontSize: 22,
+    color: '#111',
   },
 
   cta: {
-    height: 48, borderRadius: 28, backgroundColor: '#111',
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
+    height: 48,
+    borderRadius: 28,
+    backgroundColor: '#111',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
     marginTop: 8,
   },
   ctaText: { color: '#fff', fontWeight: '600', fontSize: 16 },
   ctaArrow: {
-    width: 30, height: 30, borderRadius: 15, backgroundColor: '#B9FBE7',
-    alignItems: 'center', justifyContent: 'center',
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: '#B9FBE7',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
-  resendRow: { flexDirection: 'row', alignItems: 'center', marginTop: 14, gap: 12 },
+  resendRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 14,
+    gap: 12,
+  },
   resendBtn: {
-    paddingVertical: 10, paddingHorizontal: 14, borderRadius: 18,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 18,
     backgroundColor: '#F4F4F4',
   },
   resendDisabled: { opacity: 0.6 },

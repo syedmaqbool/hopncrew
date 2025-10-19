@@ -3,12 +3,17 @@ import React, { useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   Image,
+  ImageBackground,
   Pressable,
+  ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import assets from '../../assets';
@@ -17,17 +22,17 @@ import type { RootStackParamList } from '../navigation/types';
 type Props = NativeStackScreenProps<RootStackParamList, 'ScheduleRide'>;
 
 const ITEM_H = 40;
-const VISIBLE_ROWS = 5; // aesthetic padding for the wheel
+const VISIBLE_ROWS = 5;
 const MINT = '#B9FBE7';
 
-function pad(n: number) { return n < 10 ? `0${n}` : `${n}`; }
+const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`);
 
-export default function ScheduleRideScreen({ navigation, route }: Props) {
+export default function ScheduleRideScreen({ navigation, route }: Props | any) {
   const insets = useSafeAreaInsets();
 
-  const now = route.params?.initial ?? new Date();
+  const now: any = route.params?.initial ?? new Date();
 
-  // --- data sources
+  // ----- data sources -----
   const dates = useMemo(() => {
     const arr: { label: string; value: Date }[] = [];
     for (let i = 0; i < 14; i++) {
@@ -35,18 +40,26 @@ export default function ScheduleRideScreen({ navigation, route }: Props) {
       d.setDate(now.getDate() + i);
       const isToday = i === 0;
       const lab = new Intl.DateTimeFormat('en-US', {
-        weekday: 'short', month: 'short', day: 'numeric',
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
       }).format(d);
       arr.push({ label: isToday ? 'Today' : lab, value: d });
     }
     return arr;
   }, [now]);
 
-  const hours = useMemo(() => Array.from({ length: 12 }, (_, i) => `${i + 1}`), []);
-  const minutes = useMemo(() => Array.from({ length: 12 }, (_, i) => pad(i * 5)), []); // step 5
+  const hours = useMemo(
+    () => Array.from({ length: 12 }, (_, i) => `${i + 1}`),
+    [],
+  );
+  const minutes = useMemo(
+    () => Array.from({ length: 12 }, (_, i) => pad(i * 5)),
+    [],
+  );
   const ampm = ['AM', 'PM'];
 
-  // --- initial indices
+  // ----- initial indices -----
   const initHour12 = ((now.getHours() + 11) % 12) + 1; // 1..12
   const initMinIdx = Math.round(now.getMinutes() / 5) % 12;
 
@@ -54,18 +67,14 @@ export default function ScheduleRideScreen({ navigation, route }: Props) {
   const [idxHour, setIdxHour] = useState(initHour12 - 1);
   const [idxMin, setIdxMin] = useState(initMinIdx);
   const [idxAP, setIdxAP] = useState(now.getHours() >= 12 ? 1 : 0);
-  const [holdFunds, setHoldFunds] = useState(true);
 
-  // --- build the final Date
+  // ----- selected date -----
   const selectedDate = useMemo(() => {
     const d = new Date(dates[idxDate].value);
     let h = idxHour + 1; // 1..12
     const m = (idxMin * 5) % 60;
-    if (idxAP === 0) {
-      if (h === 12) h = 0;          // 12AM -> 00
-    } else {
-      if (h !== 12) h = h + 12;     // PM except 12PM
-    }
+    if (idxAP === 0) h = h === 12 ? 0 : h; // 12AM -> 00
+    else h = h === 12 ? 12 : h + 12; // PM (except 12PM)
     d.setHours(h, m, 0, 0);
     return d;
   }, [dates, idxDate, idxHour, idxMin, idxAP]);
@@ -75,116 +84,191 @@ export default function ScheduleRideScreen({ navigation, route }: Props) {
     const t = new Date(selectedDate);
     t.setHours(t.getHours() + 2);
     t.setMinutes(t.getMinutes() + 30);
-    return new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(t);
+    return new Intl.DateTimeFormat('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+    }).format(t);
   }, [selectedDate]);
 
   const confirm = () => {
-    // route.params?.onPick?.(selectedDate);
-    // navigation.goBack();
+    // you can call route.params?.onPick?.(selectedDate) if you want to return
     navigation.navigate('FareOptions', {
       etaMinutes: 18,
       quotes: [
-        { id: 'esc', tier: 'Escalade', price: 51, oldPrice: 85, seatText: 'Or Similar' },
-        { id: 'prm', tier: 'Premium', price: 32, oldPrice: 55, seatText: 'Sedan X2' },
-        { id: 'eco', tier: 'Economy', price: 43, oldPrice: 67, seatText: 'SUV X2' },
+        {
+          id: 'esc',
+          tier: 'Escalade',
+          price: 51,
+          oldPrice: 85,
+          seatText: 'Or Similar',
+        },
+        {
+          id: 'prm',
+          tier: 'Premium',
+          price: 32,
+          oldPrice: 55,
+          seatText: 'Sedan X2',
+        },
+        {
+          id: 'eco',
+          tier: 'Economy',
+          price: 43,
+          oldPrice: 67,
+          seatText: 'SUV X2',
+        },
       ],
       payMethod: 'Card',
       onConfirm: (q, opts) => {
         console.log('Chosen quote:', q, opts);
-        // continue to booking request…
       },
+      start, // { description, latitude, longitude }
+      dest,
     });
   };
 
   return (
-    <SafeAreaView style={[styles.safe, { paddingTop: insets.top }]}>
-      {/* top bar */}
-      <View style={styles.topBar}>
-        <Pressable style={styles.badge} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={16} color="#111" />
-          <Text style={styles.badgeTxt}>Schedule a Ride</Text>
-        </Pressable>
-        <Pressable onPress={() => navigation.goBack()}>
-          <Text style={{ color: '#111', fontWeight: '700' }}>Done</Text>
-        </Pressable>
-      </View>
+    <View style={{ flex: 1, backgroundColor: '#F2F3F4' }}>
+      {/* Top map/header w/ rounded bottom */}
+      <ImageBackground
+        source={assets.images.Sbg /* <- provide your header image */}
+        style={[styles.headerImg, { paddingTop: insets.top + 8 }]}
+        imageStyle={styles.headerImgRadius}
+        resizeMode="cover"
+      >
+        <View style={styles.headerRow}>
+          <Pressable
+            style={styles.backCircle}
+            onPress={() => navigation.goBack()}
+          >
+            <Ionicons name="chevron-back" size={18} color="#111" />
+          </Pressable>
 
-      {/* big title */}
-      <Text style={styles.bigTitle}>
-        {new Intl.DateTimeFormat('en-US', {
-          weekday: 'short', month: 'short', day: 'numeric',
-        }).format(selectedDate)}
-        {` · `}
-        {new Intl.DateTimeFormat('en-US', { hour: 'numeric', minute: '2-digit' }).format(selectedDate)}
-      </Text>
+          <Text style={styles.headerTitle}>Schedule a Ride</Text>
 
-      {/* wheel area */}
-      <View style={styles.wheelsWrap}>
-        <Wheel
-          data={dates.map(d => d.label)}
-          index={idxDate}
-          onIndexChange={setIdxDate}
-          width="44%"
-        />
-        <Wheel data={hours} index={idxHour} onIndexChange={setIdxHour} width="12%" />
-        <Wheel data={minutes} index={idxMin} onIndexChange={setIdxMin} width="16%" />
-        <Wheel data={ampm} index={idxAP} onIndexChange={setIdxAP} width="16%" />
-      </View>
-
-      {/* info rows */}
-      <View style={styles.infoRow}>
-        {/* <Ionicons name="location-outline" size={18} color="#111" /> */}
-        <Image
-          source={assets.images.dropoffIcon}// <-- **Direct require with correct path**
-          style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
-        />
-
-
-        <View style={{ marginLeft: 10, flex: 1 }}>
-          <Text style={styles.infoTitle}>Estimated drop-off time</Text>
-          <Text style={styles.infoSub}>Arrive at destination at approx. {dropOff}</Text>
+          {/* spacer to balance layout */}
+          <View style={{ width: 36, height: 36 }} />
         </View>
-      </View>
+      </ImageBackground>
 
-      <View style={styles.infoRow}>
-        {/* <Ionicons name="reload-outline" size={18} color="#111" /> */}
-        <Image
-          source={assets.images.plansIcon}// <-- **Direct require with correct path**
-          style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
-        />
-        <View style={{ marginLeft: 10, flex: 1 }}>
-          <Text style={styles.infoTitle}>Change of plans? No worries!</Text>
-          <Text style={styles.infoSub}>Cancel or modify free of charge up to 1 hour before pickup</Text>
+      {/* White sheet content */}
+      <SafeAreaView edges={['bottom']} style={styles.sheet}>
+        {/* big centered title */}
+        <Text style={styles.bigTitle}>
+          {new Intl.DateTimeFormat('en-US', {
+            weekday: 'short',
+            month: 'short',
+            day: 'numeric',
+          }).format(selectedDate)}
+          {`  •  `}
+          {new Intl.DateTimeFormat('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+          }).format(selectedDate)}
+        </Text>
+
+        {/* Wheels */}
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 16 }}
+          showsVerticalScrollIndicator={false}
+        >
+          {/* Wheels */}
+          <View style={styles.wheelsWrap}>
+            <View pointerEvents="none" style={styles.wheelsHighlight} />
+            <Wheel
+              data={dates.map(d => d.label)}
+              index={idxDate}
+              onIndexChange={setIdxDate}
+              width="44%"
+            />
+            <Wheel
+              data={hours}
+              index={idxHour}
+              onIndexChange={setIdxHour}
+              width="12%"
+            />
+            <Wheel
+              data={minutes}
+              index={idxMin}
+              onIndexChange={setIdxMin}
+              width="16%"
+            />
+            <Wheel
+              data={ampm}
+              index={idxAP}
+              onIndexChange={setIdxAP}
+              width="16%"
+            />
+          </View>
+
+          {/* Info bullets with extra vertical padding */}
+          <View style={{ gap: 10, paddingHorizontal: 16, paddingVertical: 18 }}>
+            <View style={[styles.infoRow, styles.infoPadded]}>
+              <Image
+                source={assets.images.dropoffIcon}
+                style={styles.infoIcon}
+              />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.infoTitle}>Estimated drop-off time</Text>
+                <Text style={styles.infoSub}>
+                  Arrive at destination at approx. {dropOff}
+                </Text>
+              </View>
+            </View>
+
+            <View style={[styles.infoRow, styles.infoPadded]}>
+              <Image source={assets.images.plansIcon} style={styles.infoIcon} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.infoTitle}>
+                  Change of plans? No worries!
+                </Text>
+                <Text style={styles.infoSub}>
+                  Cancel or modify your ride free of charge up to 1 hour before
+                  pickup
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          {/* Toggle pill */}
+          <View style={styles.toggleCard}>
+            <Image source={assets.images.squareIcon} style={styles.infoIcon} />
+            <Text style={styles.toggleTxt}>
+              Square hold funds and charge after drop-off
+            </Text>
+            <Ionicons
+              name="information-circle-outline"
+              size={16}
+              color="#9AA0A6"
+            />
+          </View>
+        </ScrollView>
+
+        {/* CTA */}
+        <View
+          style={[
+            styles.footer,
+            { paddingBottom: Math.max(insets.bottom, 12) },
+          ]}
+        >
+          <Pressable style={styles.cta} onPress={confirm}>
+            <Text style={styles.ctaText}>Check Fare</Text>
+            <View style={styles.ctaIcon}>
+              <AntDesign name="arrowright" size={18} color="#111" />
+            </View>
+          </Pressable>
         </View>
-      </View>
-
-      {/* toggle pill */}
-      <View style={styles.toggleCard}>
-        {/* <Ionicons name="checkbox-outline" size={18} color="#111" /> */}
-        <Image
-          source={assets.images.squareIcon}// <-- **Direct require with correct path**
-          style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
-        />
-        <Text style={styles.toggleTxt}>Square hold funds and charge after drop-off</Text>
-        <Ionicons name="information-circle-outline" size={16} color="#9AA0A6" />
-
-      </View>
-
-      {/* bottom CTA */}
-      <Pressable style={styles.cta} onPress={confirm}>
-        <Text style={styles.ctaText}>Check Fare</Text>
-        <View style={styles.ctaIcon}>
-          <AntDesign name="arrowright" size={18} color="#111" />
-        </View>
-      </Pressable>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 /* ---------- Wheel column ---------- */
 
 function Wheel({
-  data, index, onIndexChange, width,
+  data,
+  index,
+  onIndexChange,
+  width,
 }: {
   data: string[];
   index: number;
@@ -192,20 +276,17 @@ function Wheel({
   width: number | `${number}%` | string;
 }) {
   const listRef = useRef<FlatList<string>>(null);
-
-  // center padding
   const pad = (ITEM_H * (VISIBLE_ROWS - 1)) / 2;
 
   const onMomentumEnd = (e: any) => {
     const y = e.nativeEvent.contentOffset.y as number;
     const idx = Math.round(y / ITEM_H);
-    if (idx !== index) onIndexChange(Math.max(0, Math.min(data.length - 1, idx)));
+    if (idx !== index)
+      onIndexChange(Math.max(0, Math.min(data.length - 1, idx)));
   };
 
   return (
     <View style={[styles.wheelCol, { width }]}>
-      {/* highlight bar */}
-      <View pointerEvents="none" style={styles.highlight} />
       <FlatList
         ref={listRef}
         data={data}
@@ -215,11 +296,17 @@ function Wheel({
         decelerationRate="fast"
         onMomentumScrollEnd={onMomentumEnd}
         contentContainerStyle={{ paddingVertical: pad }}
-        getItemLayout={(_, i) => ({ length: ITEM_H, offset: ITEM_H * i, index: i })}
+        getItemLayout={(_, i) => ({
+          length: ITEM_H,
+          offset: ITEM_H * i,
+          index: i,
+        })}
         initialScrollIndex={index}
         renderItem={({ item, index: i }) => (
           <View style={styles.item}>
-            <Text style={[styles.itemTxt, i === index && styles.itemActive]}>{item}</Text>
+            <Text style={[styles.itemTxt, i === index && styles.itemActive]}>
+              {item}
+            </Text>
           </View>
         )}
       />
@@ -230,49 +317,134 @@ function Wheel({
 /* ---------- styles ---------- */
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
-
-  topBar: {
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 16, paddingTop: 0, marginBottom: 0, marginTop: 7,
+  headerImg: {
+    height: 160,
+    justifyContent: 'flex-start',
+    paddingHorizontal: 26,
   },
-  badge: {
-    flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 5,
-    backgroundColor: '#F6F7F8', borderRadius: 16, paddingHorizontal: 10, paddingVertical: 6,
-    borderWidth: 1, borderColor: '#EEE',
+  headerImgRadius: {
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
-  badgeTxt: { color: '#111', fontWeight: '700', fontSize: 12 },
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    gap: 12,
+  },
+  backCircle: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
+  },
+  headerTitle: { color: '#111', fontWeight: '400', fontSize: 18 },
 
-  bigTitle: { fontSize: 18, fontWeight: '700', color: '#111', paddingHorizontal: 16, marginVertical: 20, textAlign: 'center', },
+  sheet: {
+    flex: 1,
+    backgroundColor: '#fff',
+    marginTop: -16, // slight overlap with curved header
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingTop: 12,
+  },
+
+  bigTitle: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#111',
+    textAlign: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+    paddingHorizontal: 16,
+  },
 
   wheelsWrap: {
-    flexDirection: 'row', alignItems: 'stretch', gap: 8, paddingHorizontal: 16, marginBottom: 104,
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    gap: 8,
+    paddingHorizontal: 16,
+    marginBottom: 18,
+    position: 'relative',
   },
-  wheelCol: { height: ITEM_H * VISIBLE_ROWS, overflow: 'hidden', borderRadius: 8, borderWidth: 1, borderColor: '#EFEFEF' },
-  highlight: {
-    position: 'absolute', top: (ITEM_H * (VISIBLE_ROWS - 1)) / 2, height: ITEM_H,
-    left: 0, right: 0, borderTopWidth: 1, borderBottomWidth: 1, borderColor: '#EAEAEA',
-    backgroundColor: ' #000',
+  wheelsHighlight: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    top: (ITEM_H * (VISIBLE_ROWS - 1)) / 2,
+    height: ITEM_H,
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#E7E7E7',
+    backgroundColor: 'rgba(0,0,0,0.03)', // subtle band like the mock
   },
-  item: { height: ITEM_H, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 8 },
-  itemTxt: { color: '#777' },
+  wheelCol: {
+    height: ITEM_H * VISIBLE_ROWS,
+    overflow: 'hidden',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#EFEFEF',
+    backgroundColor: '#FAFAFA',
+  },
+  infoPadded: { paddingVertical: 8 },
+  item: {
+    height: ITEM_H,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 8,
+  },
+  itemTxt: { color: '#9AA0A6' },
   itemActive: { color: '#111', fontWeight: '700' },
 
-  infoRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 10, paddingHorizontal: 16, marginBottom: 10 },
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    gap: 10,
+  },
+  infoIcon: { width: 20, height: 20, resizeMode: 'contain' },
   infoTitle: { color: '#111', fontWeight: '700' },
   infoSub: { color: '#666', marginTop: 2 },
-
+  footer: { paddingHorizontal: 16, paddingTop: 8 },
   toggleCard: {
-    flexDirection: 'row', alignItems: 'center', gap: 10,
-    marginHorizontal: 16, marginTop: 6, padding: 12,
-    borderRadius: 20, borderWidth: 1, borderColor: '#EFEFEF', backgroundColor: MINT,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginHorizontal: 16,
+    marginTop: 12,
+    padding: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: '#D6F8EA',
+    backgroundColor: '#EAFDF5',
   },
-  toggleTxt: { color: '#111', fontSize: 12, fontWeight: '400', flexShrink: 1, },
+  toggleTxt: { color: '#111', fontSize: 12, fontWeight: '500', flexShrink: 1 },
 
   cta: {
-    marginTop: 16, marginHorizontal: 16, height: 48, borderRadius: 28, backgroundColor: '#111',
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
+    marginTop: 16,
+    marginHorizontal: 16,
+    height: 48,
+    borderRadius: 28,
+    backgroundColor: '#111',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  ctaText: { color: '#fff', fontWeight: '400' },
-  ctaIcon: { width: 30, height: 30, borderRadius: 15, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10, },
+  ctaText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  ctaIcon: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: MINT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 10,
+  },
 });

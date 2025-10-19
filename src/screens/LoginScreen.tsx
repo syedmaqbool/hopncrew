@@ -25,8 +25,6 @@ import { useAuth } from '../context/AuthContext';
 import type { RootStackParamList } from '../navigation/types';
 import { login } from '../services/login';
 
-
-
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
 type Country = { code: string; dial: string; label: string; flag: string };
@@ -72,14 +70,15 @@ export default function LoginScreen({ navigation }: Props) {
 
   const rnBiometrics = React.useMemo(
     () => new ReactNativeBiometrics({ allowDeviceCredentials: true }), // fallback to device PIN if no biometrics enrolled
-    []
+    [],
   );
 
   const readStoredToken = async (): Promise<string | null> => {
-    const r = await Keychain.getGenericPassword({ service: 'com.hopnground.refresh-token' });
+    const r = await Keychain.getGenericPassword({
+      service: 'com.hopnground.refresh-token',
+    });
     return r === false ? null : r.password;
   };
-
 
   const isValid = useMemo(() => phone.trim().length >= 7, [phone]);
 
@@ -102,17 +101,38 @@ export default function LoginScreen({ navigation }: Props) {
   const onEmailLogin = async () => {
     if (!canSubmit || loading) return;
     setLoading(true);
+
     try {
       const res = await login(email.trim(), password);
-      // Persist {token,user} via AuthContext (which also sets axios Authorization)
-      await signIn({
-        token: res.data.token,
-        user: res.data.user,
-      });
-      // Go to your main app
-      navigation.reset({ index: 0, routes: [{ name: 'App' }] }); // or 'App' (drawer) if you prefer
+
+      await signIn({ token: res.data.token, user: res.data.user });
+      navigation.reset({ index: 0, routes: [{ name: 'App' }] });
     } catch (e: any) {
-      Alert.alert('Login failed', String(e.message || e));
+      const errKey =
+        e?.key || // <- provided by our service patch
+        e?.response?.data?.key || // fallback if service didn't throw yet
+        (/email_not_verified/i.test(String(e?.message))
+          ? 'email_not_verified'
+          : '');
+
+      if (errKey === 'email_not_verified') {
+        Alert.alert(
+          'Verify your email',
+          e?.message ||
+            'Your email is not verified. Please enter the OTP we sent.',
+          [
+            {
+              text: 'OK',
+              onPress: () =>
+                navigation.replace('Otp', {
+                  email: email.trim(),
+                }),
+            },
+          ],
+        );
+      } else {
+        Alert.alert('Login failed', String(e?.message || e));
+      }
     } finally {
       setLoading(false);
     }
@@ -122,15 +142,21 @@ export default function LoginScreen({ navigation }: Props) {
     try {
       console.log('FaceID pressed');
 
-      const { available, biometryType } = await rnBiometrics.isSensorAvailable();
+      const { available, biometryType } =
+        await rnBiometrics.isSensorAvailable();
       console.log('isSensorAvailable ->', available, biometryType);
       if (!available) {
-        Alert.alert('Biometrics not available', 'Enroll Face/Touch ID or screen lock in device settings.');
+        Alert.alert(
+          'Biometrics not available',
+          'Enroll Face/Touch ID or screen lock in device settings.',
+        );
         return;
       }
 
       // Show prompt (Android needs this; iOS can also use it for a consistent UX)
-      const { success } = await rnBiometrics.simplePrompt({ promptMessage: 'Login with biometrics' });
+      const { success } = await rnBiometrics.simplePrompt({
+        promptMessage: 'Login with biometrics',
+      });
       console.log('simplePrompt success ->', success);
       if (!success) return; // user cancelled
 
@@ -138,7 +164,10 @@ export default function LoginScreen({ navigation }: Props) {
       const token = await readStoredToken();
       console.log('readStoredToken ->', token);
       if (!token) {
-        Alert.alert('No saved session', 'Sign in once with OTP to enable biometric login.');
+        Alert.alert(
+          'No saved session',
+          'Sign in once with OTP to enable biometric login.',
+        );
         return;
       }
 
@@ -159,21 +188,21 @@ export default function LoginScreen({ navigation }: Props) {
       onSupport: () => console.log('support'),
       onPolicies: () => navigation.navigate('Policies'),
     });
-  }
+  };
 
   return (
     <ImageBackground
       source={assets.images.Sbg}
-      style={styles.bg}            // full-screen
-      resizeMode="cover"          // or "contain"/"stretch" as you like
+      style={styles.bg} // full-screen
+      resizeMode="cover" // or "contain"/"stretch" as you like
     >
       <SafeAreaView style={styles.safe}>
         {/* Header */}
         <View style={styles.header}>
           <Pressable onPress={() => console.log('Back')}>
             <Image
-                source={assets.images.backArrow}// <-- **Direct require with correct path**
-              style={{ width: 40, height: 40, borderRadius: 20}}
+              source={assets.images.backArrow} // <-- **Direct require with correct path**
+              style={{ width: 40, height: 40, borderRadius: 20 }}
             />
           </Pressable>
         </View>
@@ -206,11 +235,9 @@ export default function LoginScreen({ navigation }: Props) {
               onChangeText={setPhone}
               placeholderTextColor="#9AA0A6"
             /> */}
-
           </View>
 
           <View style={[styles.inputRow, { marginBottom: 15, marginTop: 10 }]}>
-
             <TextInput
               style={styles.input}
               placeholder="Your Email ID"
@@ -220,30 +247,54 @@ export default function LoginScreen({ navigation }: Props) {
               value={email}
               onChangeText={setEmail}
             />
-
-
           </View>
           <View style={[styles.inputRow]}>
-            <TextInput style={styles.input} placeholder="Password (min 8)" placeholderTextColor="#9AA0A6" value={password} onChangeText={setPassword} secureTextEntry />
+            <TextInput
+              style={styles.input}
+              placeholder="Password (min 8)"
+              placeholderTextColor="#9AA0A6"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+            />
           </View>
           {/* Sign in */}
           <Pressable
-            style={[styles.signInBtn, (!canSubmit || loading) && { opacity: 0.5 }]}
+            style={[
+              styles.signInBtn,
+              (!canSubmit || loading) && { opacity: 0.5 },
+            ]}
             onPress={onEmailLogin}
             disabled={!canSubmit}
           >
             <Text style={styles.signInText}>Sign in</Text>
             <View style={styles.signInArrow}>
               <AntDesign name="arrowright" size={18} color="#111" />
-
-
             </View>
-
-
           </Pressable>
 
-          <Text onPress={() => navigation.navigate('Signup')} style={{ textAlign: 'center', marginTop: 10, textDecorationLine: 'underline', color: '#111' }}>
+          <Text
+            onPress={() => navigation.navigate('Signup')}
+            style={{
+              textAlign: 'center',
+              marginTop: 10,
+              textDecorationLine: 'underline',
+              color: '#111',
+            }}
+          >
             Create an account
+          </Text>
+
+          <Text
+            // onPress={() => navigation.navigate('Signup')}
+            style={{
+              textAlign: 'center',
+              marginTop: 10,
+              textDecorationLine: 'underline',
+              color: '#111',
+            }}
+          >
+            Forget password
           </Text>
 
           {/* Divider */}
@@ -252,15 +303,27 @@ export default function LoginScreen({ navigation }: Props) {
 
           {/* Social logins (hooks to add later) */}
           <View style={styles.socialRow}>
-            <Pressable onPress={() => onLinkedInPress()} style={styles.social}><FontAwesome name="linkedin" size={18} color="#0A66C2" /></Pressable>
-            <Pressable style={styles.social}><FontAwesome name="facebook" size={18} color="#1877F2" /></Pressable>
-            <Pressable style={styles.social}><AntDesign name="google" size={18} color="#DB4437" /></Pressable>
-            <Pressable style={styles.social}><AntDesign name="apple1" size={18} color="#000" /></Pressable>
+            <Pressable onPress={() => onLinkedInPress()} style={styles.social}>
+              <FontAwesome name="linkedin" size={18} color="#0A66C2" />
+            </Pressable>
+            <Pressable style={styles.social}>
+              <FontAwesome name="facebook" size={18} color="#1877F2" />
+            </Pressable>
+            <Pressable style={styles.social}>
+              <AntDesign name="google" size={18} color="#DB4437" />
+            </Pressable>
+            <Pressable style={styles.social}>
+              <AntDesign name="apple1" size={18} color="#000" />
+            </Pressable>
           </View>
 
           {/* Face ID */}
           <Pressable style={styles.faceId} onPress={onFaceIdPress} hitSlop={10}>
-            <MaterialCommunityIcons name="face-recognition" size={28} color="#111" />
+            <MaterialCommunityIcons
+              name="face-recognition"
+              size={28}
+              color="#111"
+            />
             <Text style={styles.faceIdText}>Login with Face ID</Text>
           </Pressable>
 
@@ -272,24 +335,39 @@ export default function LoginScreen({ navigation }: Props) {
   <MaterialCommunityIcons name="face-recognition" size={24} color="#111" />
   <Text style={styles.faceIdText}>Login with Face</Text>
 </Pressable> */}
-          {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.btnTxt}>Login</Text>}
-
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.btnTxt}>Login</Text>
+          )}
         </View>
 
         {/* Country picker modal */}
-        <Modal transparent visible={pickerOpen} animationType="fade" onRequestClose={() => setPickerOpen(false)}>
-          <Pressable style={styles.modalBg} onPress={() => setPickerOpen(false)}>
+        <Modal
+          transparent
+          visible={pickerOpen}
+          animationType="fade"
+          onRequestClose={() => setPickerOpen(false)}
+        >
+          <Pressable
+            style={styles.modalBg}
+            onPress={() => setPickerOpen(false)}
+          >
             <View style={styles.modalCard}>
               <Text style={styles.modalTitle}>Select country</Text>
               <Picker
                 selectedValue={country.code}
-                onValueChange={(val) => {
+                onValueChange={val => {
                   const next = COUNTRIES.find(c => c.code === val)!;
                   setCountry(next);
                 }}
               >
                 {COUNTRIES.map(c => (
-                  <Picker.Item key={c.code} label={`${c.flag} ${c.label} (${c.dial})`} value={c.code} />
+                  <Picker.Item
+                    key={c.code}
+                    label={`${c.flag} ${c.label} (${c.dial})`}
+                    value={c.code}
+                  />
                 ))}
               </Picker>
             </View>
@@ -308,7 +386,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Biennale',
   },
   bg: { flex: 1 },
-  safe: { flex: 1 }, 
+  safe: { flex: 1 },
   header: { paddingHorizontal: 16, paddingTop: 54 },
   hero: {
     height: 46,
@@ -327,7 +405,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     padding: 16,
-
   },
 
   label: { color: '#111', fontSize: 14, marginBottom: 8, fontWeight: '600' },
@@ -369,9 +446,14 @@ const styles = StyleSheet.create({
   },
   signInText: { color: '#fff', fontWeight: '600', fontSize: 16 },
   signInArrow: {
-    width: 30, height: 30, borderRadius: 15,
-    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',
-    position: 'absolute', right: 10,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    backgroundColor: MINT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 10,
   },
 
   divider: { height: 1, backgroundColor: '#EFEFEF', marginVertical: 16 },
@@ -379,21 +461,39 @@ const styles = StyleSheet.create({
 
   socialRow: { flexDirection: 'row', justifyContent: 'center', gap: 14 },
   social: {
-    width: 42, height: 42, borderRadius: 21,
-    backgroundColor: '#fff', borderWidth: 1, borderColor: '#EEE',
-    alignItems: 'center', justifyContent: 'center',
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: '#fff',
+    borderWidth: 1,
+    borderColor: '#EEE',
+    alignItems: 'center',
+    justifyContent: 'center',
     elevation: 1,
   },
 
   faceId: { alignItems: 'center', marginTop: 18 },
   faceIdText: { marginTop: 8, color: '#111', fontWeight: '500' },
 
-  modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.25)', justifyContent: 'flex-end' },
-  modalCard: {
-    backgroundColor: '#fff', paddingHorizontal: 12, paddingTop: 12, paddingBottom: 24,
-    borderTopLeftRadius: 16, borderTopRightRadius: 16,
+  modalBg: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    justifyContent: 'flex-end',
   },
-  modalTitle: { fontSize: 16, fontWeight: '600', marginBottom: 8, color: '#111' },
+  modalCard: {
+    backgroundColor: '#fff',
+    paddingHorizontal: 12,
+    paddingTop: 12,
+    paddingBottom: 24,
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+  modalTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 8,
+    color: '#111',
+  },
   faceIdButton: {
     marginTop: 18,
     height: 48,
@@ -406,7 +506,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
     paddingHorizontal: 16,
-    elevation: 1,      // Android z
+    elevation: 1, // Android z
   },
   faceIdDisabled: { opacity: 0.5 },
 });

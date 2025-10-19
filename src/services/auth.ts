@@ -3,9 +3,7 @@ import { api, setAuthToken } from './api';
 import qs from 'qs';
 import * as Keychain from 'react-native-keychain';
 
-
 const KEY = 'auth_token';
-
 
 export type RegisterPayload = {
   email: string;
@@ -13,9 +11,8 @@ export type RegisterPayload = {
   password_confirmation: string;
   first_name: string;
   last_name: string;
+  phone?: string;
 };
-
-
 
 export type ApiOk<T> = {
   status: 'Success';
@@ -23,7 +20,6 @@ export type ApiOk<T> = {
   message: string | null;
   data: T;
 };
-
 
 export type ApiErr = {
   status: 'Error';
@@ -44,19 +40,17 @@ export type RegisterOK = ApiOk<{
   message: string; // “Registration successful…”
 }>;
 
-
 export type SignupPayload = { name: string; email: string; number: string };
 export type User = { id: string; name: string; email: string; number: string };
 
 export async function signup(data: SignupPayload): Promise<User> {
   const res = await api.post('/signup', data);
   // Expected: { user: {...}, token: '...' }
-  console.log('data:',res.data);
+  console.log('data:', res.data);
   const { user, token } = res.data;
   await setAuthToken(token);
   return user as User;
 }
-
 
 export async function login(email: string, password: string): Promise<User> {
   const res = await api.post('/login', { email, password });
@@ -65,7 +59,6 @@ export async function login(email: string, password: string): Promise<User> {
   await setAuthToken(token);
   return user as User;
 }
-
 
 export async function register(payload: RegisterPayload): Promise<RegisterOK> {
   const body = qs.stringify(payload);
@@ -91,21 +84,19 @@ export async function register(payload: RegisterPayload): Promise<RegisterOK> {
   throw new Error(fieldMsg);
 }
 
-
 export async function saveToken(token: string) {
   await Keychain.setGenericPassword(KEY, token, { service: KEY });
   api.defaults.headers.common.Authorization = `Bearer ${token}`;
 }
 
-
 export async function loadToken(): Promise<string | null> {
-   const creds = await Keychain.getGenericPassword({ service: 'auth_token' });
-  if (!creds) return null;                
-  return creds.password;  
+  const creds = await Keychain.getGenericPassword({ service: 'auth_token' });
+  if (!creds) return null;
+  return creds.password;
 }
 
-  // const r = await Keychain.getGenericPassword({ service: SERVICE });
-  // return r === false ? null : r.password;
+// const r = await Keychain.getGenericPassword({ service: SERVICE });
+// return r === false ? null : r.password;
 export async function clearToken() {
   await Keychain.resetGenericPassword({ service: KEY });
   delete api.defaults.headers.common.Authorization;

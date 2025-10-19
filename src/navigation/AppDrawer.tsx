@@ -1,6 +1,9 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
-import { createDrawerNavigator, DrawerContentScrollView } from '@react-navigation/drawer';
+import {
+  createDrawerNavigator,
+  DrawerContentScrollView,
+} from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -10,7 +13,14 @@ import { useAuth } from '../context/AuthContext';
 import HomeScreen from '../screens/HomeScreen';
 // You can add real screens later:
 const Placeholder = ({ title }: { title: string }) => (
-  <View style={{ flex: 1, backgroundColor: '#111', alignItems: 'center', justifyContent: 'center' }}>
+  <View
+    style={{
+      flex: 1,
+      backgroundColor: '#111',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}
+  >
     <Text style={{ color: '#fff', fontSize: 18 }}>{title}</Text>
   </View>
 );
@@ -29,21 +39,19 @@ export type AppDrawerParamList = {
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
 export default function AppDrawer() {
-
   return (
     <Drawer.Navigator
-    // sceneContainerStyle={{ backgroundColor: 'transparent' }}
+      // sceneContainerStyle={{ backgroundColor: 'transparent' }}
       screenOptions={{
         headerShown: false,
-        drawerType: 'front',              // overlay over current screen
-        overlayColor: 'rgba(0,0,0,0.2)',  // light dim on the main screen
+        drawerType: 'front', // overlay over current screen
+        overlayColor: 'rgba(0,0,0,0.2)', // light dim on the main screen
         drawerStyle: {
           width: '78%',
           backgroundColor: '#0F0F0F',
         },
-       
       }}
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
+      drawerContent={props => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
       {/* <Drawer.Screen name="MyRides" component={() => <Placeholder title="My Rides" />} />
@@ -60,9 +68,15 @@ export default function AppDrawer() {
 /* ---------------- Custom Drawer ---------------- */
 
 function CustomDrawerContent(props: any) {
+  const { bootstrapped, auth } = useAuth();
   const { navigation } = props;
-    const { signOut } = useAuth();
+  const { signOut } = useAuth();
   const insets = useSafeAreaInsets();
+
+  const name = auth?.user
+    ? `${auth.user.first_name ?? ''} ${auth.user.last_name ?? ''}`.trim() ||
+      auth.user.email
+    : 'Guest';
 
   const Row = ({
     icon,
@@ -89,31 +103,48 @@ function CustomDrawerContent(props: any) {
       contentContainerStyle={{ paddingBottom: insets.bottom + 12 }}
     >
       {/* Profile */}
-      <View style={{ paddingHorizontal: 16, paddingTop: insets.top + 8, paddingBottom: 16 }}>
+      <View
+        style={{
+          paddingHorizontal: 16,
+          paddingTop: insets.top + 8,
+          paddingBottom: 16,
+        }}
+      >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>
-        <Pressable style={styles.linkRow} onPress={() => { navigation.navigate('EditProfile', {
-            initial: {
-              name: 'Maqbool',
-              email: 'maqbool@urapptech.com',
-              dial: '+1',
-              phone: '1234567890',
-              whatsappSame: true,
-              referral: '456789',
-              avatarUrl: '',
-            },
-            onSave: (payload) => {
-              // call your API, update profile in state, etc.
-            },
-          }); }}>
-          <Image
-            source={{ uri: 'https://i.pravatar.cc/100?img=5' }}
-            style={{ width: 44, height: 44, borderRadius: 22 }}
-          />
+          <Pressable
+            style={styles.linkRow}
+            onPress={() => {
+              navigation.navigate('EditProfile', {
+                initial: {
+                  name: 'Maqbool',
+                  email: 'maqbool@urapptech.com',
+                  dial: '+1',
+                  phone: '1234567890',
+                  whatsappSame: true,
+                  referral: '456789',
+                  avatarUrl: '',
+                },
+                onSave: payload => {
+                  // call your API, update profile in state, etc.
+                },
+              });
+            }}
+          >
+            <Image
+              source={{
+                uri: auth?.user.profile_picture
+                  ? auth?.user.profile_picture
+                  : 'https://www.gravatar.com/avatar?d=mp',
+              }}
+              style={{ width: 44, height: 44, borderRadius: 22 }}
+            />
           </Pressable>
 
           <View>
-            <Text style={styles.name}>Paula Lewis</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+            <Text style={styles.name}>{name}</Text>
+            <View
+              style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}
+            >
               <Ionicons name="star" size={12} color="#FFC400" />
               <Text style={styles.rating}>4.2</Text>
             </View>
@@ -146,35 +177,41 @@ function CustomDrawerContent(props: any) {
           onPress={() => navigation.navigate('Payment')}
         />
         <Row
-          icon={<MaterialCommunityIcons name="crown-outline" size={18} color="#fff" />}
+          icon={
+            <MaterialCommunityIcons
+              name="crown-outline"
+              size={18}
+              color="#fff"
+            />
+          }
           label="Loyalty Program"
-          onPress={() => navigation.navigate('RideDetails',{
-            
-                ride: {
-                    id: 'item.id',
-                    status: 'Upcoming',
-                    whenLabel: 'Today, 5:19 PM',
-                    from: 'Toronto Pearson Airport - T 1',
-                    to: 'Hamill Avenue San Diego, CA 929',
-                    distanceKm: 12.5,
-                    timeLabel: '30 - 40 min',
-                    fare: 256,
-                    driver: {
-                      name: 'Jonas',
-                      rating: 4.2,
-                      carPlate: 'ERS 8579',
-                      carModel: 'Toyota Camry',
-                      // avatar: require('...'),
-                    },
-                  },
-                  onCancel: (id) => console.log('cancel ride', id),
-
-
-
-          })}
+          onPress={() =>
+            navigation.navigate('RideDetails', {
+              ride: {
+                id: 'item.id',
+                status: 'Upcoming',
+                whenLabel: 'Today, 5:19 PM',
+                from: 'Toronto Pearson Airport - T 1',
+                to: 'Hamill Avenue San Diego, CA 929',
+                distanceKm: 12.5,
+                timeLabel: '30 - 40 min',
+                fare: 256,
+                driver: {
+                  name: 'Jonas',
+                  rating: 4.2,
+                  carPlate: 'ERS 8579',
+                  carModel: 'Toyota Camry',
+                  // avatar: require('...'),
+                },
+              },
+              onCancel: id => console.log('cancel ride', id),
+            })
+          }
         />
         <Row
-          icon={<Ionicons name="notifications-outline" size={18} color="#fff" />}
+          icon={
+            <Ionicons name="notifications-outline" size={18} color="#fff" />
+          }
           label="Notifications"
           onPress={() => navigation.navigate('Notifications')}
         />
@@ -193,20 +230,47 @@ function CustomDrawerContent(props: any) {
         <View style={styles.hr} />
 
         {/* Secondary actions */}
-        <Pressable style={styles.linkRow} onPress={async () => { console.log('logout');await signOut();navigation.reset({ index: 0, routes: [{ name: 'Login' }] });  }}>
+        <Pressable
+          style={styles.linkRow}
+          onPress={async () => {
+            console.log('logout');
+            await signOut();
+            navigation.reset({ index: 0, routes: [{ name: 'Login' }] });
+          }}
+        >
           <Text style={styles.link}>Logout</Text>
         </Pressable>
-        <Pressable style={styles.linkRow} onPress={() => { /* share / refer flow */ }}>
+        <Pressable
+          style={styles.linkRow}
+          onPress={() => {
+            /* share / refer flow */
+          }}
+        >
           <Text style={styles.link}>Refer a Friend</Text>
         </Pressable>
-        <Pressable style={styles.linkRow} onPress={() => { /* share */ }}>
+        <Pressable
+          style={styles.linkRow}
+          onPress={() => {
+            /* share */
+          }}
+        >
           <Text style={styles.link}>Share this App</Text>
         </Pressable>
-        <Pressable style={styles.linkRow} onPress={() => { /* Store review */ }}>
+        <Pressable
+          style={styles.linkRow}
+          onPress={() => {
+            /* Store review */
+          }}
+        >
           <Text style={styles.link}>Rate the App</Text>
         </Pressable>
 
-        <Pressable style={styles.driverRow} onPress={() => { /* open driver onboarding */ }}>
+        <Pressable
+          style={styles.driverRow}
+          onPress={() => {
+            /* open driver onboarding */
+          }}
+        >
           <Text style={styles.driverTxt}>Become a Driver</Text>
         </Pressable>
 
@@ -234,13 +298,23 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   rowIcon: {
-    width: 34, height: 34, borderRadius: 17, marginRight: 10,
-    backgroundColor: '#1B1B1B', alignItems: 'center', justifyContent: 'center',
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    marginRight: 10,
+    backgroundColor: '#1B1B1B',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   rowText: { color: '#fff', fontSize: 15, fontWeight: '700' },
   muted: { color: '#B4B4B4', fontWeight: '700' },
 
-  hr: { height: 1, backgroundColor: '#222', marginVertical: 12, marginHorizontal: 8 },
+  hr: {
+    height: 1,
+    backgroundColor: '#222',
+    marginVertical: 12,
+    marginHorizontal: 8,
+  },
 
   linkRow: { paddingVertical: 8, paddingHorizontal: 8 },
   link: { color: '#B4B4B4', fontSize: 14 },
@@ -249,6 +323,9 @@ const styles = StyleSheet.create({
   driverTxt: { color: '#B9FBE7', fontSize: 14, fontWeight: '800' },
 
   socialRow: {
-    marginTop: 14, flexDirection: 'row', gap: 14, paddingHorizontal: 8,
+    marginTop: 14,
+    flexDirection: 'row',
+    gap: 14,
+    paddingHorizontal: 8,
   },
 });

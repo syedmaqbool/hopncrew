@@ -2,9 +2,22 @@ import axios, { AxiosHeaders, InternalAxiosRequestConfig } from 'axios';
 import { Platform } from 'react-native';
 import * as Keychain from 'react-native-keychain';
 
-const BASE_URL = Platform.OS === 'android' ? 'https://portal.airporttaxiairportlimo.com/api/v1/' : 'https://portal.airporttaxiairportlimo.com/api/v1/';
+const BASE_URL =
+  Platform.OS === 'android'
+    ? 'https://portal.airporttaxiairportlimo.com/api/v1/'
+    : 'https://portal.airporttaxiairportlimo.com/api/v1/';
 
-export const api = axios.create({ baseURL: BASE_URL, timeout: 15000, headers: { Accept: 'application/vnd.api+json' } });
+const API_KEY = 'hopn_secret_api_key_2025';
+const API_KEY_HEADER = 'x-api-key';
+
+export const api = axios.create({
+  baseURL: BASE_URL,
+  timeout: 15000,
+  headers: {
+    Accept: 'application/vnd.api+json',
+    [API_KEY_HEADER]: API_KEY,
+  },
+});
 
 let inMemToken: string | null = null;
 
@@ -23,7 +36,9 @@ export async function setAuthToken(token: string | null) {
     if (dh instanceof AxiosHeaders) dh.delete('Authorization');
     else delete (api.defaults.headers as any).Authorization;
 
-    try { await Keychain.resetGenericPassword({ service: 'authToken' }); } catch {}
+    try {
+      await Keychain.resetGenericPassword({ service: 'authToken' });
+    } catch {}
   }
 }
 
@@ -41,16 +56,20 @@ export async function loadAuthToken() {
 // Ensure request.headers is an AxiosHeaders, then set Authorization
 api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (inMemToken) {
-    const h = config.headers instanceof AxiosHeaders
-      ? config.headers
-      : new AxiosHeaders(config.headers);
+    const h =
+      config.headers instanceof AxiosHeaders
+        ? config.headers
+        : new AxiosHeaders(config.headers);
 
-    h.set('Authorization', `Bearer ${inMemToken}`);
-    config.headers = h; // keep the AxiosHeaders instance (don’t assign `{}`)
+    if (API_KEY) h.set(API_KEY_HEADER, API_KEY);
+
+    if (inMemToken) h.set('Authorization', `Bearer ${inMemToken}`);
+
+    config.headers = h;
+    return config;
   }
   return config;
 });
-
 
 export type OtpVerifySuccess = {
   status: 'Success';
@@ -58,8 +77,13 @@ export type OtpVerifySuccess = {
   message: string;
   data: {
     user: {
-      id: number; first_name: string; last_name: string; email: string;
-      email_verified_at: string | null; created_at: string; updated_at: string;
+      id: number;
+      first_name: string;
+      last_name: string;
+      email: string;
+      email_verified_at: string | null;
+      created_at: string;
+      updated_at: string;
     };
     token: string; // <<— bearer token
   };
@@ -82,5 +106,3 @@ export async function verifyOtp(email: string, otp: string) {
   );
   return data;
 }
-
-
