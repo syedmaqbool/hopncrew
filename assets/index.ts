@@ -53,16 +53,8 @@ import avatar3 from '../assets/icons/avt-3.png';
 import avatar4 from '../assets/icons/avt-4.png';
 import avatarMan from '../assets/icons/man.png';
 import rideMap from '../assets/icons/ridesmap.png';
-
-
-
-
-
-
-
-
-
-
+import premiumIcon from '../assets/icons/premiumIcon.png';
+import economyIcon from '../assets/icons/economyIcon.png';
 
 const assets = {
   images: {
@@ -105,6 +97,8 @@ const assets = {
     avatar4,
     avatarMan,
     rideMap,
+    premiumIcon,
+    economyIcon,
   },
 } as const;
 

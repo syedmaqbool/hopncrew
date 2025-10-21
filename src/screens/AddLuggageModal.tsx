@@ -1,3 +1,4 @@
+// src/screens/AddLuggageModal.tsx
 import React, { useMemo, useState } from 'react';
 import {
   View,
@@ -5,9 +6,9 @@ import {
   Pressable,
   StyleSheet,
   FlatList,
-  Image,
   KeyboardAvoidingView,
   Platform,
+  Image,
 } from 'react-native';
 import {
   SafeAreaView,
@@ -22,18 +23,34 @@ import type {
   RootStackParamList,
   LuggageItem,
   LuggageSize,
-  OversizedItemCounts,
 } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddLuggage'>;
 
 const MINT = '#B9FBE7';
-const SIZES: LuggageSize[] = ['XL', 'L', 'M', 'S', 'Carry-on'];
+const SIZES: LuggageSize[] = ['XL', 'L', 'M', 'S', 'Carry-on', 'Backpack'];
+const IMAGES: any[] = [
+  require('../../assets/icons/2xl.png'),
+  require('../../assets/icons/l.png'),
+  require('../../assets/icons/m.png'),
+  require('../../assets/icons/s.png'),
+  require('../../assets/icons/carryon.png'),
+  require('../../assets/icons/backpack.png'),
+];
+
+// Map specific sizes to their preview images
+const imagesBySize: Partial<Record<LuggageSize, any>> = {
+  XL: IMAGES[0],
+  L: IMAGES[1],
+  M: IMAGES[2],
+  S: IMAGES[3],
+  'Carry-on': IMAGES[4],
+  Backpack: IMAGES[5],
+};
 
 export default function AddLuggageModal({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
 
-  // Use first item if present, else default to "L 1"
   const [selected, setSelected] = useState<LuggageSize>(
     route.params?.initial?.[0]?.size ?? 'L',
   );
@@ -44,7 +61,6 @@ export default function AddLuggageModal({ navigation, route }: Props) {
     route.params?.initial?.[0]?.weightKg ?? 42,
   );
 
-  // ① PRIMARY (unchanged)
   const primary: LuggageItem[] = useMemo(
     () =>
       count > 0
@@ -53,13 +69,6 @@ export default function AddLuggageModal({ navigation, route }: Props) {
     [selected, count, weightKg],
   );
 
-  // create outgoing payload (single selection model; call multiple times to add variants)
-  //   const items = useMemo<LuggageItem[]>(
-  //     () => (count > 0 ? [{ size: selected, count, weightKg, dimsCm: { w: 36, h: 55 } }] : []),
-  //     [selected, count, weightKg]
-  //   );
-
-  // ② Keep oversized items separate (seed from route.initial if present)
   const [oversized, setOversized] = useState<LuggageItem[]>(
     (route.params?.initial ?? []).filter(i => i.size === 'Oversized'),
   );
@@ -71,7 +80,7 @@ export default function AddLuggageModal({ navigation, route }: Props) {
 
   const exit = (emit = true) => {
     if (emit) route.params?.onDone?.(items);
-    navigation.goBack();
+    navigation.goBack(); // because AddPassenger used replace(), this returns to Trip
   };
 
   const Stepper = () => (
@@ -91,6 +100,7 @@ export default function AddLuggageModal({ navigation, route }: Props) {
 
   return (
     <View style={styles.fill}>
+      {/* DIM BACKDROP */}
       <Pressable style={styles.backdrop} onPress={() => exit(true)} />
 
       <KeyboardAvoidingView
@@ -108,22 +118,29 @@ export default function AddLuggageModal({ navigation, route }: Props) {
               </Pressable>
             </View>
 
-            {/* Preview / size badge / dimensions */}
+            {/* Preview / label */}
             <View style={styles.previewWrap}>
               <View style={styles.sizeBadge}>
                 <Text style={styles.sizeText}>{selected}</Text>
               </View>
-              {/* Replace with your suitcase PNG if you have one */}
               <View style={styles.previewBox}>
                 <View style={styles.corner} />
                 <View style={[styles.corner, styles.cornerTR]} />
                 <View style={[styles.corner, styles.cornerBL]} />
                 <View style={[styles.corner, styles.cornerBR]} />
-                <MaterialCommunityIcons
-                  name="suitcase-rolling"
-                  size={72}
-                  color="#111"
-                />
+                {imagesBySize[selected] ? (
+                  <Image
+                    source={imagesBySize[selected] as any}
+                    style={styles.previewImage}
+                    resizeMode="contain"
+                  />
+                ) : (
+                  <MaterialCommunityIcons
+                    name="suitcase-rolling"
+                    size={84}
+                    color="#111"
+                  />
+                )}
               </View>
               <View style={styles.dimLeft}>
                 <Text style={styles.dimText}>55 cm</Text>
@@ -138,31 +155,35 @@ export default function AddLuggageModal({ navigation, route }: Props) {
             <Stepper />
 
             {/* Scan row */}
-            <Pressable
-              style={styles.scanRow}
-              onPress={() => {
-                /* hook camera/ML later */
-              }}
-            >
-              <View style={styles.camBtn}>
+            <View style={styles.scanRow}>
+              {/* CAMERA opens OversizedLuggage (child) */}
+              <Pressable
+                style={styles.camBtn}
+                onPress={() =>
+                  navigation.navigate('OversizedLuggage', {
+                    initial: countsFromLuggage(oversized),
+                    onDone: counts =>
+                      setOversized(prev => mergeOversized(prev, counts)),
+                  })
+                }
+              >
                 <Ionicons name="camera-outline" size={18} color="#111" />
-              </View>
+              </Pressable>
+
               <Text style={styles.scanText}>Scan Bag sizes</Text>
 
+              {/* (i) opens info modal */}
               <Ionicons
                 name="information-circle-outline"
                 size={18}
                 color="#9AA0A6"
                 onPress={() =>
                   navigation.navigate('LuggageScanInfo', {
-                    onStartScan: () => {
-                      // kick off your camera/AR flow here
-                      console.log('Start scanning…');
-                    },
+                    onStartScan: () => {}, // keep hook available if needed later
                   })
                 }
               />
-            </Pressable>
+            </View>
 
             {/* Size chips */}
             <FlatList
@@ -181,7 +202,9 @@ export default function AddLuggageModal({ navigation, route }: Props) {
                 >
                   <MaterialCommunityIcons
                     name={
-                      item === 'Carry-on'
+                      item === 'Backpack'
+                        ? 'bag-personal-outline'
+                        : item === 'Carry-on'
                         ? 'bag-personal-outline'
                         : item === 'XL'
                         ? 'bag-suitcase-outline'
@@ -199,8 +222,7 @@ export default function AddLuggageModal({ navigation, route }: Props) {
               )}
             />
 
-            {/* Add oversized */}
-
+            {/* Add oversized (also reachable via camera) */}
             <Pressable
               style={styles.oversized}
               onPress={() =>
@@ -211,24 +233,23 @@ export default function AddLuggageModal({ navigation, route }: Props) {
                 })
               }
             >
+              <Image
+                source={require('../../assets/icons/addOversized.png')}
+                style={{ width: 26, height: 26, marginRight: 4 }}
+                resizeMode="contain"
+              />
               <Text style={styles.overText}>+ Add Oversized</Text>
               <AntDesign name="arrowright" size={16} color="#111" />
             </Pressable>
 
-            {/* Bottom CTA */}
+            {/* Bottom CTA → keep route.onDone() and close back to Trip */}
             <Pressable
               style={styles.cta}
               onPress={() =>
                 navigation.navigate('ScheduleRide', {
                   initial: new Date(),
-                  onPick: (when: any, hold: any) => {
-                    // bubble back to Trip screen by calling the callback you already pass in route.params
-                    route.params?.onDone?.(route.params?.initial ?? []); // keep luggage
-                    navigation.goBack(); // close luggage
-                    // then notify Trip (if you kept a callback), or you can emit an event
-                    // easiest: push it into Trip using a navigation param/callback:
-                    // navigation.navigate('Trip', { scheduledAt: when, holdAfterDrop: hold });
-                  },
+                  start: route.params?.start, // forward trip endpoints
+                  dest: route.params?.dest,
                 })
               }
             >
@@ -246,9 +267,10 @@ export default function AddLuggageModal({ navigation, route }: Props) {
 
 const styles = StyleSheet.create({
   fill: { flex: 1 },
+  // DIMMED
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'transparent',
+    backgroundColor: 'rgba(0,0,0,0.35)',
   },
 
   sheetWrap: { flex: 1, justifyContent: 'flex-end' },
@@ -295,13 +317,15 @@ const styles = StyleSheet.create({
   sizeText: { fontWeight: '700', color: '#111' },
   previewBox: {
     width: 160,
-    height: 110,
+    height: 150,
     borderRadius: 18,
     borderWidth: 1,
     borderColor: '#EAEAEA',
     alignItems: 'center',
     justifyContent: 'center',
+    padding: 12,
   },
+  previewImage: { width: 120, height: 84, margin: 6 },
   corner: {
     position: 'absolute',
     width: 18,
@@ -322,7 +346,6 @@ const styles = StyleSheet.create({
     right: 8,
     transform: [{ rotate: '180deg' }],
   },
-
   dimLeft: { position: 'absolute', left: 16, top: 30 },
   dimRight: { position: 'absolute', right: 16, top: 24 },
   dimText: { color: '#777', fontSize: 12 },
@@ -393,10 +416,10 @@ const styles = StyleSheet.create({
   oversized: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     gap: 8,
     marginTop: 22,
-    paddingHorizontal: 96,
+    alignSelf: 'center',
   },
   overText: { color: '#111', fontWeight: '700' },
 

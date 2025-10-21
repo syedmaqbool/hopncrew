@@ -7,7 +7,6 @@ import {
   Pressable,
   TextInput,
   ScrollView,
-  Alert,
   Image,
 } from 'react-native';
 import {
@@ -16,7 +15,6 @@ import {
 } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import type {
   NativeStackScreenProps,
   NativeStackNavigationProp,
@@ -25,8 +23,6 @@ import type {
   RootStackParamList,
   FareQuote,
   SpecialRequestPayload,
-  PayMethodKey,
-  SavedCard,
 } from '../navigation/types';
 import { useNavigation } from '@react-navigation/native';
 import assets from '../../assets';
@@ -69,8 +65,6 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
       special: special ?? undefined,
       coupon: coupon?.trim() || null,
     });
-    console.log('confirm', { quote: q, payMethod, special, coupon });
-    // navigation.goBack();
     rootNav.navigate('PaymentMethods', { selected: 'card' });
   };
 
@@ -78,7 +72,7 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
     navigation.navigate('PaymentBreakdown', {
       rows: [
         { label: 'Base Price', value: 100 },
-        { label: 'Online Discount (20%)', value: -15 }, // negative shows as -$15
+        { label: 'Online Discount (20%)', value: -15 },
         { label: 'Coupon Code', value: -10 },
         { label: 'Airport pickup fee', value: '1 hr', money: false },
         { label: 'Tax', value: q.tax ?? 0 },
@@ -88,214 +82,187 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
     });
   };
 
+  // ---- choose car image cleanly
+  const tier = (q.tier || '').toLowerCase();
+  const carSrc =
+    (q.image as any) ||
+    (tier.includes('premium')
+      ? (assets.images.sedanIcon as any)
+      : tier.includes('economy')
+      ? (assets.images.suvIcon as any)
+      : (assets.images.escaladeIcon as any));
+
   return (
-    <View style={{ flex: 1 }}>
-      {/* Keep the map visible; tap dim to close */}
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
+      {/* Header close */}
       <Pressable
-        style={[
-          StyleSheet.absoluteFillObject,
-          { backgroundColor: 'rgba(0,0,0,0.05)' },
-        ]}
+        style={[styles.closeBtn, { top: insets.top + 6 }]}
         onPress={() => navigation.goBack()}
-      />
-
-      <SafeAreaView
-        edges={['bottom']}
-        style={{ flex: 1, justifyContent: 'flex-end' }}
       >
-        <View style={[styles.sheet, { paddingTop: insets.top + 6 }]}>
-          {/* Top close */}
-          <Pressable
-            style={styles.closeBtn}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="close" size={18} color="#111" />
-          </Pressable>
+        <Ionicons name="close" size={18} color="#111" />
+      </Pressable>
 
-          <ScrollView
-            contentContainerStyle={{ padding: 16, paddingBottom: 20 }}
-            showsVerticalScrollIndicator={false}
-          >
-            {/* Title + subtitle */}
-            <Text style={styles.h1}>
-              {title} <Text style={styles.light}>Or Similar</Text>
-            </Text>
-            <Text style={styles.sub}>
-              Sedan limos are a great choice for transportation to and from the
-              airport to any part of the GTA.
-            </Text>
+      <ScrollView
+        contentContainerStyle={{ padding: 16, paddingTop: 50 }}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Title + subtitle */}
+        <Text style={styles.h1}>
+          {title} <Text style={styles.light}>Or Similar</Text>
+        </Text>
+        <Text style={styles.sub}>
+          Sedan limos are a great choice for transportation to and from the
+          airport to any part of the GTA.
+        </Text>
 
-            {/* Payment label */}
-            <View style={styles.rowHead}>
-              <Text style={styles.section}>Payment</Text>
-              <Ionicons
-                name="information-circle-outline"
-                size={16}
-                color="#9AA0A6"
-              />
-            </View>
-
-            {/* Car tile + price slab */}
-            <View style={styles.carRow}>
-              <View style={styles.carCard}>
-                {q.image ? (
-                  // <Image source={q.image} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
-                  // <MaterialCommunityIcons name="car-estate" size={64} color="#111" />
-                  <Image
-                    source={assets.images.escaladeIcon}
-                    style={{ width: 200, height: 80 }}
-                    resizeMode="contain"
-                  />
-                ) : (
-                  // <MaterialCommunityIcons name="car-estate" size={64} color="#111" />
-                  <Image
-                    source={assets.images.escaladeIcon}
-                    style={{ width: 200, height: 80 }}
-                    resizeMode="contain"
-                  />
-                )}
-              </View>
-              <View style={styles.priceCard}>
-                {!!q.seatText && (
-                  <Text style={styles.taxTxt}>Tax: ${q.seatText}</Text>
-                )}
-                <Text style={styles.priceNow}>${q.price}</Text>
-                <Text style={styles.tiny}>Tip included</Text>
-              </View>
-            </View>
-
-            {/* Policies chip */}
-            <Pressable style={styles.policyPill} onPress={openPolicies}>
-              <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
-              >
-                <Text style={styles.policyStrong}>
-                  Late Arrival • Waiting Time • No Show
-                </Text>
-              </View>
-              <Ionicons name="chevron-forward" size={18} color="#111" />
-            </Pressable>
-            <Text style={styles.policySub}>
-              Flat Rate – No Surge, No Per-KM, No Per-MIN Charges
-            </Text>
-
-            {/* Special request toggle */}
-            <Pressable style={styles.specialRow} onPress={openSpecial}>
-              <Ionicons name="sparkles-outline" size={18} color="#111" />
-              <Text style={styles.specialTxt}>I have special request</Text>
-              <Ionicons
-                name={special ? 'checkbox-outline' : 'square-outline'}
-                size={18}
-                color="#111"
-              />
-            </Pressable>
-
-            {/* Payment + Coupon row */}
-            <View style={styles.bottomRow}>
-              <Pressable style={styles.payChip} onPress={() => openBreakdown()}>
-                <Ionicons name="card-outline" size={18} color="#111" />
-                <Text style={styles.payTxt}>{payMethod}</Text>
-                <Ionicons name="chevron-down" size={16} color="#111" />
-              </Pressable>
-
-              <View style={styles.couponChip}>
-                <Ionicons name="pricetag-outline" size={18} color="#111" />
-                <TextInput
-                  style={styles.couponInput}
-                  placeholder="Apply Coupon"
-                  placeholderTextColor="#9AA0A6"
-                  value={coupon}
-                  onChangeText={setCoupon}
-                />
-              </View>
-            </View>
-          </ScrollView>
-
-          {/* CTA */}
-          <Pressable style={styles.cta} onPress={confirm}>
-            <Text style={styles.ctaText}>Confirm and Request</Text>
-            <View style={styles.ctaIcon}>
-              <AntDesign name="arrowright" size={18} color="#111" />
-            </View>
-          </Pressable>
+        {/* Payment label */}
+        <View style={styles.rowHead}>
+          <Text style={styles.section}>Payment</Text>
+          <Ionicons
+            name="information-circle-outline"
+            size={16}
+            color="#9AA0A6"
+          />
         </View>
-      </SafeAreaView>
-    </View>
+
+        {/* Car tile + price slab */}
+        <View style={styles.carRow}>
+          <View style={styles.carCard}>
+            <Image
+              source={carSrc}
+              style={{ width: 200, height: 80 }}
+              resizeMode="contain"
+            />
+          </View>
+
+          <View style={styles.priceCard}>
+            {!!q.tax && <Text style={styles.taxTxt}>Tax: ${q.tax}</Text>}
+            <Text style={styles.priceNow}>${q.price}</Text>
+            <Text style={styles.tiny}>Tip included</Text>
+          </View>
+        </View>
+
+        {/* Policies chip */}
+        <Pressable style={styles.policyPill} onPress={openPolicies}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
+            <Text style={styles.policyStrong}>
+              Late Arrival • Waiting Time • No Show
+            </Text>
+          </View>
+          <Ionicons name="chevron-forward" size={18} color="#111" />
+        </Pressable>
+        <Text style={styles.policySub}>
+          Flat Rate – No Surge, No Per-KM, No Per-MIN Charges
+        </Text>
+
+        {/* Special request */}
+        <Pressable style={styles.specialRow} onPress={openSpecial}>
+          <Ionicons name="sparkles-outline" size={18} color="#111" />
+          <Text style={styles.specialTxt}>I have special request</Text>
+          <Ionicons
+            name={!!special ? 'checkbox-outline' : 'square-outline'}
+            size={18}
+            color="#111"
+          />
+        </Pressable>
+
+        {/* Payment + Coupon */}
+        <View style={styles.bottomRow}>
+          <Pressable style={styles.payChip} onPress={openBreakdown}>
+            <Ionicons name="card-outline" size={18} color="#111" />
+            <Text style={styles.payTxt}>{payMethod}</Text>
+            <Ionicons name="chevron-down" size={16} color="#111" />
+          </Pressable>
+
+          <View style={styles.couponChip}>
+            <Ionicons name="pricetag-outline" size={18} color="#111" />
+            <TextInput
+              style={styles.couponInput}
+              placeholder="Apply Coupon"
+              placeholderTextColor="#9AA0A6"
+              value={coupon}
+              onChangeText={setCoupon}
+            />
+          </View>
+        </View>
+      </ScrollView>
+
+      {/* Sticky CTA */}
+      <View
+        style={[styles.ctaWrap, { paddingBottom: Math.max(16, insets.bottom) }]}
+      >
+        <Pressable style={styles.cta} onPress={confirm}>
+          <Text style={styles.ctaText}>Confirm and Request</Text>
+          <View style={styles.ctaIcon}>
+            <AntDesign name="arrowright" size={18} color="#111" />
+          </View>
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  sheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: '94%',
-  },
+  screen: { flex: 1, backgroundColor: '#fff' },
+
   closeBtn: {
     position: 'absolute',
     left: 14,
-    top: 10,
     width: 32,
     height: 32,
     borderRadius: 16,
     backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 2,
+    zIndex: 10,
   },
 
-  h1: { color: '#111', fontWeight: '800', fontSize: 18 },
+  h1: { color: '#111', fontWeight: '800', fontSize: 18, marginTop: 8 },
   light: { color: '#9AA0A6', fontWeight: '700' },
-  sub: { color: '#666', marginTop: 6 },
+  sub: { color: '#666', marginTop: 6, lineHeight: 20 },
 
   rowHead: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    marginTop: 14,
+    marginTop: 16,
   },
   section: { color: '#111', fontWeight: '800' },
 
   carRow: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    marginTop: 10,
-    paddingVertical: 0,
-    backgroundColor: '#EFEFEF',
-    borderRadius: 10,
+    alignItems: 'stretch',
+    backgroundColor: '#F2F3F5',
+    gap: 5,
+    marginTop: 15,
+    borderRadius: 16,
   },
   carCard: {
-    width: 200,
-    height: 92,
-    borderRadius: 0,
-    borderTopRightRadius: 24,
-    borderBottomRightRadius: 24,
+    flex: 1,
+    minHeight: 92,
+    borderRadius: 16,
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#EEE',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
     elevation: 2,
   },
   priceCard: {
-    flex: 1,
-    maxWidth: 150,
-    borderRadius: 14,
-    backgroundColor: 'transparent',
-    padding: 10,
+    width: 150,
+    borderRadius: 16,
+    backgroundColor: '#F2F3F5',
+    padding: 12,
     alignItems: 'flex-end',
-    borderWidth: 0,
-    borderColor: '#EEE',
+    paddingTop: 16,
   },
-  taxTxt: {
-    color: '#777',
-    fontSize: 12,
-    alignSelf: 'flex-end',
-    marginBottom: 5,
-  },
-  priceNow: { color: '#111', fontSize: 28, fontWeight: '800', lineHeight: 30 },
-  tiny: { color: '#777', marginTop: 5 },
+  taxTxt: { color: '#777', fontSize: 12, marginBottom: 6 },
+  priceNow: { color: '#111', fontSize: 30, fontWeight: '800', lineHeight: 32 },
+  tiny: { color: '#777', marginTop: 6 },
 
   policyPill: {
     marginTop: 12,
@@ -349,9 +316,17 @@ const styles = StyleSheet.create({
   },
   couponInput: { flex: 1, color: '#111', padding: 0 },
 
+  ctaWrap: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#fff',
+  },
   cta: {
-    margin: 16,
-    height: 50,
+    marginHorizontal: 16,
+    marginTop: 8,
+    height: 52,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',

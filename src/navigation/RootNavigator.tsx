@@ -21,6 +21,7 @@ import ScheduleRideScreen from '../screens/ScheduleRideScreen';
 import WhyChooseUsModal from '../screens/WhyChooseUsModal';
 import FareOptionsModal from '../screens/FareOptionsModal';
 import SpecialRequestModal from '../screens/SpecialRequestModal';
+import ChildSeatInfoModal from '../screens/ChildSeatInfoModal';
 import PoliciesModal from '../screens/PoliciesModal';
 import ConfirmRequestScreen from '../screens/ConfirmRequestScreen';
 import PaymentBreakdownModal from '../screens/PaymentBreakdownModal';
@@ -69,6 +70,7 @@ export default function RootNavigator({ initialRoute = 'Login' as keyof RootStac
       <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Wallet" component={WalletScreen} options={{ headerShown: false }} />
       <Stack.Screen name="Payment" component={PaymentScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ConfirmRequest" component={ConfirmRequestScreen} options={{ headerShown: false }} />
 
 
 
@@ -80,12 +82,12 @@ export default function RootNavigator({ initialRoute = 'Login' as keyof RootStac
         <Stack.Screen name="AddPassenger" component={AddPassengerModal} />
         <Stack.Screen name="AddLuggage" component={AddLuggageModal} />
         <Stack.Screen name="LuggageScanInfo" component={LuggageScanInfoModal} />
+        <Stack.Screen name="ChildSeatInfo" component={ChildSeatInfoModal} />
         <Stack.Screen name="OversizedLuggage" component={OversizedLuggageModal} />
         <Stack.Screen name="WhyChooseUs" component={WhyChooseUsModal} />
         <Stack.Screen name="FareOptions" component={FareOptionsModal} />
         <Stack.Screen name="SpecialRequest" component={SpecialRequestModal} />
         <Stack.Screen name="Policies" component={PoliciesModal} />
-        <Stack.Screen name="ConfirmRequest" component={ConfirmRequestScreen} />
         <Stack.Screen name="ScheduleRide" component={ScheduleRideScreen} />
         <Stack.Screen name="PaymentBreakdown" component={PaymentBreakdownModal} />
         {/* If you want the Places modal here, keep naming consistent */}

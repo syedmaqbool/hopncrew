@@ -31,6 +31,8 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
   const insets = useSafeAreaInsets();
 
   const now: any = route.params?.initial ?? new Date();
+  const start = route.params?.start ?? null;
+  const dest = route.params?.dest ?? null;
 
   // ----- data sources -----
   const dates = useMemo(() => {
@@ -91,7 +93,6 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
   }, [selectedDate]);
 
   const confirm = () => {
-    // you can call route.params?.onPick?.(selectedDate) if you want to return
     navigation.navigate('FareOptions', {
       etaMinutes: 18,
       quotes: [
@@ -121,8 +122,9 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
       onConfirm: (q, opts) => {
         console.log('Chosen quote:', q, opts);
       },
-      start, // { description, latitude, longitude }
+      start,
       dest,
+      when: selectedDate, // optional: pass scheduled time along
     });
   };
 
@@ -153,13 +155,28 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
       {/* White sheet content */}
       <SafeAreaView edges={['bottom']} style={styles.sheet}>
         {/* big centered title */}
+        {false && (
+          <Text style={styles.bigTitle}>
+            {new Intl.DateTimeFormat('en-US', {
+              weekday: 'short',
+              month: 'short',
+              day: 'numeric',
+            }).format(selectedDate)}
+            {`  •  `}
+            {new Intl.DateTimeFormat('en-US', {
+              hour: 'numeric',
+              minute: '2-digit',
+            }).format(selectedDate)}
+          </Text>
+        )}
+
         <Text style={styles.bigTitle}>
           {new Intl.DateTimeFormat('en-US', {
             weekday: 'short',
             month: 'short',
             day: 'numeric',
           }).format(selectedDate)}
-          {`  •  `}
+          {` - `}
           {new Intl.DateTimeFormat('en-US', {
             hour: 'numeric',
             minute: '2-digit',
@@ -201,7 +218,16 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
           </View>
 
           {/* Info bullets with extra vertical padding */}
-          <View style={{ gap: 10, paddingHorizontal: 16, paddingVertical: 18 }}>
+        </ScrollView>
+
+        {/* CTA */}
+        <View
+          style={[
+            styles.footer,
+            { paddingBottom: Math.max(insets.bottom, 12) },
+          ]}
+        >
+          <View style={{ gap: 14, paddingHorizontal: 16, paddingVertical: 8 }}>
             <View style={[styles.infoRow, styles.infoPadded]}>
               <Image
                 source={assets.images.dropoffIcon}
@@ -210,7 +236,7 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
               <View style={{ flex: 1 }}>
                 <Text style={styles.infoTitle}>Estimated drop-off time</Text>
                 <Text style={styles.infoSub}>
-                  Arrive at destination at approx. {dropOff}
+                  Arrive at destination at approx. {dropOff.replace(' ', '')}
                 </Text>
               </View>
             </View>
@@ -228,28 +254,21 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
               </View>
             </View>
           </View>
-
           {/* Toggle pill */}
           <View style={styles.toggleCard}>
-            <Image source={assets.images.squareIcon} style={styles.infoIcon} />
+            <View style={styles.toggleIconWrap}>
+              <Image
+                source={assets.images.squareIcon}
+                style={styles.infoIcon}
+              />
+            </View>
             <Text style={styles.toggleTxt}>
               Square hold funds and charge after drop-off
             </Text>
-            <Ionicons
-              name="information-circle-outline"
-              size={16}
-              color="#9AA0A6"
-            />
+            <View style={styles.infoCircle}>
+              <Ionicons name="information" size={12} color="#111" />
+            </View>
           </View>
-        </ScrollView>
-
-        {/* CTA */}
-        <View
-          style={[
-            styles.footer,
-            { paddingBottom: Math.max(insets.bottom, 12) },
-          ]}
-        >
           <Pressable style={styles.cta} onPress={confirm}>
             <Text style={styles.ctaText}>Check Fare</Text>
             <View style={styles.ctaIcon}>
@@ -384,6 +403,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: '#E7E7E7',
     backgroundColor: 'rgba(0,0,0,0.03)', // subtle band like the mock
+    borderRadius: 8,
   },
   wheelCol: {
     height: ITEM_H * VISIBLE_ROWS,
@@ -417,14 +437,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
     marginHorizontal: 16,
-    marginTop: 12,
+    marginBottom: 12,
     padding: 12,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#D6F8EA',
     backgroundColor: '#EAFDF5',
   },
+  toggleIconWrap: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#CFF6E6',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   toggleTxt: { color: '#111', fontSize: 12, fontWeight: '500', flexShrink: 1 },
+  infoCircle: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: MINT,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
   cta: {
     marginTop: 16,
@@ -448,3 +484,4 @@ const styles = StyleSheet.create({
     right: 10,
   },
 });
+

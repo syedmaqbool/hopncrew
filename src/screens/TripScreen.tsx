@@ -1,26 +1,28 @@
 // src/screens/TripScreen.tsx
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useMemo, useState } from 'react';
-import {
-  Image,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  Switch,
-  Text,
-  View,
-} from 'react-native';
+import { Image, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import assets from '../../assets';
-import type { Destination, LuggageItem, PassengerCounts, RootStackParamList } from '../navigation/types';
+import type {
+  Destination,
+  LuggageItem,
+  PassengerCounts,
+  RootStackParamList,
+} from '../navigation/types';
 import { summarizeLuggage } from '../utils/luggage';
+
 type Props = NativeStackScreenProps<RootStackParamList, 'Trip'>;
 
-
 const MINT = '#B9FBE7';
+const BG = '#F6F7F8';
+const BORDER = '#ECEDEE';
+const TEXT = '#111';
+const MUTED = '#9AA0A6';
+
 const DEFAULT_PAX: PassengerCounts = {
   adults: 1,
   children: 0,
@@ -28,92 +30,82 @@ const DEFAULT_PAX: PassengerCounts = {
   seats: { infantRear: 0, toddlerRear: 0, toddlerFront: 0 },
 };
 
-
 export default function TripScreen({ navigation, route }: Props) {
+  // ---------- Trip state that persists across modals ----------
   const [start, setStart] = useState<Destination | null>(
-    route.params?.start ??
-    {
-      description: "Toronto Pearson International Airport (YYZ)",
+    route.params?.start ?? {
+      description: 'Toronto Pearson International Airport (YYZ)',
       latitude: 43.6777,
       longitude: -79.6248,
-    }
+    },
   );
-  const [passengers, setPassengers] = useState<PassengerCounts>(DEFAULT_PAX);
-  const [dest, setDest] = useState<Destination | null>(route.params?.dest ?? null);
+  const [dest, setDest] = useState<Destination | null>(
+    route.params?.dest ?? null,
+  );
   const [setOnPin, setSetOnPin] = useState(false);
+
+  const [passengers, setPassengers] = useState<PassengerCounts>(DEFAULT_PAX);
   const [luggage, setLuggage] = useState<LuggageItem[]>([]);
 
-
+  // ---------- derived text for the “chip” ----------
   const { totalPassengers, totalSeats, chipText } = useMemo(() => {
-    const totalP =
-      passengers.adults + passengers.children + passengers.infants;
+    const totalP = passengers.adults + passengers.children + passengers.infants;
     const totalS = Object.values(passengers.seats || {}).reduce(
       (a, b) => a + (b || 0),
-      0
+      0,
     );
     const p = `${totalP} passenger${totalP !== 1 ? 's' : ''}`;
-    const s =
-      totalS > 0 ? ` · ${totalS} seat${totalS !== 1 ? 's' : ''}` : '';
+    const s = totalS > 0 ? ` · ${totalS} seat${totalS !== 1 ? 's' : ''}` : '';
     return { totalPassengers: totalP, totalSeats: totalS, chipText: p + s };
   }, [passengers]);
 
-
-
+  // ---------- navigation helpers ----------
   const openPlaces = (which: 'start' | 'dest') => {
     navigation.navigate('PlaceSearch', {
-      onPick: (d) => {
+      onPick: d => {
         which === 'start' ? setStart(d) : setDest(d);
       },
     });
   };
 
   const openAddPassenger = () => {
-    // navigation.navigate('AddPassenger', {
-    //   initial: passengers,
-    //   onDone: (data) => setPassengers(data), // <-- update Trip state
-    // });
+    // Open the passenger modal. It will:
+    //  - save counts on close via `onDone`
+    //  - when user chooses “+ Add Luggage”, it REPLACES itself with AddLuggage
+    //    and that will callback `onDone` to update luggage here.
     navigation.navigate('AddPassenger', {
       initial: passengers,
-      luggage,                        // give current luggage to the modal
-      onDone: setPassengers,          // refresh passenger details on close
-      onEditLuggage: setLuggage,      // when “Add Luggage” finishes
+      luggage, // pass current luggage so the modal can show/edit
+      start: start ?? undefined,
+      dest: dest ?? undefined,
+      onDone: (pax: PassengerCounts) => setPassengers(pax),
+      onEditLuggage: (items: LuggageItem[]) => setLuggage(items),
     });
   };
-
-  const summary = useMemo(() => {
-    const total =
-      passengers.adults + passengers.children + passengers.infants;
-    const seats =
-      Object.values(passengers.seats).reduce((a, b) => a + (b || 0), 0);
-    return { total, seats, text: `${total} passenger${total !== 1 ? 's' : ''}${seats ? ` · ${seats} seat${seats !== 1 ? 's' : ''}` : ''}` };
-  }, [passengers]);
-
-
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
-        <Pressable style={styles.hBtn} onPress={() => navigation.goBack()}>
-          <Ionicons name="close" size={18} color="#111" />
-        </Pressable>
-        <Text style={styles.hTitle}>Trip</Text>
+        <View style={styles.headerLeft}>
+          <Pressable style={styles.hBtn} onPress={() => navigation.goBack()}>
+            <Ionicons name="close" size={18} color={TEXT} />
+          </Pressable>
+          <Text style={styles.hTitle}>Trip</Text>
+        </View>
         <Pressable style={styles.doneBtn} onPress={() => navigation.goBack()}>
           <Text style={styles.doneText}>Done</Text>
         </Pressable>
       </View>
 
-      <ScrollView
-        style={{ flex: 1 }}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 120 }}
-        showsVerticalScrollIndicator={false}
-      >
-        {/* Card with start/dest rows */}
+      {/* -------- NON-SCROLLING CONTENT -------- */}
+      <View style={styles.content}>
+        {/* Start/Destination Card */}
         <View style={styles.block}>
           {/* Start */}
           <Pressable style={styles.row} onPress={() => openPlaces('start')}>
             <View style={styles.rowIconWrap}>
-              <Ionicons name="location-outline" size={16} color="#111" />
+              <Ionicons name="radio-button-on-outline" size={16} color={TEXT} />
             </View>
             <View style={styles.rowTextWrap}>
               <Text style={styles.rowLabel}>Start</Text>
@@ -124,104 +116,120 @@ export default function TripScreen({ navigation, route }: Props) {
           </Pressable>
 
           {/* Destination */}
-          <Pressable style={[styles.row, { marginTop: 10 }]} onPress={() => openPlaces('dest')}>
+          <Pressable
+            style={[styles.row, { marginTop: 12 }]}
+            onPress={() => openPlaces('dest')}
+          >
             <View style={[styles.rowIconWrap, { backgroundColor: '#EAEAEA' }]}>
-              <MaterialIcons name="flag" size={16} color="#111" />
+              <MaterialIcons name="flag" size={16} color={TEXT} />
             </View>
             <View style={styles.rowTextWrap}>
               <Text style={styles.rowLabel}>Destination</Text>
-              <Text style={[styles.rowValue, !dest && { color: '#9AA0A6' }]} numberOfLines={1}>
+              <Text
+                style={[styles.rowValue, !dest && { color: MUTED }]}
+                numberOfLines={1}
+              >
                 {dest?.description ?? 'Where are you going?'}
               </Text>
             </View>
             <View style={styles.plusBadge}>
-              <AntDesign name="plus" size={14} color="#111" />
+              <AntDesign name="plus" size={14} color={TEXT} />
             </View>
           </Pressable>
 
-          {/* small helper text */}
+          {/* Helper */}
           <View style={styles.helper}>
             <Text style={styles.helperText}>Want to pick someone else?</Text>
-            <Pressable onPress={() => {
-              navigation.navigate('ScheduleRide', {
-                initial: new Date(),
-                onPick: (when) => { /* store in Trip state / query fare */ },
-              });
-            }}>
-              <AntDesign name="pluscircleo" size={16} color="#111" />
+            <Pressable
+              onPress={() => {
+                navigation.navigate('ScheduleRide', {
+                  initial: new Date(),
+                  start: start ?? undefined,
+                  dest: dest ?? undefined,
+                  onPick: () => {},
+                });
+              }}
+              style={styles.helperPlus}
+            >
+              <AntDesign name="plus" size={14} color={TEXT} />
             </Pressable>
           </View>
         </View>
 
         {/* Set on pin */}
         <Pressable style={styles.pinRow} onPress={() => setSetOnPin(!setOnPin)}>
-          {/* <Ionicons name="pin-outline" size={18} color="#111" /> */}
           <Image
-            source={assets.images.locationPin}// <-- **Direct require with correct path**
-            style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+            source={assets.images.locationPin}
+            style={{ width: 20, height: 20, resizeMode: 'contain' }}
           />
           <Text style={styles.pinText}>Set location on pin</Text>
           <View style={{ flex: 1 }} />
           <Switch value={setOnPin} onValueChange={setSetOnPin} />
         </Pressable>
 
-
-
-        {/* Passenger summary chip */}
+        {/* Passenger summary chip (tap to edit) */}
         {(totalPassengers > 0 || totalSeats > 0) && (
           <Pressable style={styles.summaryChip} onPress={openAddPassenger}>
-            <Ionicons name="people-outline" size={16} color="#111" />
-            <Text style={styles.summaryText}>{chipText}</Text>
+            <Ionicons name="people-outline" size={16} color={TEXT} />
+            <Text style={styles.summaryText} numberOfLines={1}>
+              {chipText}
+            </Text>
             <Text style={styles.summaryEdit}>Edit</Text>
           </Pressable>
         )}
 
-        <Text>{`Adults ${passengers.adults} · Children ${passengers.children} · Infants ${passengers.infants}`}</Text>
-
-        <Text style={styles.summaryText}>
-          {summarizeLuggage(luggage)}   {/* e.g., “L 1 · Carry-on 2 · Golf 1” */}
+        {/* tiny meta / readouts */}
+        <Text
+          style={styles.inlineMeta}
+          numberOfLines={1}
+        >{`Adults ${passengers.adults} · Children ${passengers.children} · Infants ${passengers.infants}`}</Text>
+        <Text style={[styles.inlineMeta, { marginTop: 4 }]} numberOfLines={1}>
+          {summarizeLuggage(luggage)}
         </Text>
 
+        {/* Spacer pushes bullets near bottom, keeping room for CTA */}
+        <View style={{ flex: 1 }} />
 
         {/* Info bullets */}
-        <View style={{ marginTop: 155, gap: 14 }}>
+        <View style={{ gap: 16 }}>
           <View style={styles.bullet}>
-            {/* <Ionicons name="time-outline" size={18} color="#111" /> */}
             <Image
-              source={assets.images.traffic}// <-- **Direct require with correct path**
-              style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+              source={assets.images.traffic}
+              style={{ width: 20, height: 20, resizeMode: 'contain' }}
             />
             <View style={{ flex: 1 }}>
-              <Text style={styles.bTitle}>Traffic or Rush Hour? Flat Rate!</Text>
+              <Text style={styles.bTitle}>
+                Traffic or Rush Hour? Flat Rate!
+              </Text>
               <Text style={styles.bBody}>
-                No worries! Enjoy a flat rate with no surge pricing, no per-KM or per-MIN changes, and no hidden fees.
+                No worries! Enjoy a flat rate with no surge pricing, no per-KM
+                or per-MIN charges, and no hidden fees.
               </Text>
             </View>
           </View>
 
           <View style={styles.bullet}>
-            {/* <Ionicons name="shield-checkmark-outline" size={18} color="#111" /> */}
             <Image
-              source={assets.images.securityIcon}// <-- **Direct require with correct path**
-              style={{ width: '20', height: '20', resizeMode: 'contain', maxWidth: '100%' }}
+              source={assets.images.securityIcon}
+              style={{ width: 20, height: 20, resizeMode: 'contain' }}
             />
             <View style={{ flex: 1 }}>
               <Text style={styles.bTitle}>Guaranteed</Text>
               <Text style={styles.bBody}>
-                20+ Years of Reliable Pickups.
-                 hop’n guarantees on-time service with no cancellations.
+                20+ Years of Reliable Pickups. hop’n guarantees on-time service
+                with no cancellations.
               </Text>
             </View>
           </View>
         </View>
-      </ScrollView>
+      </View>
 
       {/* Bottom CTA */}
       <View style={styles.bottom}>
-        <Pressable style={styles.cta} onPress={() => { openAddPassenger() }}>
+        <Pressable style={styles.cta} onPress={openAddPassenger}>
           <Text style={styles.ctaText}>+ Add Passenger</Text>
           <View style={styles.ctaArrow}>
-            <AntDesign name="arrowright" size={18} color="#111" />
+            <AntDesign name="arrowright" size={18} color={TEXT} />
           </View>
         </Pressable>
       </View>
@@ -233,72 +241,103 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
 
   header: {
-    height: 56, paddingHorizontal: 12,
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
+    height: 56,
+    paddingHorizontal: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
+  headerLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   hBtn: {
-    width: 36, height: 36, borderRadius: 18,
-    backgroundColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#F2F2F2',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  hTitle: { fontSize: 16, fontWeight: '700', color: '#111' },
+  hTitle: { fontSize: 16, fontWeight: '700', color: TEXT },
   doneBtn: { paddingHorizontal: 8, paddingVertical: 4 },
-  doneText: { color: '#111', fontWeight: '700' },
+  doneText: { color: TEXT, fontWeight: '700' },
+
+  // non-scroll container
+  content: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingBottom: 140, // keep clear of CTA
+  },
 
   block: {
-    backgroundColor: '#F6F7F8',
+    backgroundColor: BG,
     borderRadius: 16,
     padding: 12,
+    marginTop: 16,
   },
 
   row: {
-    flexDirection: 'row', alignItems: 'center',
-    backgroundColor: '#fff', borderRadius: 12, padding: 10,
-    borderWidth: 1, borderColor: '#EFEFEF',
+    minHeight: 84,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 14,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: BORDER,
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
   },
   rowIconWrap: {
-    width: 28, height: 28, borderRadius: 14,
-    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: MINT,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 10,
   },
   rowTextWrap: { flex: 1 },
-  rowLabel: { fontSize: 12, color: '#888' },
-  rowValue: { fontSize: 14, color: '#111', fontWeight: '600', },
+  rowLabel: { fontSize: 12, color: '#6F7378', fontWeight: '600' },
+  rowValue: { fontSize: 14.5, color: TEXT, fontWeight: '700', marginTop: 2 },
   plusBadge: {
-    width: 26, height: 26, borderRadius: 13,
-    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: MINT,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginLeft: 8,
   },
+
   helper: {
-    flexDirection: 'row', alignItems: 'center',
-    justifyContent: 'flex-end', gap: 6,
-    paddingHorizontal: 6, marginTop: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+    gap: 10,
+    paddingHorizontal: 6,
+    marginTop: 16,
   },
-  helperText: { color: '#000', textAlign: 'right', paddingVertical: 3, fontWeight: '500' },
+  helperText: { color: TEXT, paddingVertical: 3, fontWeight: '500' },
+  helperPlus: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: MINT,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 
   pinRow: {
-    flexDirection: 'row', alignItems: 'center',
-    marginTop: 16, gap: 10, paddingHorizontal: 6,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    paddingHorizontal: 6,
+    marginTop: 16,
   },
-  pinText: { color: '#111', fontWeight: '600' },
-
-  bullet: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
-  bTitle: { color: '#111', fontWeight: '700' },
-  bBody: { color: '#666', marginTop: 2 },
-
-  bottom: {
-    position: 'absolute', left: 0, right: 0, bottom: 35,
-    padding: 16, paddingBottom: 24, backgroundColor: 'transparent',
-  },
-  cta: {
-    height: 48, borderRadius: 28, backgroundColor: '#111',
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
-  },
-  ctaText: { color: '#fff', fontWeight: '700' },
-  ctaArrow: {
-    width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
-    marginLeft: 6,
-  },
+  pinText: { color: TEXT, fontWeight: '700' },
 
   summaryChip: {
     alignSelf: 'flex-start',
@@ -308,12 +347,45 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 16,
-    backgroundColor: '#F6F7F8',
+    backgroundColor: BG,
     borderWidth: 1,
-    borderColor: '#EFEFEF',
+    borderColor: BORDER,
     marginTop: 12,
-    marginHorizontal: 16,
   },
-  summaryText: { color: '#111', fontWeight: '600' },
+  summaryText: { color: TEXT, fontWeight: '700', maxWidth: '70%' },
   summaryEdit: { color: '#4F8EF7', fontWeight: '700', marginLeft: 6 },
+
+  inlineMeta: { color: '#50545A', marginTop: 10 },
+
+  bullet: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
+  bTitle: { color: TEXT, fontWeight: '800' },
+  bBody: { color: '#666', marginTop: 2, lineHeight: 18 },
+
+  bottom: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 24,
+    paddingHorizontal: 16,
+  },
+  cta: {
+    height: 52,
+    borderRadius: 28,
+    backgroundColor: TEXT,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 10,
+  },
+  ctaText: { color: '#fff', fontWeight: '800' },
+  ctaArrow: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: MINT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 10,
+  },
 });

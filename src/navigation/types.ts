@@ -33,6 +33,8 @@ export type RootStackParamList = {
         initial?: PassengerCounts;
         // pass current luggage separately (optional)
         luggage?: LuggageItem[];
+        start?: Destination;
+        dest?: Destination;
         onDone?: (p: PassengerCounts) => void;
         onEditLuggage?: (items: LuggageItem[]) => void;
       }
@@ -40,6 +42,8 @@ export type RootStackParamList = {
   AddLuggage:
     | {
         initial?: LuggageItem[];
+        start?: Destination;
+        dest?: Destination;
         onDone?: (items: LuggageItem[]) => void;
       }
     | undefined;
@@ -48,6 +52,8 @@ export type RootStackParamList = {
         onStartScan?: () => void; // optional callback when user taps “Scan now”
       }
     | undefined;
+
+  ChildSeatInfo: undefined;
 
   OversizedLuggage:
     | {
@@ -69,6 +75,9 @@ export type RootStackParamList = {
         etaMinutes?: number;
         quotes: FareQuote[];
         payMethod?: string; // e.g., "Card"
+        start?: Destination;
+        dest?: Destination;
+        when?: Date;
         onConfirm?: (
           quote: FareQuote,
           opts: { specialRequest?: string; payMethod: string },
@@ -168,6 +177,8 @@ export type RootStackParamList = {
   FavouriteAddresses: undefined;
   ScheduleRide: {
     initial?: Date;
+    start?: Destination;
+    dest?: Destination;
     onPick?: (when: Date, holdFunds: boolean) => void;
   };
 };
@@ -245,7 +256,14 @@ export type PassengerCounts = {
   seats: Record<string, number>; // e.g. { infantRear: 1, toddlerRear: 0, toddlerFront: 2 }
 };
 
-export type LuggageSize = 'XL' | 'L' | 'M' | 'S' | 'Carry-on' | 'Oversized';
+export type LuggageSize =
+  | 'XL'
+  | 'L'
+  | 'M'
+  | 'S'
+  | 'Carry-on'
+  | 'Oversized'
+  | 'Backpack';
 
 export type LuggageItem = {
   size: LuggageSize;

@@ -339,7 +339,7 @@ const styles = StyleSheet.create({
 
   // Map occupies the top ~40–45% with rounded bottom corners
   mapWrap: {
-    height: 300,
+    height: 600,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     overflow: 'hidden',
