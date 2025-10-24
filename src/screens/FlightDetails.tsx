@@ -47,10 +47,9 @@ export default function FlightDetails({ navigation, route }: Props) {
   }, [when]);
 
   const startSchedule = () =>
-    navigation.navigate('ScheduleRide', {
+    navigation.navigate('ScheduleFlight', {
+      airportCode,
       initial: when,
-      start: route.params?.start,
-      dest: route.params?.dest,
       onPick: (picked: Date) => setWhen(picked),
     });
 
@@ -86,7 +85,7 @@ export default function FlightDetails({ navigation, route }: Props) {
           style={styles.hBtn}
           onPress={() => navigation.replace('App')}
         >
-          <Ionicons name="chevron-back" size={22} color={TEXT} />
+          <Ionicons name="close" size={22} color={TEXT} />
         </Pressable>
       </View>
 

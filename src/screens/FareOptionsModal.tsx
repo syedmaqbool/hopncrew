@@ -191,7 +191,12 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             <Text style={styles.policyTxt}>
               Late Arrival - Waiting Time - No Show
             </Text>
-            <Ionicons name="chevron-forward" size={18} color={TEXT} />
+            <AntDesign
+              name="arrowright"
+              style={{ marginTop: 4 }}
+              size={16}
+              color={TEXT}
+            />
           </Pressable>
 
           {/* Payment row + mint micro button */}
@@ -202,7 +207,11 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             }}
           >
             <View style={styles.rowIcon}>
-              <Ionicons name="person-circle-outline" size={20} color={TEXT} />
+              <Image
+                source={require('../../assets/icons/card-icon.png')}
+                style={{ width: 30, height: 30, resizeMode: 'contain' }}
+              />
+              {/* <Ionicons name="person-circle-outline" size={20} color={TEXT} /> */}
             </View>
             <Text style={styles.rowMain}>{payMethod}</Text>
 
@@ -213,7 +222,12 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
 
           {/* Special request as checkbox-like toggle */}
           <Pressable
-            style={[styles.rowCard, { alignItems: 'center' }]}
+            style={{
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexDirection: 'row',
+              marginTop: 14,
+            }}
             onPress={() => {
               if (!hasNote) {
                 setHasNote(true);
@@ -231,15 +245,31 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
               }
             }}
           >
-            <Ionicons name="sparkles-outline" size={18} color={TEXT} />
-            <Text style={[styles.rowMain, { flex: 1, marginLeft: 10 }]}>
-              I have special request
-            </Text>
-
-            <View style={[styles.squareCheck, hasNote && styles.squareCheckOn]}>
-              {hasNote ? (
-                <Ionicons name="checkmark" size={14} color="#fff" />
-              ) : null}
+            <View
+              style={[
+                styles.rowMain,
+                {
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: 12,
+                  marginTop: 10,
+                },
+              ]}
+            >
+              <Image
+                source={require('../../assets/icons/specreq-icon.png')}
+                style={{ width: 24, height: 24, resizeMode: 'contain' }}
+              />
+              {/* <Ionicons name="sparkles-outline" size={18} color={TEXT} /> */}
+              <Text>I have special request</Text>
+              <View
+                style={[styles.squareCheck, hasNote && styles.squareCheckOn]}
+              >
+                {hasNote ? (
+                  <Ionicons name="checkmark" size={14} color="#fff" />
+                ) : null}
+              </View>
             </View>
           </Pressable>
         </ScrollView>
@@ -445,16 +475,18 @@ const styles = StyleSheet.create({
 
   /* policy pill */
   policyRow: {
-    marginTop: 14,
+    marginTop: 22,
     paddingHorizontal: 14,
-    paddingVertical: 10,
+    paddingVertical: 12,
+    marginHorizontal: 50,
     borderRadius: 999,
     backgroundColor: '#F6F7F8',
-    borderWidth: 1,
-    borderColor: '#EEE',
+    // borderWidth: 1,
+    // borderColor: '#EEE',
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
+    gap: 8,
   },
   policyTxt: { color: TEXT, fontWeight: '700' },
 
@@ -467,14 +499,14 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#F0F0F0',
+    // borderWidth: 1,
+    // borderColor: '#F0F0F0',
   },
   rowIcon: {
     width: 28,
     height: 28,
-    borderRadius: 14,
-    backgroundColor: '#F6F7F8',
+    // borderRadius: 14,
+    // backgroundColor: '#F6F7F8',
     alignItems: 'center',
     justifyContent: 'center',
   },

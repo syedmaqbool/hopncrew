@@ -8,7 +8,6 @@ import {
   Pressable,
   Animated,
   Easing,
-  InteractionManager,
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,13 +19,12 @@ type Props = NativeStackScreenProps<RootStackParamList, 'RideSelection'>;
 const TEXT = '#0F172A'; // slate-900
 const MUTED = '#6B7280'; // gray-500
 const MINT = '#B9FBE7';
-const CARD = '#0B1220'; // deep card for glass effect
-const BORDER = 'rgba(255,255,255,0.08)';
 
 export default function RideSelectionScreen({ navigation }: Props) {
   // Entrance / exit animation
   const slide = useRef(new Animated.Value(1)).current; // 1 off, 0 on
   const fade = useRef(new Animated.Value(0)).current; // backdrop/ornaments
+  const isNavigating = useRef(false);
 
   useEffect(() => {
     Animated.parallel([
@@ -73,7 +71,14 @@ export default function RideSelectionScreen({ navigation }: Props) {
   const reg = mkScale();
   const air = mkScale();
 
-  const animateOutThenReplace = (flow: 'regular' | 'airport') => {
+  // One smooth exit animation, then a single replace (no extra navigate)
+  const animateOutThenReplaceTo = (
+    routeName: keyof RootStackParamList,
+    params?: any,
+  ) => {
+    if (isNavigating.current) return;
+    isNavigating.current = true;
+
     Animated.parallel([
       Animated.timing(fade, {
         toValue: 0,
@@ -88,35 +93,24 @@ export default function RideSelectionScreen({ navigation }: Props) {
         useNativeDriver: true,
       }),
     ]).start(({ finished }) => {
-      if (!finished) return;
-      navigation.replace('App');
-      InteractionManager.runAfterInteractions(() => {
-        navigation.navigate('Trip', { flow });
-      });
+      if (!finished) {
+        isNavigating.current = false;
+        return;
+      }
+      navigation.replace(routeName, params);
     });
   };
 
-  const goRegular = () => animateOutThenReplace('regular');
-  const goAirport = () => {
-    // Close with the same exit animation, then open FlightDetails
-    Animated.parallel([
-      Animated.timing(fade, {
-        toValue: 0,
-        duration: 180,
-        easing: Easing.in(Easing.cubic),
-        useNativeDriver: true,
-      }),
-      Animated.timing(slide, {
-        toValue: 1,
-        duration: 220,
-        easing: Easing.in(Easing.cubic),
-        useNativeDriver: true,
-      }),
-    ]).start(({ finished }) => {
-      if (!finished) return;
-      navigation.replace('FlightDetails', { airportCode: 'YYZ' });
+  // ✅ Smooth: directly replace into App with nested screen/params
+  const goRegular = () =>
+    animateOutThenReplaceTo('App', {
+      screen: 'Trip',
+      params: { flow: 'regular' as const },
     });
-  };
+
+  // ✅ Smooth to FlightDetails (or change to nested if needed)
+  const goAirport = () =>
+    animateOutThenReplaceTo('FlightDetails', { airportCode: 'YYZ' });
 
   return (
     <SafeAreaView style={styles.safe}>
@@ -294,7 +288,7 @@ const styles = StyleSheet.create({
     borderRadius: 130,
     backgroundColor: MINT,
     opacity: 0.35,
-    filter: 'blur(40px)' as any, // ignored on native Android/iOS, harmless
+    // filter is ignored on native; safe to keep/remove
   },
   orbLeft: { top: -40, left: -60 },
   orbRight: { bottom: -50, right: -70, backgroundColor: '#E0E7FF' },

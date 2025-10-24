@@ -54,7 +54,30 @@ export default function PoliciesModal({ navigation, route }: Props) {
 
   const onRow = (id: string) => {
     route.params?.onSelect?.(id);
-    // optionally push a details screen later
+    if (id === 'passenger_wait') {
+      navigation.navigate('PassengerWait');
+      return;
+    }
+    if (id === 'driver_late') {
+      navigation.navigate('DriverLate');
+      return;
+    }
+    if (id === 'cancel_change') {
+      navigation.navigate('CancelChange');
+      return;
+    }
+    if (id === 'refund') {
+      navigation.navigate('GuaranteedPickup');
+      return;
+    }
+    if (id === 'guaranteed') {
+      navigation.navigate('Refund');
+      return;
+    }
+    if (id === 'tolls') {
+      navigation.navigate('Tolls');
+      return;
+    }
   };
 
   return (
@@ -68,7 +91,7 @@ export default function PoliciesModal({ navigation, route }: Props) {
         onPress={close}
       />
 
-      <SafeAreaView edges={['bottom']} style={styles.wrap}>
+      <SafeAreaView style={styles.wrap}>
         <View style={[styles.panel, { paddingTop: insets.top + 8 }]}>
           {/* top right Close */}
           <Pressable
@@ -145,6 +168,8 @@ const styles = StyleSheet.create({
   wrap: { flex: 1, justifyContent: 'flex-end' },
   panel: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#fff',
     // borderTopLeftRadius: 24,
     // borderTopRightRadius: 24,

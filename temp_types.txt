@@ -1,8 +1,7 @@
-export type RootStackParamList = {
-  RideSelection: undefined;
+﻿export type RootStackParamList = {
   Login: undefined;
   App: undefined;
-  Home: { dest?: Destination } | undefined; // ← Home can receive { dest }
+  Home: { dest?: Destination } | undefined; // â† Home can receive { dest }
   Details: { id?: string } | undefined;
   // Otp: { dial: string; phone: string };
   Otp: { email: string; user: User } | undefined;
@@ -10,18 +9,7 @@ export type RootStackParamList = {
   Location: undefined;
   MapTracking: undefined;
   PlaceSearch: { onPick?: (d: Destination) => void } | undefined;
-  Trip:
-    | { start?: Destination; dest?: Destination; flow?: 'regular' | 'airport' }
-    | undefined;
-  FlightDetails:
-    | {
-        airportCode?: string;
-        initialWhen?: Date;
-        from?: Destination;
-        start?: Destination;
-        dest?: Destination;
-      }
-    | undefined;
+  Trip: { start?: Destination; dest?: Destination } | undefined;
   AirportDetails:
     | {
         airportCode?: string;
@@ -61,7 +49,7 @@ export type RootStackParamList = {
     | undefined;
   LuggageScanInfo:
     | {
-        onStartScan?: () => void; // optional callback when user taps “Scan now”
+        onStartScan?: () => void; // optional callback when user taps â€œScan nowâ€
       }
     | undefined;
 
@@ -111,21 +99,7 @@ export type RootStackParamList = {
         onSelect?: (id: string) => void; // optional callback when a row is tapped
       }
     | undefined;
-  PassengerWait: undefined;
-  DriverLate: undefined;
-  CancelChange: undefined;
-  Refund: undefined;
-  GuaranteedPickup: undefined;
-  Tolls: undefined;
-
-  ConfirmRequest:
-    | {
-        quote: FareQuote;
-        payMethod: string;
-        special?: SpecialRequestPayload | null;
-        start?: Destination;
-        dest?: Destination;
-        when?: Date;
+  \n        start?: Destination;\n        dest?: Destination;
         onConfirm?: (p: {
           quote: FareQuote;
           payMethod: string;
@@ -152,81 +126,7 @@ export type RootStackParamList = {
   AddCard: {
     onAdded?: (card: SavedCard) => void;
   };
-  Processing:
-    | {
-        durationMs?: number;
-        onDone?: () => void;
-        start?: Destination;
-        dest?: Destination;
-      }
-    | undefined;
-  BookingReceived:
-    | {
-        onContinue?: () => void; // called when user taps I Agree & Continue
-        start?: Destination;
-        dest?: Destination;
-      }
-    | undefined;
-  BookingReceivedTerms:
-    | {
-      onOkay?: () => void;
-      onCancel?: () => void;
-    }
-    | undefined;
-  CancelRide:
-    | {
-        onSubmit?: (reason: string) => void;
-        onKeep?: () => void;
-      }
-    | undefined;
-  ConfirmCancelPopup:
-    | {
-        onOk?: () => void;
-      }
-    | undefined;
-  NoRideAvaiable:
-    | {
-        onContact?: () => void;
-        onOk?: () => void;
-        onRetry?: () => void;
-      }
-    | undefined;
-  RideConfirmed:
-    | {
-        onOk?: () => void;
-        start?: Destination;
-        dest?: Destination;
-      }
-    | undefined;
-  AssignedVehicle:
-    | {
-        start?: Destination;
-        dest?: Destination;
-        etaMinutes?: number;
-        riderName?: string;
-        driver?: {
-          name: string;
-          rating?: number;
-          years?: number;
-          km?: string;
-          verified?: boolean;
-          avatar?: string;
-        };
-        vehicle?: {
-          label: string;
-          plate: string;
-          image?: string;
-        };
-      }
-    | undefined;
-  ContactSupport:
-    | {
-        name?: string;
-        plate?: string;
-        vehicleLabel?: string;
-        avatar?: any;
-      }
-    | undefined;
+  Processing:\n    | {\n        durationMs?: number;\n        onDone?: () => void;\n        start?: Destination;\n        dest?: Destination;\n      }\n    | undefined;
   EnRoute:
     | {
         etaMinutes?: number;
@@ -279,13 +179,6 @@ export type RootStackParamList = {
     dest?: Destination;
     onPick?: (when: Date, holdFunds: boolean) => void;
   };
-  ScheduleFlight:
-    | {
-        initial?: Date;
-        airportCode?: string;
-        onPick?: (when: Date) => void;
-      }
-    | undefined;
 };
 
 export type DriverMini = {
@@ -423,4 +316,5 @@ export type SavedCard = {
 };
 
 export type PayMethodKey = 'card' | 'wallet' | 'cash';
+
 

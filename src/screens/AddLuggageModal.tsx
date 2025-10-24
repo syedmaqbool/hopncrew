@@ -1,5 +1,5 @@
 // src/screens/AddLuggageModal.tsx
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,9 @@ import {
   KeyboardAvoidingView,
   Platform,
   Image,
+  Animated,
+  Easing,
+  Keyboard,
 } from 'react-native';
 import {
   SafeAreaView,
@@ -51,6 +54,51 @@ const imagesBySize: Partial<Record<LuggageSize, any>> = {
 export default function AddLuggageModal({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
 
+  // ---- native animations ----
+  const slide = useRef(new Animated.Value(1)).current;
+  const keyboardTranslate = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    Animated.timing(slide, {
+      toValue: 0,
+      duration: 260,
+      easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
+    }).start();
+  }, [slide]);
+
+  const slideY = slide.interpolate({
+    inputRange: [0, 1],
+    outputRange: [0, 999],
+  });
+
+  useEffect(() => {
+    const showEvt =
+      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvt =
+      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const s = Keyboard.addListener(showEvt, e => {
+      const h = e?.endCoordinates?.height ?? 0;
+      Animated.timing(keyboardTranslate, {
+        toValue: -h,
+        duration: 200,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }).start();
+    });
+    const h = Keyboard.addListener(hideEvt, () => {
+      Animated.timing(keyboardTranslate, {
+        toValue: 0,
+        duration: 200,
+        easing: Easing.out(Easing.cubic),
+        useNativeDriver: true,
+      }).start();
+    });
+    return () => {
+      s.remove();
+      h.remove();
+    };
+  }, [keyboardTranslate]);
+
   const [selected, setSelected] = useState<LuggageSize>(
     route.params?.initial?.[0]?.size ?? 'L',
   );
@@ -80,20 +128,30 @@ export default function AddLuggageModal({ navigation, route }: Props) {
 
   const exit = (emit = true) => {
     if (emit) route.params?.onDone?.(items);
-    navigation.goBack(); // because AddPassenger used replace(), this returns to Trip
+    Keyboard.dismiss();
+    Animated.timing(slide, {
+      toValue: 1,
+      duration: 200,
+      easing: Easing.in(Easing.cubic),
+      useNativeDriver: true,
+    }).start(({ finished }) => finished && navigation.goBack());
   };
 
+  // eslint-disable-next-line react/no-unstable-nested-components
   const Stepper = () => (
-    <View style={styles.stepperRow}>
+    <View style={styles.stepperPill}>
       <Pressable
-        style={styles.stepBtn}
+        style={[styles.stepBtn, styles.stepBtnMinus]}
         onPress={() => setCount(n => Math.max(0, n - 1))}
       >
         <AntDesign name="minus" size={16} color="#111" />
       </Pressable>
       <Text style={styles.stepVal}>{count}</Text>
-      <Pressable style={styles.stepBtn} onPress={() => setCount(n => n + 1)}>
-        <AntDesign name="plus" size={16} color="#111" />
+      <Pressable
+        style={[styles.stepBtn, styles.stepBtnPlus]}
+        onPress={() => setCount(n => n + 1)}
+      >
+        <AntDesign name="plus" size={16} color="#fff" />
       </Pressable>
     </View>
   );
@@ -103,128 +161,63 @@ export default function AddLuggageModal({ navigation, route }: Props) {
       {/* DIM BACKDROP */}
       <Pressable style={styles.backdrop} onPress={() => exit(true)} />
 
-      <KeyboardAvoidingView
-        style={styles.fill}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top : 0}
-      >
-        <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
-          <View style={styles.sheet}>
-            {/* Header */}
-            <View style={styles.header}>
-              <Text style={styles.title}>Add Luggage</Text>
-              <Pressable style={styles.close} onPress={() => exit(true)}>
-                <Ionicons name="close" size={18} color="#111" />
-              </Pressable>
+      <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
+        <Animated.View
+          style={[
+            styles.sheet,
+            {
+              transform: [
+                { translateY: Animated.add(slideY, keyboardTranslate) },
+              ],
+            },
+          ]}
+        >
+          {/* Header */}
+          <View style={styles.header}>
+            <Text style={styles.title}>Add Luggage</Text>
+            <Pressable style={styles.close} onPress={() => exit(true)}>
+              <Ionicons name="close" size={18} color="#111" />
+            </Pressable>
+          </View>
+
+          {/* Preview / label */}
+          <View style={styles.previewWrap}>
+            <View style={styles.sizeBadge}>
+              <Text style={styles.sizeText}>{selected}</Text>
             </View>
-
-            {/* Preview / label */}
-            <View style={styles.previewWrap}>
-              <View style={styles.sizeBadge}>
-                <Text style={styles.sizeText}>{selected}</Text>
-              </View>
-              <View style={styles.previewBox}>
-                <View style={styles.corner} />
-                <View style={[styles.corner, styles.cornerTR]} />
-                <View style={[styles.corner, styles.cornerBL]} />
-                <View style={[styles.corner, styles.cornerBR]} />
-                {imagesBySize[selected] ? (
-                  <Image
-                    source={imagesBySize[selected] as any}
-                    style={styles.previewImage}
-                    resizeMode="contain"
-                  />
-                ) : (
-                  <MaterialCommunityIcons
-                    name="suitcase-rolling"
-                    size={84}
-                    color="#111"
-                  />
-                )}
-              </View>
-              <View style={styles.dimLeft}>
-                <Text style={styles.dimText}>55 cm</Text>
-              </View>
-              <View style={styles.dimRight}>
-                <Text style={styles.weightBubble}>{`${weightKg} kg`}</Text>
-              </View>
-              <Text style={styles.dimBottom}>36 cm</Text>
-            </View>
-
-            {/* Stepper */}
-            <Stepper />
-
-            {/* Scan row */}
-            <View style={styles.scanRow}>
-              {/* CAMERA opens OversizedLuggage (child) */}
-              <Pressable
-                style={styles.camBtn}
-                onPress={() =>
-                  navigation.navigate('OversizedLuggage', {
-                    initial: countsFromLuggage(oversized),
-                    onDone: counts =>
-                      setOversized(prev => mergeOversized(prev, counts)),
-                  })
-                }
-              >
-                <Ionicons name="camera-outline" size={18} color="#111" />
-              </Pressable>
-
-              <Text style={styles.scanText}>Scan Bag sizes</Text>
-
-              {/* (i) opens info modal */}
-              <Ionicons
-                name="information-circle-outline"
-                size={18}
-                color="#9AA0A6"
-                onPress={() =>
-                  navigation.navigate('LuggageScanInfo', {
-                    onStartScan: () => {}, // keep hook available if needed later
-                  })
-                }
-              />
-            </View>
-
-            {/* Size chips */}
-            <FlatList
-              horizontal
-              data={SIZES}
-              keyExtractor={s => s}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={{ paddingHorizontal: 6 }}
-              renderItem={({ item }) => (
-                <Pressable
-                  onPress={() => setSelected(item)}
-                  style={[
-                    styles.sizeChip,
-                    selected === item && { borderColor: '#111' },
-                  ]}
-                >
-                  <MaterialCommunityIcons
-                    name={
-                      item === 'Backpack'
-                        ? 'bag-personal-outline'
-                        : item === 'Carry-on'
-                        ? 'bag-personal-outline'
-                        : item === 'XL'
-                        ? 'bag-suitcase-outline'
-                        : item === 'L'
-                        ? 'bag-suitcase'
-                        : item === 'S'
-                        ? 'bag-checked'
-                        : 'suitcase-outline'
-                    }
-                    size={22}
-                    color="#111"
-                  />
-                  <Text style={styles.chipLabel}>{item}</Text>
-                </Pressable>
+            <View style={styles.previewBox}>
+              <View style={styles.corner} />
+              <View style={[styles.corner, styles.cornerTR]} />
+              <View style={[styles.corner, styles.cornerBL]} />
+              <View style={[styles.corner, styles.cornerBR]} />
+              {imagesBySize[selected] ? (
+                <Image
+                  source={imagesBySize[selected] as any}
+                  style={styles.previewImage}
+                  resizeMode="contain"
+                />
+              ) : (
+                <MaterialCommunityIcons
+                  name="suitcase-rolling"
+                  size={84}
+                  color="#111"
+                />
               )}
-            />
+              {/* Side dimensions centered between corner cuts */}
+              <Text style={styles.leftDim}>55 cm</Text>
+              <Text style={styles.weightBubble}>{`${weightKg} kg`}</Text>
+            </View>
+            <Text style={styles.dimBottom}>36 cm</Text>
+          </View>
 
-            {/* Add oversized (also reachable via camera) */}
+          {/* Stepper */}
+          <Stepper />
+
+          {/* Scan row */}
+          <View style={styles.scanSection}>
+            {/* CAMERA opens OversizedLuggage (child) */}
             <Pressable
-              style={styles.oversized}
+              style={styles.camBtn}
               onPress={() =>
                 navigation.navigate('OversizedLuggage', {
                   initial: countsFromLuggage(oversized),
@@ -234,33 +227,117 @@ export default function AddLuggageModal({ navigation, route }: Props) {
               }
             >
               <Image
-                source={require('../../assets/icons/addOversized.png')}
-                style={{ width: 26, height: 26, marginRight: 4 }}
+                source={require('../../assets/icons/cameraIcon.png')}
+                style={{ width: 20, height: 20 }}
                 resizeMode="contain"
               />
-              <Text style={styles.overText}>+ Add Oversized</Text>
-              <AntDesign name="arrowright" size={16} color="#111" />
+              {/* <Ionicons name="camera-outline" size={18} color="#111" /> */}
             </Pressable>
 
-            {/* Bottom CTA → keep route.onDone() and close back to Trip */}
-            <Pressable
-              style={styles.cta}
-              onPress={() =>
-                navigation.navigate('ScheduleRide', {
-                  initial: new Date(),
-                  start: route.params?.start, // forward trip endpoints
-                  dest: route.params?.dest,
-                })
-              }
-            >
-              <Text style={styles.ctaText}>+ Date &amp; Time</Text>
-              <View style={styles.ctaIcon}>
-                <Ionicons name="calendar-outline" size={18} color="#111" />
-              </View>
-            </Pressable>
+            <View style={styles.scanLabelRow}>
+              <Text style={styles.scanText}>Scan Bag size</Text>
+              {/* (i) opens info modal */}
+              <Ionicons
+                name="information-circle-outline"
+                size={16}
+                color="#111"
+                onPress={() =>
+                  navigation.navigate('LuggageScanInfo', {
+                    onStartScan: () => {},
+                  })
+                }
+              />
+            </View>
           </View>
-        </SafeAreaView>
-      </KeyboardAvoidingView>
+
+          {/* Size chips */}
+          <FlatList
+            horizontal
+            data={SIZES}
+            keyExtractor={s => s}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{
+              paddingHorizontal: 10,
+              paddingVertical: 6,
+            }}
+            renderItem={({ item }) => {
+              const boxSize =
+                item === 'XL' ? 80 : item === 'L' ? 70 : item === 'M' ? 60 : 50;
+              const imgSize = Math.max(28, boxSize - 28);
+              const isSelected = selected === item;
+              const src =
+                item === 'Backpack'
+                  ? require('../../assets/icons/backpack-icon.png')
+                  : item === 'Carry-on'
+                  ? require('../../assets/icons/carryon-icon.png')
+                  : item === 'XL'
+                  ? require('../../assets/icons/2xl-icon.png')
+                  : item === 'L'
+                  ? require('../../assets/icons/l-icon.png')
+                  : item === 'M'
+                  ? require('../../assets/icons/m-icon.png')
+                  : require('../../assets/icons/s-icon.png');
+              return (
+                <Pressable
+                  onPress={() => setSelected(item)}
+                  style={styles.sizePress}
+                >
+                  <View
+                    style={[
+                      styles.sizeBox,
+                      { width: boxSize, height: boxSize, borderRadius: 16 },
+                      isSelected && styles.sizeBoxSelected,
+                    ]}
+                  >
+                    <Image
+                      source={src}
+                      style={{ width: imgSize, height: imgSize }}
+                      resizeMode="contain"
+                    />
+                  </View>
+                  <Text style={styles.sizeLabel}>{item}</Text>
+                </Pressable>
+              );
+            }}
+          />
+          {/* Add oversized (also reachable via camera) */}
+          <Pressable
+            style={styles.oversized}
+            onPress={() =>
+              navigation.navigate('OversizedLuggage', {
+                initial: countsFromLuggage(oversized),
+                onDone: counts =>
+                  setOversized(prev => mergeOversized(prev, counts)),
+              })
+            }
+          >
+            <Image
+              source={require('../../assets/icons/addOversized.png')}
+              style={{ width: 26, height: 26, marginRight: 4 }}
+              resizeMode="contain"
+            />
+            <Text style={styles.overText}>+ Add Oversized</Text>
+            <AntDesign name="arrowright" size={16} color="#111" />
+          </Pressable>
+
+          {/* Bottom CTA → keep route.onDone() and close back to Trip */}
+          <Pressable
+            style={styles.cta}
+            onPress={() =>
+              navigation.navigate('ScheduleRide', {
+                initial: new Date(),
+                start: route.params?.start, // forward trip endpoints
+                dest: route.params?.dest,
+              })
+            }
+          >
+            <Text style={styles.ctaText}>+ Date &amp; Time</Text>
+            <View style={styles.ctaIcon}>
+              <Ionicons name="calendar-outline" size={18} color="#111" />
+            </View>
+          </Pressable>
+        </Animated.View>
+      </SafeAreaView>
     </View>
   );
 }
@@ -319,23 +396,26 @@ const styles = StyleSheet.create({
     width: 160,
     height: 150,
     borderRadius: 18,
-    borderWidth: 1,
-    borderColor: '#EAEAEA',
+    // borderWidth: 1,
+    // borderColor: '#EAEAEA',
     alignItems: 'center',
     justifyContent: 'center',
     padding: 12,
   },
   previewImage: { width: 120, height: 84, margin: 6 },
+  iconImage2xl: { width: 40, height: 40, margin: 6 },
+  iconImagel: { width: 40, height: 30, margin: 6 },
   corner: {
     position: 'absolute',
-    width: 18,
-    height: 18,
-    borderColor: '#CCC',
-    borderLeftWidth: 2,
-    borderTopWidth: 2,
+    width: 25,
+    height: 25,
+    borderColor: '#111',
+    borderLeftWidth: 3,
+    borderTopWidth: 3,
     top: 8,
     left: 8,
-    borderRadius: 3,
+    borderTopLeftRadius: 10,
+    // borderTopRightRadius: 5,
   },
   cornerTR: { left: undefined, right: 8, transform: [{ rotate: '90deg' }] },
   cornerBL: { top: undefined, bottom: 8, transform: [{ rotate: '-90deg' }] },
@@ -346,26 +426,43 @@ const styles = StyleSheet.create({
     right: 8,
     transform: [{ rotate: '180deg' }],
   },
-  dimLeft: { position: 'absolute', left: 16, top: 30 },
-  dimRight: { position: 'absolute', right: 16, top: 24 },
-  dimText: { color: '#777', fontSize: 12 },
-  weightBubble: {
-    backgroundColor: '#111',
-    color: '#fff',
-    borderRadius: 16,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    overflow: 'hidden',
+  leftDim: {
+    position: 'absolute',
+    left: -28,
+    top: '55%',
+    transform: [{ translateY: -8 }],
+    color: '#111',
     fontSize: 12,
   },
-  dimBottom: { marginTop: 6, color: '#777', fontSize: 12 },
+  weightBubble: {
+    position: 'absolute',
+    right: -30,
+    top: '55%',
+    transform: [{ translateY: -12 }],
+    backgroundColor: '#111',
+    color: '#fff',
+    borderRadius: 18,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    overflow: 'hidden',
+    fontSize: 12,
+    minWidth: 48,
+    textAlign: 'center',
+  },
+  dimBottom: { marginBottom: 6, color: '#777', fontSize: 12 },
 
-  stepperRow: {
+  stepperPill: {
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
-    marginTop: 8,
+    marginTop: 10,
+    backgroundColor: '#EFEFEF',
+    borderRadius: 24,
+    height: 48,
+    paddingHorizontal: 8,
+    borderWidth: 1,
+    borderColor: '#EEE',
   },
   stepBtn: {
     width: 36,
@@ -377,20 +474,19 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EEE',
   },
+  stepBtnMinus: { backgroundColor: '#fff' },
+  stepBtnPlus: { backgroundColor: '#111', borderColor: '#111' },
   stepVal: {
-    width: 24,
+    width: 30,
     textAlign: 'center',
     color: '#111',
     fontWeight: '700',
-    fontSize: 16,
+    fontSize: 18,
   },
-
-  scanRow: {
-    flexDirection: 'row',
+  scanSection: {
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
-    marginTop: 10,
+    marginTop: 14,
   },
   camBtn: {
     width: 36,
@@ -400,18 +496,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scanText: { color: '#111', fontWeight: '600', marginVertical: 30 },
+  scanLabelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginBottom: 8,
+  },
+  scanText: { color: '#111', fontWeight: '700' },
 
-  sizeChip: {
+  sizePress: {
+    alignItems: 'center',
+    marginRight: 14,
+    justifyContent: 'flex-end',
+  },
+  sizeBox: {
     borderWidth: 1,
     borderColor: '#E6E6E6',
-    borderRadius: 12,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-    marginRight: 10,
+    backgroundColor: '#fff',
     alignItems: 'center',
+    justifyContent: 'center',
   },
-  chipLabel: { marginTop: 6, color: '#111', fontWeight: '600' },
+  sizeBoxSelected: { backgroundColor: '#EFEFEF', borderColor: '#EFEFEF' },
+  sizeLabel: { marginTop: 6, color: '#111', fontWeight: '700' },
 
   oversized: {
     flexDirection: 'row',

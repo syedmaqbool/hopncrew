@@ -1,6 +1,8 @@
 // src/screens/TripScreen.tsx
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useMemo, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import { BackHandler } from 'react-native';
 import { Image, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -31,6 +33,20 @@ const DEFAULT_PAX: PassengerCounts = {
 };
 
 export default function TripScreen({ navigation, route }: Props) {
+  // Ensure Android back navigates to Home instead of exiting
+  useFocusEffect(
+    React.useCallback(() => {
+      const sub = BackHandler.addEventListener('hardwareBackPress', () => {
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        } else {
+          navigation.replace('App');
+        }
+        return true;
+      });
+      return () => sub.remove();
+    }, [navigation]),
+  );
   // ---------- Trip state that persists across modals ----------
   const [start, setStart] = useState<Destination | null>(
     route.params?.start ?? {

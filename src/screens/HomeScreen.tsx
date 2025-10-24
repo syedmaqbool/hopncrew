@@ -310,7 +310,7 @@ export default function HomeScreen({ navigation, route }: Props) {
         <View style={styles.quickList}>
           <Pressable
             style={styles.quickItem}
-            onPress={() => navigation.navigate('Trip')}
+            onPress={() => navigation.navigate('RideSelection')}
           >
             <Ionicons name="home-outline" size={18} color="#111" />
             <Text style={styles.quickText}>Home</Text>

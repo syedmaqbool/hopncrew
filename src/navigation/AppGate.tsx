@@ -15,5 +15,6 @@ export default function AppGate() {
     );
   }
 
+  // After auth, land inside the app (Home). Ride selection is accessible from Home.
   return <RootNavigator initialRoute={auth ? 'App' : 'Login'} />;
 }

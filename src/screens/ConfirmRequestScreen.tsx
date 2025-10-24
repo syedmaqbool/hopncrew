@@ -65,7 +65,11 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
       special: special ?? undefined,
       coupon: coupon?.trim() || null,
     });
-    rootNav.navigate('PaymentMethods', { selected: 'card' });
+    rootNav.navigate('PaymentMethods', {
+      selected: 'card',
+      start: route.params?.start,
+      dest: route.params?.dest,
+    });
   };
 
   const openBreakdown = () => {
@@ -130,7 +134,10 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
           <View style={styles.carCard}>
             <Image
               source={carSrc}
-              style={{ width: 200, height: 80 }}
+              style={{
+                width: 200,
+                height: 150,
+              }}
               resizeMode="contain"
             />
           </View>
@@ -143,20 +150,38 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
         </View>
 
         {/* Policies chip */}
-        <Pressable style={styles.policyPill} onPress={openPolicies}>
+        {/* <Pressable style={styles.policyPill} onPress={openPolicies}>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-            <Text style={styles.policyStrong}>
-              Late Arrival • Waiting Time • No Show
-            </Text>
+          <Text style={styles.policyStrong}>
+          Late Arrival • Waiting Time • No Show
+          </Text>
           </View>
           <Ionicons name="chevron-forward" size={18} color="#111" />
+          </Pressable> */}
+        <Pressable
+          style={styles.policyRow}
+          onPress={() =>
+            navigation.navigate('Policies', {
+              onSelect: id => console.log('open policy:', id),
+            })
+          }
+        >
+          <Text style={styles.policyTxt}>
+            Late Arrival - Waiting Time - No Show
+          </Text>
+          <AntDesign
+            name="arrowright"
+            style={{ marginTop: 4 }}
+            size={16}
+            color={'#111'}
+          />
         </Pressable>
         <Text style={styles.policySub}>
           Flat Rate – No Surge, No Per-KM, No Per-MIN Charges
         </Text>
 
         {/* Special request */}
-        <Pressable style={styles.specialRow} onPress={openSpecial}>
+        {/* <Pressable style={styles.specialRow} onPress={openSpecial}>
           <Ionicons name="sparkles-outline" size={18} color="#111" />
           <Text style={styles.specialTxt}>I have special request</Text>
           <Ionicons
@@ -164,6 +189,43 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
             size={18}
             color="#111"
           />
+        </Pressable> */}
+
+        <Pressable
+          style={{
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            marginTop: 14,
+          }}
+          onPress={openSpecial}
+        >
+          <View
+            style={[
+              styles.rowMain,
+              {
+                flexDirection: 'row',
+                justifyContent: 'flex-start',
+                alignItems: 'center',
+                gap: 12,
+                marginTop: 10,
+              },
+            ]}
+          >
+            <Image
+              source={require('../../assets/icons/specreq-icon.png')}
+              style={{ width: 24, height: 24, resizeMode: 'contain' }}
+            />
+            {/* <Ionicons name="sparkles-outline" size={18} color={TEXT} /> */}
+            <Text>I have special request</Text>
+            <View>
+              <Ionicons
+                name={!!special ? 'checkbox-outline' : 'square-outline'}
+                size={18}
+                color="#111"
+              />
+            </View>
+          </View>
         </Pressable>
 
         {/* Payment + Coupon */}
@@ -231,7 +293,8 @@ const styles = StyleSheet.create({
 
   carRow: {
     flexDirection: 'row',
-    alignItems: 'stretch',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#F2F3F5',
     gap: 5,
     marginTop: 15,
@@ -247,10 +310,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
-    shadowOpacity: 0.08,
+    shadowOpacity: 0.18,
     shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
+    shadowOffset: { width: 2, height: 12 },
+    elevation: 4,
   },
   priceCard: {
     width: 150,
@@ -259,9 +322,10 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: 'flex-end',
     paddingTop: 16,
+    paddingEnd: 20,
   },
   taxTxt: { color: '#777', fontSize: 12, marginBottom: 6 },
-  priceNow: { color: '#111', fontSize: 30, fontWeight: '800', lineHeight: 32 },
+  priceNow: { color: '#111', fontSize: 40, fontWeight: '600', lineHeight: 32 },
   tiny: { color: '#777', marginTop: 6 },
 
   policyPill: {
@@ -277,7 +341,11 @@ const styles = StyleSheet.create({
     borderColor: '#EEE',
   },
   policyStrong: { color: '#111', fontWeight: '700' },
-  policySub: { color: '#9AA0A6', marginTop: 6, marginLeft: 2 },
+  policySub: {
+    color: '#9AA0A6',
+    marginHorizontal: 50,
+    marginVertical: 12,
+  },
 
   specialRow: {
     flexDirection: 'row',
@@ -345,4 +413,21 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
   },
+  /* policy pill */
+  policyRow: {
+    marginTop: 22,
+    paddingHorizontal: 14,
+    paddingVertical: 12,
+    marginHorizontal: 50,
+    borderRadius: 999,
+    backgroundColor: '#F6F7F8',
+    // borderWidth: 1,
+    // borderColor: '#EEE',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  policyTxt: { color: '#111', fontWeight: '700' },
+  rowMain: { color: '#111', fontWeight: '700', flex: 1 },
 });

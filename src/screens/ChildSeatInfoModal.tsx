@@ -21,30 +21,26 @@ const SEAT_GUIDES = [
   {
     id: 'infantRear',
     title: 'Infant Rear Face',
-    icon: require('../../assets/icons/child_one.png'),
-    body:
-      'Use a rear-facing seat for infants and small toddlers. It offers the best support for the head, neck and spine in a collision.',
+    icon: require('../../assets/icons/child_nine.png'),
+    body: 'Newborn babies and infants need special protection while in a vehicle. In a collision, a properly installed rear-facing child car seat can save your baby’s life. Under Ontario’s Highway Traffic Act, infants must use a rear-facing car seat until they weigh at least 9 kg (20 lb).',
   },
   {
     id: 'toddlerFront',
     title: 'Toddler Front Face',
     icon: require('../../assets/icons/child_seven.png'),
-    body:
-      'Forward-facing seats are for children who have outgrown rear-facing seats. Use a tether and harness properly for best protection.',
+    body: 'Under the Highway Traffic Act, children must use a forward-facing and rear - facing child car seat when they weigh between 9 kg and 18 kg (20 to 40 lb.). You need to use a forward - facing and rear facing child car seat until your child weighs at least 18 kilograms (40 lb).',
   },
   {
     id: 'toddlerRear',
     title: 'Toddler Rear Face',
     icon: require('../../assets/icons/child_eight.png'),
-    body:
-      'Keep your child rear-facing as long as they fit the height and weight limits of the seat. This position reduces crash forces.',
+    body: 'Under the Highway Traffic Act, children must use a forward-facing and rear - facing child car seat when they weigh between 9 kg and 18 kg (20 to 40 lb.). You need to use a forward - facing and rear facing child car seat until your child weighs at least 18 kilograms (40 lb).',
   },
   {
     id: 'booster',
     title: 'Booster',
     icon: require('../../assets/icons/child_six.png'),
-    body:
-      'Booster seats position the seatbelt properly across the shoulder and lap. Use until your child fits the vehicle seatbelt alone.',
+    body: 'Booster seats raise children so adult seatbelts protect them better. Booster seats protect children from serious injury 3 ½ times better than seatbelts alone. It is required for your child to use a booster seat if they are under the age of 8, weighs between 18 to 36 kilograms (40-80 pounds), and is shorter than 4 feet -9 inches (145 centimeters) tall.',
   },
 ];
 
@@ -77,7 +73,7 @@ export default function ChildSeatInfoModal({ navigation }: Props) {
                 <View style={{ alignItems: 'center', marginBottom: 8 }}>
                   <Image
                     source={item.icon}
-                    style={{ width: 84, height: 84, resizeMode: 'contain' }}
+                    style={{ width: 100, height: 100, resizeMode: 'contain' }}
                   />
                 </View>
                 <Text style={styles.cardTitle}>{item.title}</Text>
@@ -175,4 +171,3 @@ const styles = StyleSheet.create({
     right: 10,
   },
 });
-
