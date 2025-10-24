@@ -99,11 +99,7 @@ export type RootStackParamList = {
         onSelect?: (id: string) => void; // optional callback when a row is tapped
       }
     | undefined;
-  ConfirmRequest:
-    | {
-        quote: FareQuote;
-        payMethod?: string;
-        special?: SpecialRequestPayload | null;
+  \n        start?: Destination;\n        dest?: Destination;
         onConfirm?: (p: {
           quote: FareQuote;
           payMethod: string;
@@ -123,12 +119,14 @@ export type RootStackParamList = {
   PaymentMethods: {
     selected?: PayMethodKey;
     cards?: SavedCard[];
+    start?: Destination;
+    dest?: Destination;
     onSelect?: (p: { method: PayMethodKey; cardId?: string }) => void;
   };
   AddCard: {
     onAdded?: (card: SavedCard) => void;
   };
-  Processing: { durationMs?: number; onDone?: () => void } | undefined;
+  Processing:\n    | {\n        durationMs?: number;\n        onDone?: () => void;\n        start?: Destination;\n        dest?: Destination;\n      }\n    | undefined;
   EnRoute:
     | {
         etaMinutes?: number;
@@ -318,3 +316,4 @@ export type SavedCard = {
 };
 
 export type PayMethodKey = 'card' | 'wallet' | 'cash';
+
