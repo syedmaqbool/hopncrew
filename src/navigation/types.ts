@@ -22,6 +22,29 @@ export type RootStackParamList = {
         dest?: Destination;
       }
     | undefined;
+  FlightDeparture:
+    | {
+        airportCode?: string;
+        from?: Destination;
+        when?: Date;
+        onPick?: (d: Destination) => void;
+      }
+    | undefined;
+  SelectDeparture:
+    | {
+        onPick?: (d: Destination) => void;
+        onPickAirline?: (code: string) => void;
+        when?: Date;
+      }
+    | undefined;
+  SelectedAirport:
+    | {
+        airport: Destination;
+        airline?: string;
+        when?: Date;
+        onDone?: (p: { airport: Destination; airline?: string }) => void;
+      }
+    | undefined;
   AirportDetails:
     | {
         airportCode?: string;
@@ -284,6 +307,14 @@ export type RootStackParamList = {
         initial?: Date;
         airportCode?: string;
         onPick?: (when: Date) => void;
+      }
+    | undefined;
+  AirportPickupPerks: undefined;
+  AirportGuide: undefined;
+  FlightManual:
+    | {
+        initial?: string;
+        onAdd?: (flightNo: string) => void;
       }
     | undefined;
 };

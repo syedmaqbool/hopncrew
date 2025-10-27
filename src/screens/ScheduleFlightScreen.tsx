@@ -101,14 +101,21 @@ export default function ScheduleFlightScreen({ navigation, route }: Props) {
           >
             <Ionicons name="chevron-back" size={18} color="#111" />
           </Pressable>
-          <Text style={styles.headerTitle}>Arrival to {airportCode}</Text>
+          <Text style={styles.headerTitle}>Schedule a Ride</Text>
           <View style={{ width: 36, height: 36 }} />
         </View>
       </ImageBackground>
 
       {/* White content sheet */}
       <SafeAreaView edges={['bottom']} style={styles.sheet}>
-        <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>
+        <Text
+          style={{
+            fontSize: 24,
+            fontWeight: 'bold',
+            textAlign: 'center',
+            marginTop: 16,
+          }}
+        >
           Arrival to {airportCode}
         </Text>
         <Text style={styles.bigTitle}>Data and Time</Text>
@@ -168,7 +175,7 @@ export default function ScheduleFlightScreen({ navigation, route }: Props) {
               body="From the airport: Cancel up to 5 hours before pickup"
             />
 
-            <Pressable style={styles.linkRow} onPress={() => {}}>
+            <Pressable style={styles.linkRow} onPress={() => navigation.navigate('AirportPickupPerks')}>
               <Text style={styles.linkText}>More airport pickup Perks</Text>
               <AntDesign name="arrowright" size={16} color="#111" />
             </Pressable>
@@ -287,7 +294,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
-  headerTitle: { color: '#111', fontWeight: '700', fontSize: 18 },
+  headerTitle: { color: '#111', fontWeight: '400', fontSize: 18 },
 
   sheet: {
     flex: 1,
@@ -357,13 +364,17 @@ const styles = StyleSheet.create({
   separator: { height: 1, backgroundColor: '#EFEFEF', marginLeft: 44 },
 
   linkRow: {
-    alignSelf: 'flex-start',
+    alignSelf: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    marginTop: 6,
+    marginTop: 10,
   },
-  linkText: { color: '#111', fontWeight: '800' },
+  linkText: {
+    color: '#111',
+    fontWeight: '400',
+    textDecorationLine: 'underline',
+  },
 
   footer: { paddingHorizontal: 16, paddingTop: 8 },
   cta: {

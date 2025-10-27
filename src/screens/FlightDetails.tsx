@@ -54,7 +54,10 @@ export default function FlightDetails({ navigation, route }: Props) {
     });
 
   const pickFrom = () =>
-    navigation.navigate('PlaceSearch', {
+    navigation.navigate('FlightDeparture', {
+      airportCode,
+      from: from ?? undefined,
+      when,
       onPick: d => setFrom(d),
     });
 
@@ -183,7 +186,7 @@ export default function FlightDetails({ navigation, route }: Props) {
           </View>
         </View>
 
-        <Pressable style={styles.linkRow} onPress={() => {}}>
+        <Pressable style={styles.linkRow} onPress={() => navigation.navigate('AirportPickupPerks')}>
           <Text style={styles.linkText}>More airport pickup Perks</Text>
           <AntDesign name="arrowright" size={16} color={TEXT} />
         </Pressable>

@@ -59,6 +59,12 @@ import AppDrawer from './AppDrawer';
 import RideSelectionScreen from '../screens/RideSelectionScreen';
 import FlightDetails from '../screens/FlightDetails';
 import ScheduleFlightScreen from '../screens/ScheduleFlightScreen';
+import FlightDepartureScreen from '../screens/FlightDepartureScreen';
+import AirportPickupPerksScreen from '../screens/AirportPickupPerksScreen';
+import AirportGuideModal from '../screens/AirportGuideModal';
+import SelectDepartureModal from '../screens/SelectDepartureModal';
+import SelectedAirportScreen from '../screens/SelectedAirportScreen';
+import FlightManualModal from '../screens/FlightManualModal';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator({ initialRoute = 'RideSelection' as keyof RootStackParamList }) {
@@ -84,8 +90,10 @@ export default function RootNavigator({ initialRoute = 'RideSelection' as keyof 
       <Stack.Screen name="Details" component={DetailsScreen} options={{ headerShown: true, title: 'Details' }}/>
       <Stack.Screen name="Location" component={LocationScreen} />
       <Stack.Screen name="FlightDetails" component={FlightDetails} options={{ headerShown: false }} />
+      <Stack.Screen name="FlightDeparture" component={FlightDepartureScreen} options={{ headerShown: false }} />
       <Stack.Screen name="MapTracking" component={MapTrackingScreen} />
       <Stack.Screen name="Trip" component={TripScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="SelectedAirport" component={SelectedAirportScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ScheduleFlight" component={ScheduleFlightScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ConfirmRequest" component={ConfirmRequestScreen} options={{ headerShown: false }} />
       {/* Processing is a regular full screen (not transparent) */}
@@ -125,6 +133,10 @@ export default function RootNavigator({ initialRoute = 'RideSelection' as keyof 
         <Stack.Screen name="Tolls" component={TollsModel} />
         <Stack.Screen name="ScheduleRide" component={ScheduleRideScreen} />
         <Stack.Screen name="PaymentBreakdown" component={PaymentBreakdownModal} />
+        <Stack.Screen name="AirportPickupPerks" component={AirportPickupPerksScreen} />
+        <Stack.Screen name="AirportGuide" component={AirportGuideModal} />
+        <Stack.Screen name="SelectDeparture" component={SelectDepartureModal} />
+        <Stack.Screen name="FlightManual" component={FlightManualModal} />
         {/* If you want the Places modal here, keep naming consistent */}
         <Stack.Screen name="PlaceSearch" component={PlaceSearchModal} />
         <Stack.Screen name="PaymentMethods" component={PaymentMethodsModal} />

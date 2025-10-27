@@ -72,7 +72,7 @@ export default function RideSelectionScreen({ navigation }: Props) {
   const air = mkScale();
 
   // One smooth exit animation, then a single replace (no extra navigate)
-  const animateOutThenReplaceTo = (
+  const animateOutThenNavigateTo = (
     routeName: keyof RootStackParamList,
     params?: any,
   ) => {
@@ -97,20 +97,17 @@ export default function RideSelectionScreen({ navigation }: Props) {
         isNavigating.current = false;
         return;
       }
-      navigation.replace(routeName, params);
+      navigation.navigate(routeName as never, params as never);
     });
   };
 
   // ✅ Smooth: directly replace into App with nested screen/params
   const goRegular = () =>
-    animateOutThenReplaceTo('App', {
-      screen: 'Trip',
-      params: { flow: 'regular' as const },
-    });
+    animateOutThenNavigateTo('Trip', { flow: 'regular' as const });
 
   // ✅ Smooth to FlightDetails (or change to nested if needed)
   const goAirport = () =>
-    animateOutThenReplaceTo('FlightDetails', { airportCode: 'YYZ' });
+    animateOutThenNavigateTo('FlightDetails', { airportCode: 'YYZ' });
 
   return (
     <SafeAreaView style={styles.safe}>
