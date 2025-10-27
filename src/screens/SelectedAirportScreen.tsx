@@ -229,6 +229,7 @@ export default function SelectedAirportScreen({ navigation, route }: Props) {
               start: airport,
               dest: undefined,
               flow: 'airport',
+              when,
             })
           }
         >

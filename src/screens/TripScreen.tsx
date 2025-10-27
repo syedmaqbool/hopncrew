@@ -38,7 +38,8 @@ export default function TripScreen({ navigation, route }: Props) {
     React.useCallback(() => {
       const sub = BackHandler.addEventListener('hardwareBackPress', () => {
         if (navigation.canGoBack()) {
-          navigation.goBack();
+          // navigation.goBack();
+          navigation.replace('App');
         } else {
           navigation.replace('App');
         }
@@ -49,16 +50,13 @@ export default function TripScreen({ navigation, route }: Props) {
   );
   // ---------- Trip state that persists across modals ----------
   const [start, setStart] = useState<Destination | null>(
-    route.params?.start ?? {
-      description: 'Toronto Pearson International Airport (YYZ)',
-      latitude: 43.6777,
-      longitude: -79.6248,
-    },
+    route.params?.start ?? null,
   );
   const [dest, setDest] = useState<Destination | null>(
     route.params?.dest ?? null,
   );
   const [setOnPin, setSetOnPin] = useState(false);
+  const [when, setWhen] = useState<Date | null>(route.params?.when ?? null);
 
   const [passengers, setPassengers] = useState<PassengerCounts>(DEFAULT_PAX);
   const [luggage, setLuggage] = useState<LuggageItem[]>([]);
@@ -94,24 +92,41 @@ export default function TripScreen({ navigation, route }: Props) {
       luggage, // pass current luggage so the modal can show/edit
       start: start ?? undefined,
       dest: dest ?? undefined,
+      when: when ?? undefined,
       onDone: (pax: PassengerCounts) => setPassengers(pax),
       onEditLuggage: (items: LuggageItem[]) => setLuggage(items),
     });
   };
+  const whenText = useMemo(() => {
+    if (!when) return null;
+    try {
+      return new Intl.DateTimeFormat('en-US', {
+        month: 'short',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      }).format(when);
+    } catch (e) {
+      return String(when);
+    }
+  }, [when]);
 
   return (
     <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Pressable style={styles.hBtn} onPress={() => navigation.goBack()}>
+          <Pressable
+            style={styles.hBtn}
+            onPress={() => navigation.replace('App')}
+          >
             <Ionicons name="close" size={18} color={TEXT} />
           </Pressable>
           <Text style={styles.hTitle}>Trip</Text>
         </View>
-        <Pressable style={styles.doneBtn} onPress={() => navigation.goBack()}>
+        {/* <Pressable style={styles.doneBtn} onPress={() => navigation.goBack()}>
           <Text style={styles.doneText}>Done</Text>
-        </Pressable>
+        </Pressable> */}
       </View>
 
       {/* -------- NON-SCROLLING CONTENT -------- */}
@@ -202,6 +217,11 @@ export default function TripScreen({ navigation, route }: Props) {
         <Text style={[styles.inlineMeta, { marginTop: 4 }]} numberOfLines={1}>
           {summarizeLuggage(luggage)}
         </Text>
+        {!!whenText && (
+          <Text style={[styles.inlineMeta, { marginTop: 4 }]} numberOfLines={1}>
+            {'Selected Date and Time: ' + whenText}
+          </Text>
+        )}
 
         {/* Spacer pushes bullets near bottom, keeping room for CTA */}
         <View style={{ flex: 1 }} />

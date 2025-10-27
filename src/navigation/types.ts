@@ -11,7 +11,7 @@ export type RootStackParamList = {
   MapTracking: undefined;
   PlaceSearch: { onPick?: (d: Destination) => void } | undefined;
   Trip:
-    | { start?: Destination; dest?: Destination; flow?: 'regular' | 'airport' }
+    | { start?: Destination; dest?: Destination; flow?: 'regular' | 'airport'; when?: Date }
     | undefined;
   FlightDetails:
     | {
@@ -70,6 +70,7 @@ export type RootStackParamList = {
         luggage?: LuggageItem[];
         start?: Destination;
         dest?: Destination;
+        when?: Date;
         onDone?: (p: PassengerCounts) => void;
         onEditLuggage?: (items: LuggageItem[]) => void;
       }
@@ -79,6 +80,7 @@ export type RootStackParamList = {
         initial?: LuggageItem[];
         start?: Destination;
         dest?: Destination;
+        when?: Date;
         onDone?: (items: LuggageItem[]) => void;
       }
     | undefined;
@@ -315,6 +317,12 @@ export type RootStackParamList = {
     | {
         initial?: string;
         onAdd?: (flightNo: string) => void;
+      }
+    | undefined;
+  ScanBagSize:
+    | {
+        initialSize?: 'Large' | 'Small';
+        onDone?: (size: 'Large' | 'Small') => void;
       }
     | undefined;
 };

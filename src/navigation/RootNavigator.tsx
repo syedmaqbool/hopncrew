@@ -65,6 +65,7 @@ import AirportGuideModal from '../screens/AirportGuideModal';
 import SelectDepartureModal from '../screens/SelectDepartureModal';
 import SelectedAirportScreen from '../screens/SelectedAirportScreen';
 import FlightManualModal from '../screens/FlightManualModal';
+import ScanBagSizeScreen from '../screens/ScanBagSizeScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator({ initialRoute = 'RideSelection' as keyof RootStackParamList }) {
@@ -93,6 +94,7 @@ export default function RootNavigator({ initialRoute = 'RideSelection' as keyof 
       <Stack.Screen name="FlightDeparture" component={FlightDepartureScreen} options={{ headerShown: false }} />
       <Stack.Screen name="MapTracking" component={MapTrackingScreen} />
       <Stack.Screen name="Trip" component={TripScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="ScanBagSize" component={ScanBagSizeScreen} options={{ headerShown: false }} />
       <Stack.Screen name="SelectedAirport" component={SelectedAirportScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ScheduleFlight" component={ScheduleFlightScreen} options={{ headerShown: false }} />
       <Stack.Screen name="ConfirmRequest" component={ConfirmRequestScreen} options={{ headerShown: false }} />

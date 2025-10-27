@@ -13,7 +13,7 @@ const MINT = '#B9FBE7';
 export default function LuggageScanInfoModal({ navigation, route }: Props) {
   const start = () => {
     route.params?.onStartScan?.();
-    navigation.goBack();
+    navigation.navigate('ScanBagSize');
   };
 
   return (

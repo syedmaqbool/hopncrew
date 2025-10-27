@@ -373,12 +373,13 @@ export default function AddPassengerModal({ navigation, route }: Props) {
                 });
                 // After animations/interactions settle, replace with AddLuggage
                 InteractionManager.runAfterInteractions(() => {
-                  navigation.replace('AddLuggage', {
-                    initial: route.params?.luggage ?? [],
-                    start: route.params?.start,
-                    dest: route.params?.dest,
-                    onDone: items => route.params?.onEditLuggage?.(items),
-                  });
+                    navigation.replace('AddLuggage', {
+                      initial: route.params?.luggage ?? [],
+                      start: route.params?.start,
+                      dest: route.params?.dest,
+                      when: route.params?.when,
+                      onDone: items => route.params?.onEditLuggage?.(items),
+                    });
                 });
               }}
             >

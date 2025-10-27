@@ -323,17 +323,36 @@ export default function AddLuggageModal({ navigation, route }: Props) {
           {/* Bottom CTA → keep route.onDone() and close back to Trip */}
           <Pressable
             style={styles.cta}
-            onPress={() =>
-              navigation.navigate('ScheduleRide', {
-                initial: new Date(),
-                start: route.params?.start, // forward trip endpoints
-                dest: route.params?.dest,
-              })
-            }
+            onPress={() => {
+              if (route.params?.when) {
+                const quotes = [
+                  { id: 'esc', tier: 'Escalade', price: 51, oldPrice: 85, seatText: 'Or Similar' },
+                  { id: 'prm', tier: 'Premium', price: 32, oldPrice: 55, seatText: 'Sedan X2' },
+                  { id: 'eco', tier: 'Economy', price: 43, oldPrice: 67, seatText: 'SUV X2' },
+                ];
+                navigation.navigate('FareOptions', {
+                  etaMinutes: 18,
+                  quotes,
+                  start: route.params?.start,
+                  dest: route.params?.dest,
+                  when: route.params?.when,
+                });
+              } else {
+                navigation.navigate('ScheduleRide', {
+                  initial: new Date(),
+                  start: route.params?.start, // forward trip endpoints
+                  dest: route.params?.dest,
+                });
+              }
+            }}
           >
-            <Text style={styles.ctaText}>+ Date &amp; Time</Text>
+            <Text style={styles.ctaText}>{route.params?.when ? 'Fare Options' : '+ Date & Time'}</Text>
             <View style={styles.ctaIcon}>
-              <Ionicons name="calendar-outline" size={18} color="#111" />
+              {route.params?.when ? (
+                <AntDesign name="arrowright" size={18} color="#111" />
+              ) : (
+                <Ionicons name="calendar-outline" size={18} color="#111" />
+              )}
             </View>
           </Pressable>
         </Animated.View>
