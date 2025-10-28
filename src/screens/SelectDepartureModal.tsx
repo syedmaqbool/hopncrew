@@ -1,6 +1,7 @@
 // src/screens/SelectDepartureModal.tsx
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   FlatList,
   Image,
   Keyboard,
@@ -8,7 +9,6 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -16,6 +16,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { Destination, RootStackParamList } from '../navigation/types';
+import { getAirports, type Airport } from '../services/app';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SelectDeparture'>;
 
@@ -27,15 +28,6 @@ const BORDER = '#ECEDEE';
 
 const STORAGE_KEY_AIRPORT = 'selected_airport';
 const STORAGE_KEY_AIRLINE = 'selected_airline';
-
-const GOOGLE_PLACES_API_KEY = 'AIzaSyBp7k8-SYDkEkhcGbXQ9f_fAXPXmwmlvUQ'; // move to env
-
-type Prediction = {
-  description: string;
-  place_id: string;
-  types?: string[];
-  structured_formatting?: { main_text?: string; secondary_text?: string };
-};
 
 type Airline = { code: string; name: string };
 
@@ -54,40 +46,40 @@ const AIRLINES: Airline[] = [
 export default function SelectDepartureModal({ navigation, route }: Props) {
   const [visible, setVisible] = useState(true);
 
-  // airport search
-  const [query, setQuery] = useState('');
-  const [predictions, setPredictions] = useState<Prediction[]>([]);
+  // Airport states
+  const [airports, setAirports] = useState<Airport[]>([]);
+  const [airportOpen, setAirportOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selectedAirport, setSelectedAirport] = useState<Destination | null>(
     null,
   );
 
-  // airline dropdown
+  // Airline states
   const [airlineOpen, setAirlineOpen] = useState(false);
   const [airline, setAirline] = useState<Airline | null>(null);
 
-  const sessionToken = useMemo(
-    () => `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`,
-    [],
-  );
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
-
-  // restore saved
+  // ✅ Load airlines from storage only (airport won't preload)
   useEffect(() => {
     (async () => {
       try {
-        const [a1, a2] = await Promise.all([
-          AsyncStorage.getItem(STORAGE_KEY_AIRPORT),
-          AsyncStorage.getItem(STORAGE_KEY_AIRLINE),
-        ]);
-        if (a1) {
-          const parsed = JSON.parse(a1);
-          setSelectedAirport(parsed);
-          // show the nice full description in the field
-          setQuery(parsed.description || '');
-        }
+        const a2 = await AsyncStorage.getItem(STORAGE_KEY_AIRLINE);
         if (a2) setAirline(JSON.parse(a2));
       } catch {}
+    })();
+  }, []);
+
+  // ✅ Fetch airports from backend API
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const list = await getAirports();
+        setAirports(list || []);
+      } catch {
+        setAirports([]);
+      } finally {
+        setLoading(false);
+      }
     })();
   }, []);
 
@@ -96,90 +88,15 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
     setTimeout(() => navigation.goBack(), 150);
   };
 
-  // ---- Google helpers
-  const isAirportPrediction = (p: Prediction) => {
-    const hasType =
-      Array.isArray(p.types) && p.types.some(t => /airport/i.test(t));
-    const looksLike = /airport/i.test(p.description || '');
-    return hasType || looksLike;
-  };
-
-  const parseIATA = (text: string) => {
-    const m = text.match(/\(([A-Z]{3})\)/);
-    return m?.[1] ?? undefined;
-  };
-
-  const fetchPredictions = async (text: string) => {
-    try {
-      setLoading(true);
-      const url =
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json` +
-        `?input=${encodeURIComponent(text)}` +
-        `&key=${GOOGLE_PLACES_API_KEY}` +
-        `&language=en` +
-        `&sessiontoken=${sessionToken}` +
-        `&types=establishment`;
-      const res = await fetch(url);
-      const json = await res.json();
-      const raw: Prediction[] = Array.isArray(json?.predictions)
-        ? json.predictions
-        : [];
-      setPredictions(raw.filter(isAirportPrediction));
-    } catch {
-      setPredictions([]);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchPlaceDetails = async (placeId: string) => {
-    try {
-      const url =
-        `https://maps.googleapis.com/maps/api/place/details/json` +
-        `?place_id=${encodeURIComponent(placeId)}` +
-        `&fields=geometry,name,types` +
-        `&key=${GOOGLE_PLACES_API_KEY}` +
-        `&language=en` +
-        `&sessiontoken=${sessionToken}`;
-      const res = await fetch(url);
-      const json = await res.json();
-      const resTypes: string[] = json?.result?.types ?? [];
-      if (!resTypes.some(t => /airport/i.test(t))) return null;
-      const loc = json?.result?.geometry?.location;
-      if (!loc) return null;
-      return {
-        latitude: loc.lat,
-        longitude: loc.lng,
-        description: json?.result?.name || 'Airport',
-        placeId,
-      } as Destination;
-    } catch {
-      return null;
-    }
-  };
-
-  // ---- input change
-  const onChangeText = (t: string) => {
-    setQuery(t);
-    setSelectedAirport(null);
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (!t || t.trim().length < 2) {
-      setPredictions([]);
-      return;
-    }
-    debounceRef.current = setTimeout(() => fetchPredictions(t), 300);
-  };
-
-  const pickPrediction = async (p: Prediction) => {
-    Keyboard.dismiss();
-    const details = await fetchPlaceDetails(p.place_id);
-    if (details) {
-      const chosen = { ...details, description: p.description };
-      setSelectedAirport(chosen);
-      setQuery(p.description);
-      setPredictions([]);
-      await AsyncStorage.setItem(STORAGE_KEY_AIRPORT, JSON.stringify(chosen));
-    }
+  const pickAirport = async (a: Airport) => {
+    const chosen: Destination = {
+      latitude: a.latitude,
+      longitude: a.longitude,
+      description: a.name,
+    };
+    setSelectedAirport(chosen);
+    setAirportOpen(false);
+    await AsyncStorage.setItem(STORAGE_KEY_AIRPORT, JSON.stringify(chosen));
   };
 
   const onConfirm = async () => {
@@ -214,12 +131,18 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
             </Pressable>
           </View>
 
-          {/* Airport Input */}
+          {/* ------- Airport Dropdown ------- */}
           <View style={styles.fieldCard}>
-            <View style={styles.inputRow}>
+            <Pressable
+              style={styles.dropdown}
+              onPress={() => {
+                Keyboard.dismiss();
+                setAirlineOpen(false);
+                setAirportOpen(v => !v);
+              }}
+            >
               <Image
                 source={require('../../assets/icons/airplan-icon.png')}
-                alt="airplane-outline"
                 style={{
                   width: 18,
                   height: 18,
@@ -227,50 +150,52 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
                   resizeMode: 'contain',
                 }}
               />
-              <TextInput
-                style={[styles.input, styles.truncate]}
-                placeholder="Search airports (e.g., Abbotsford Airport (YXX))"
-                placeholderTextColor={SUBTEXT}
-                value={query}
-                onChangeText={onChangeText}
-                autoCapitalize="none"
-                autoCorrect={false}
-              />
+              <Text
+                numberOfLines={1}
+                ellipsizeMode="tail"
+                style={[
+                  styles.dropdownText,
+                  styles.truncate,
+                  !selectedAirport && { color: SUBTEXT },
+                ]}
+              >
+                {selectedAirport
+                  ? selectedAirport.description
+                  : 'Select an airport'}
+              </Text>
               {loading ? (
-                <Ionicons name="sync" size={18} color={SUBTEXT} />
-              ) : query.length > 0 ? (
-                <Pressable
-                  onPress={() => {
-                    setQuery('');
-                    setPredictions([]);
-                    setSelectedAirport(null);
-                  }}
-                >
-                  <Ionicons name="close-circle" size={18} color={SUBTEXT} />
-                </Pressable>
-              ) : null}
-            </View>
+                <ActivityIndicator size="small" color={SUBTEXT} />
+              ) : (
+                <Ionicons
+                  name={airportOpen ? 'chevron-up' : 'chevron-down'}
+                  size={18}
+                  color={SUBTEXT}
+                />
+              )}
+            </Pressable>
 
-            {/* Predicted airports */}
-            {predictions.length > 0 && (
+            {airportOpen && (
               <View style={styles.resultsCard}>
-                <FlatList
-                  keyboardShouldPersistTaps="handled"
-                  data={predictions}
-                  keyExtractor={it => it.place_id}
-                  style={{ maxHeight: 240 }}
-                  ItemSeparatorComponent={() => (
-                    <View style={styles.separator} />
-                  )}
-                  renderItem={({ item }) => {
-                    const main =
-                      item.structured_formatting?.main_text ?? item.description;
-                    const sub = item.structured_formatting?.secondary_text;
-                    const code = parseIATA(item.description);
-                    return (
+                {loading ? (
+                  <View style={styles.loadingBox}>
+                    <ActivityIndicator size="small" color={TEXT} />
+                    <Text style={styles.loadingTxt}>Loading airports...</Text>
+                  </View>
+                ) : airports.length > 0 ? (
+                  <FlatList
+                    keyboardShouldPersistTaps="handled"
+                    data={airports}
+                    keyExtractor={it =>
+                      `${it.name}-${it.latitude}-${it.longitude}`
+                    }
+                    style={{ maxHeight: 260 }}
+                    ItemSeparatorComponent={() => (
+                      <View style={styles.separator} />
+                    )}
+                    renderItem={({ item }) => (
                       <Pressable
                         style={styles.row}
-                        onPress={() => pickPrediction(item)}
+                        onPress={() => pickAirport(item)}
                       >
                         <View
                           style={[styles.iconCircle, { backgroundColor: MINT }]}
@@ -283,54 +208,40 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
                             numberOfLines={1}
                             ellipsizeMode="tail"
                           >
-                            {main}
+                            {item.name}
                           </Text>
-                          {!!sub && (
+                          {!!item.code && (
                             <Text
                               style={styles.rowSub}
                               numberOfLines={1}
                               ellipsizeMode="tail"
                             >
-                              {sub} {code ? `(${code})` : ''}
+                              {item.code}
                             </Text>
                           )}
                         </View>
-                        <Ionicons
-                          name="chevron-forward"
-                          size={18}
-                          color={SUBTEXT}
-                        />
                       </Pressable>
-                    );
-                  }}
-                />
-              </View>
-            )}
-
-            {/* Selected airport pill (truncated) */}
-            {selectedAirport && predictions.length === 0 && (
-              <View style={styles.selectedBox}>
-                <Ionicons name="checkmark-circle" size={20} color={MINT} />
-                <Text
-                  style={[styles.selectedText, styles.truncate]}
-                  numberOfLines={2}
-                  ellipsizeMode="tail"
-                >
-                  {selectedAirport.description}
-                </Text>
+                    )}
+                  />
+                ) : (
+                  <Text style={styles.emptyTxt}>No airports found</Text>
+                )}
               </View>
             )}
           </View>
 
-          {/* Airline dropdown */}
+          {/* ------- Airline Dropdown ------- */}
           <View style={styles.fieldCard}>
             <Pressable
               style={styles.dropdown}
-              onPress={() => setAirlineOpen(v => !v)}
+              onPress={() => {
+                Keyboard.dismiss();
+                setAirportOpen(false);
+                setAirlineOpen(v => !v);
+              }}
             >
               <Image
                 source={require('../../assets/icons/airplan-icon.png')}
-                alt="airplane-outline"
                 style={{
                   width: 18,
                   height: 18,
@@ -338,12 +249,6 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
                   resizeMode: 'contain',
                 }}
               />
-              {/* <Ionicons
-                name="airplane"
-                size={18}
-                color={TEXT}
-                style={{ marginRight: 10 }}
-              /> */}
               <Text
                 numberOfLines={1}
                 ellipsizeMode="tail"
@@ -369,7 +274,7 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
                 <FlatList
                   data={AIRLINES}
                   keyExtractor={a => a.code}
-                  style={{ maxHeight: 200 }}
+                  style={{ maxHeight: 220 }}
                   ItemSeparatorComponent={() => (
                     <View style={styles.separator} />
                   )}
@@ -407,7 +312,7 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
             )}
           </View>
 
-          {/* Confirm */}
+          {/* ------- Confirm Button ------- */}
           <Pressable
             style={[styles.cta, !selectedAirport && { opacity: 0.6 }]}
             disabled={!selectedAirport}
@@ -425,7 +330,6 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
-  // layout
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.35)',
@@ -446,7 +350,6 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 10,
   },
-
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -462,8 +365,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-
-  // cards
   fieldCard: {
     backgroundColor: CARD,
     borderWidth: 1,
@@ -472,16 +373,14 @@ const styles = StyleSheet.create({
     padding: 10,
     marginTop: 10,
   },
-
-  // airport input
-  inputRow: {
+  dropdown: {
     height: 48,
     flexDirection: 'row',
     alignItems: 'center',
+    paddingHorizontal: 6,
   },
-  input: { flex: 1, color: TEXT, fontWeight: '700' },
-
-  // results container
+  dropdownText: { flex: 1, color: TEXT, fontWeight: '700' },
+  truncate: { minWidth: 0 },
   resultsCard: {
     marginTop: 8,
     borderWidth: 1,
@@ -496,7 +395,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 4,
   },
-  rowTextWrap: { flex: 1, minWidth: 0 }, // enables truncation
+  rowTextWrap: { flex: 1, minWidth: 0 },
   rowTitle: { color: TEXT, fontWeight: '800' },
   rowSub: { color: SUBTEXT, fontSize: 12, marginTop: 2 },
   iconCircle: {
@@ -508,26 +407,19 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   separator: { height: 1, backgroundColor: BORDER, marginLeft: 48 },
-
-  // airline dropdown
-  dropdown: {
-    height: 48,
+  loadingBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 6,
-  },
-  dropdownText: { flex: 1, color: TEXT, fontWeight: '700' },
-
-  // selected
-  selectedBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    justifyContent: 'center',
     gap: 8,
-    marginTop: 8,
+    paddingVertical: 12,
   },
-  selectedText: { color: TEXT, fontWeight: '700' },
-
-  // CTA
+  loadingTxt: { color: SUBTEXT },
+  emptyTxt: {
+    textAlign: 'center',
+    color: SUBTEXT,
+    paddingVertical: 10,
+  },
   cta: {
     marginTop: 14,
     height: 50,
@@ -548,7 +440,4 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
   },
-
-  // text truncation helper
-  truncate: { minWidth: 0 }, // critical to allow numberOfLines to work in flex rows
 });

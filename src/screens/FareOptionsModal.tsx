@@ -8,6 +8,7 @@ import {
   ScrollView,
   Image,
   Dimensions,
+  FlatList,
 } from 'react-native';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import {
@@ -23,6 +24,7 @@ import type {
   SpecialRequestPayload,
 } from '../navigation/types';
 import assets from '../../assets';
+import { getVehicleTypes, type VehicleType } from '../services/app';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FareOptions'>;
 
@@ -34,8 +36,48 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
 
   const eta = route.params?.etaMinutes ?? 18;
-  const quotes = route.params?.quotes ?? [];
-  const [selectedId, setSelectedId] = useState<string>(quotes[0]?.id);
+  const routeQuotes = route.params?.quotes ?? [];
+  const [vehicleTypes, setVehicleTypes] = useState<VehicleType[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedId, setSelectedId] = useState<any>(vehicleTypes[0]?.id);
+
+  useEffect(() => {
+    console.log('routeQuotes', routeQuotes);
+    (async () => {
+      setLoading(true);
+      try {
+        const list = await getVehicleTypes();
+        console.log('?>>>>>>>>>>>>>>', list);
+
+        setVehicleTypes(list);
+      } catch (err) {
+        console.error('Failed to fetch vehicle types:', err);
+        setVehicleTypes([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const dynamicQuotes = useMemo(() => {
+    return vehicleTypes.map(v => ({
+      id: String(v.id),
+      tier: v.name,
+      seatText: v.details,
+      details: v.details,
+      price: Number(v.base_fare),
+      image: v.image_url,
+      fare_per_km: v.fare_per_km,
+      max_passengers: v.max_passengers,
+      max_luggage: v.max_luggage,
+    }));
+  }, [vehicleTypes]);
+
+  const quotes = dynamicQuotes;
+
+  useEffect(() => {
+    if (!selectedId && quotes.length > 0) setSelectedId(quotes[0].id);
+  }, [quotes, selectedId]);
   const [payMethod, setPayMethod] = useState(route.params?.payMethod ?? 'Card');
   const [hasNote, setHasNote] = useState(false);
   const [special, setSpecial] = useState<SpecialRequestPayload>({
@@ -69,12 +111,25 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
   }, [coords]);
 
   const confirm = () => {
-    if (!selected) return;
+    if (!selectedId) {
+      alert('Please select a vehicle before continuing.');
+      return;
+    }
+
+    // const selected = quotes.find(q => q.id === selectedId);
+    // if (!selected) {
+    //   alert('Please select a valid vehicle.');
+    //   return;
+    // }
+
     const payload = { payMethod, special: hasNote ? special : null };
 
     if (typeof route.params?.onConfirm === 'function') {
       route.params.onConfirm(selected, payload);
     }
+
+    console.log('??????????????', selected);
+
     navigation.navigate('ConfirmRequest', {
       quote: selected,
       payMethod,
@@ -166,19 +221,39 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             trained to limousine standards.”
           </Text>
 
-          {/* Fare cards */}
-          <View style={{ gap: 12, marginTop: 12 }}>
-            {quotes.map((q, idx) => (
-              <FareRow
-                key={q.id}
-                quote={q}
-                selected={q.id === selectedId}
-                onPress={() => setSelectedId(q.id)}
-                variant={idx} // just to swap car image for variety
+          {/* Fare cards (scrollable with limited height) */}
+          <View style={{ marginTop: 12 }}>
+            {loading ? (
+              <View style={{ alignItems: 'center', paddingVertical: 40 }}>
+                <Text style={{ color: '#888' }}>Loading vehicle types...</Text>
+              </View>
+            ) : dynamicQuotes.length === 0 ? (
+              <View style={{ alignItems: 'center', paddingVertical: 40 }}>
+                <Text style={{ color: '#888' }}>No vehicles available</Text>
+              </View>
+            ) : (
+              <FlatList
+                data={dynamicQuotes}
+                keyExtractor={q => q.id}
+                renderItem={({ item, index }) => (
+                  <FareRow
+                    quote={item}
+                    selected={item.id === selectedId}
+                    onPress={() =>
+                      setSelectedId(
+                        item.id === selectedId ? undefined : item.id,
+                      )
+                    }
+                    variant={index % 3}
+                  />
+                )}
+                ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+                style={{ maxHeight: 360 }}
+                showsVerticalScrollIndicator
+                nestedScrollEnabled
               />
-            ))}
+            )}
           </View>
-
           {/* Policy row (slim pill) */}
           <Pressable
             style={styles.policyRow}
@@ -300,15 +375,22 @@ function FareRow({
   onPress,
   variant = 0,
 }: {
-  quote: FareQuote;
+  quote: {
+    id: string;
+    tier: string;
+    seatText?: string;
+    price: number;
+    image?: string | null;
+    fare_per_km?: string;
+    max_passengers?: number;
+    max_luggage?: number;
+  };
   selected?: boolean;
   onPress?: () => void;
   variant?: number;
 }) {
-  // choose car art by row
-  let carSrc: any = assets.images.escaladeIcon;
-  if (variant === 1) carSrc = assets.images.sedanIcon;
-  if (variant === 2) carSrc = assets.images.suvIcon;
+  // Only use API image if exists
+  const carSrc = quote.image ? { uri: quote.image } : undefined;
 
   return (
     <Pressable
@@ -318,24 +400,46 @@ function FareRow({
       {/* Left dark slab */}
       <View style={[styles.leftSlab, selected && styles.leftSlabActive]}>
         <Text style={styles.priceBig}>${quote.price}</Text>
-        {!!quote.oldPrice && (
-          <Text style={styles.priceStrike}>${quote.oldPrice}</Text>
-        )}
       </View>
 
-      {/* Right white bubble that overlaps */}
+      {/* Right white bubble */}
       <View style={[styles.rightBubble, selected && styles.rightBubbleActive]}>
-        <Text style={styles.tierTitle}>
-          {quote.tier}{' '}
+        <Text style={styles.tierTitle}>{quote.tier}</Text>
+        {/* Show image only if API provides one */}
+        {carSrc ? (
+          <Image
+            source={carSrc}
+            style={{ width: 140, height: 52 }}
+            resizeMode="contain"
+          />
+        ) : (
+          <Image
+            source={require('../../assets/icons/no-car-icon.jpg')}
+            style={{ width: 150, height: 80 }}
+            resizeMode="contain"
+          />
+        )}
+
+        <Text>
           {quote.seatText ? (
             <Text style={styles.tierSub}>{quote.seatText}</Text>
           ) : null}
         </Text>
-        <Image
-          source={carSrc}
-          style={{ width: 140, height: 52 }}
-          resizeMode="contain"
-        />
+
+        {/* Expand details when selected */}
+        {selected && (
+          <View style={{ marginTop: 6, alignItems: 'flex-end' }}>
+            <Text style={{ color: '#6C7075', fontSize: 11 }}>
+              Fare per km: ${quote.fare_per_km}
+            </Text>
+            <Text style={{ color: '#6C7075', fontSize: 11 }}>
+              Max Passengers: {quote.max_passengers}
+            </Text>
+            <Text style={{ color: '#6C7075', fontSize: 11 }}>
+              Max Luggage: {quote.max_luggage}
+            </Text>
+          </View>
+        )}
       </View>
     </Pressable>
   );
@@ -435,6 +539,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderBottomLeftRadius: 16,
     minWidth: 112,
+    minHeight: 150,
     justifyContent: 'center',
   },
   leftSlabActive: { backgroundColor: '#111' },
@@ -470,8 +575,13 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },
   },
-  tierTitle: { color: TEXT, fontWeight: '800', textAlign: 'right' },
-  tierSub: { color: '#6C7075', fontWeight: '600' },
+  tierTitle: {
+    color: TEXT,
+    fontWeight: '800',
+    textAlign: 'right',
+    fontSize: 20,
+  },
+  tierSub: { color: '#6C7075', fontWeight: '500' },
 
   /* policy pill */
   policyRow: {

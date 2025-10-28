@@ -7,6 +7,7 @@ import {
   BackHandler,
   FlatList,
   Image,
+  ActivityIndicator,
   Keyboard,
   Platform,
   Pressable,
@@ -24,65 +25,25 @@ import {
 } from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-// import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import assets from '../../assets';
+import {
+  getChildSeatTypes,
+  type ChildSeatType,
+  getPassengerTypes,
+  type PassengerType,
+} from '../services/app';
 import type { PassengerCounts, RootStackParamList } from '../navigation/types';
 import Icon from 'react-native-vector-icons/Ionicons';
+
 type Props = NativeStackScreenProps<RootStackParamList, 'AddPassenger'>;
 
 const MINT = '#B9FBE7';
 
-const SEATS = [
-  {
-    id: 'infantRear',
-    title: 'Infant Rear Face',
-    icon: require('../../assets/icons/child_nine.png'),
-  },
-  {
-    id: 'toddlerRear',
-    title: 'Toddler Rear Face',
-    icon: require('../../assets/icons/child_eight.png'),
-  },
-  {
-    id: 'toddlerFront',
-    title: 'Toddler Front Face',
-    icon: require('../../assets/icons/child_seven.png'),
-  },
-  {
-    id: 'boosterCarSeats',
-    title: 'Booster Car Seats',
-    icon: require('../../assets/icons/child_six.png'),
-  },
-  {
-    id: 'regularFolded',
-    title: 'Regular Folded',
-    icon: require('../../assets/icons/child_five.png'),
-  },
-  {
-    id: 'doubleStroller',
-    title: 'Double Stroller',
-    icon: require('../../assets/icons/child_four.png'),
-  },
-  {
-    id: 'foldedOnShoulder',
-    title: 'Folded on Shoulder',
-    icon: require('../../assets/icons/child_three.png'),
-  },
-  {
-    id: 'kidsPlaypen',
-    title: 'Kids Playpen',
-    icon: require('../../assets/icons/child_two.png'),
-  },
-  {
-    id: 'carSeatBag',
-    title: 'Car Seat Bag',
-    icon: require('../../assets/icons/child_one.png'),
-  },
-];
-
 export default function AddPassengerModal({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const seatListRef = useRef<FlatList>(null);
+
+  const [isLoading, setIsLoading] = useState(true);
 
   const slide = useRef(new Animated.Value(1)).current; // 1 -> off, 0 -> on
   const keyboardTranslate = useRef(new Animated.Value(0)).current; // negative on kb
@@ -130,11 +91,26 @@ export default function AddPassengerModal({ navigation, route }: Props) {
     };
   }, [keyboardTranslate]);
 
-  const [adults, setAdults] = useState(route.params?.initial?.adults ?? 1);
-  const [children, setChildren] = useState(
-    route.params?.initial?.children ?? 1,
-  );
-  const [infants, setInfants] = useState(route.params?.initial?.infants ?? 1);
+  // ---------------- Passenger types (must be declared BEFORE use) ----------------
+  const [passengerTypes, setPassengerTypes] = useState<PassengerType[]>([]);
+  const [loadingPassengerTypes, setLoadingPassengerTypes] = useState(false);
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoadingPassengerTypes(true);
+        const list = await getPassengerTypes();
+        setPassengerTypes(Array.isArray(list) && list.length > 0 ? list : []);
+      } catch {
+        setPassengerTypes([]);
+        setLoadingPassengerTypes(false);
+      } finally {
+        setLoadingPassengerTypes(false);
+      }
+    })();
+  }, []);
+
+  // ---------------- Counts & seats ----------------
+  const [paxCounts, setPaxCounts] = useState<Record<string, number>>({});
   const [seats, setSeats] = useState<Record<string, number>>(
     route.params?.initial?.seats ?? {
       infantRear: 0,
@@ -143,17 +119,82 @@ export default function AddPassengerModal({ navigation, route }: Props) {
     },
   );
 
-  const payload: PassengerCounts | any = useMemo(
-    () => ({ adults, children, infants, seats }),
-    [adults, children, infants, seats],
+  // Fetch child seat types from API
+  const [seatTypes, setSeatTypes] = useState<ChildSeatType[]>([]);
+  const [loadingSeatTypes, setLoadingSeatTypes] = useState(false);
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoadingSeatTypes(true);
+        const list = await getChildSeatTypes();
+        setSeatTypes(list);
+      } catch {
+        setSeatTypes([]);
+      } finally {
+        setLoadingSeatTypes(false);
+      }
+    })();
+  }, []);
+
+  // Safe helper: choose a passenger type by keyword
+  const chooseType = (keywords: string[], fallbackIndex: number) => {
+    const list = passengerTypes ?? [];
+    const lowered = keywords.map(k => k.toLowerCase());
+    const found = list.find(t =>
+      lowered.some(k => (t.label || '').toLowerCase().includes(k)),
+    );
+    return found ?? list[fallbackIndex] ?? null;
+  };
+
+  const typeAdults = useMemo(() => chooseType(['adult'], 0), [passengerTypes]);
+  const typeChildren = useMemo(
+    () => chooseType(['child', 'children', 'kid'], 1),
+    [passengerTypes],
+  );
+  const typeInfants = useMemo(
+    () => chooseType(['infant', 'baby'], 2),
+    [passengerTypes],
   );
 
-  const change = (
-    setter: Dispatch<SetStateAction<number>>,
-    dir: -1 | 1,
-    min = 0,
-    max = 8,
-  ) => setter(prev => Math.max(min, Math.min(max, prev + dir)));
+  const adults = useMemo(
+    () => (typeAdults ? paxCounts[String(typeAdults.id)] ?? 0 : 0),
+    [typeAdults, paxCounts],
+  );
+  const children = useMemo(
+    () => (typeChildren ? paxCounts[String(typeChildren.id)] ?? 0 : 0),
+    [typeChildren, paxCounts],
+  );
+  const infants = useMemo(
+    () => (typeInfants ? paxCounts[String(typeInfants.id)] ?? 0 : 0),
+    [typeInfants, paxCounts],
+  );
+
+  const payload: PassengerCounts | any = useMemo(
+    () => ({ adults, children, infants, seats, passengerTypes: paxCounts }),
+    [adults, children, infants, seats, paxCounts],
+  );
+
+  // Seed initial dynamic counts from route.params.initial once types are loaded
+  useEffect(() => {
+    if (!passengerTypes || passengerTypes.length === 0) return;
+    setPaxCounts(prev => {
+      if (Object.keys(prev).length > 0) return prev;
+      const init = route.params?.initial;
+      const map: Record<string, number> = {};
+      const lower = (s?: string) => (s || '').toLowerCase();
+      const findType = (keys: string[]) =>
+        passengerTypes.find(t => keys.some(k => lower(t.label).includes(k)));
+      const tA = findType(['adult']);
+      const tC = findType(['child', 'children', 'kid']);
+      const tI = findType(['infant', 'baby']);
+      passengerTypes.forEach(t => (map[String(t.id)] = 0));
+      if (tA) map[String(tA.id)] = init?.adults ?? 1;
+      if (tC) map[String(tC.id)] = init?.children ?? 0;
+      if (tI) map[String(tI.id)] = init?.infants ?? 0;
+      return map;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [passengerTypes]);
 
   const changeSeat = (id: string, dir: -1 | 1) =>
     setSeats(cur => ({ ...cur, [id]: Math.max(0, (cur[id] ?? 0) + dir) }));
@@ -162,14 +203,14 @@ export default function AddPassengerModal({ navigation, route }: Props) {
     seatListRef.current?.scrollToIndex({ index: 0, animated: true });
 
   const exit = (emit = true) => {
-    if (emit) route.params?.onDone?.(payload); // persist counts to Trip
+    if (emit) route.params?.onDone?.(payload);
     navigation.goBack();
   };
 
-  // Ensure keyboard is fully hidden before proceeding with close animation
   const waitForKeyboardHide = () =>
     new Promise<void>(resolve => {
-      const hideEvt = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+      const hideEvt =
+        Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
       let done = false;
       const sub = Keyboard.addListener(hideEvt, () => {
         if (!done) {
@@ -178,7 +219,6 @@ export default function AddPassengerModal({ navigation, route }: Props) {
           resolve();
         }
       });
-      // Fallback in case keyboard is already hidden
       setTimeout(() => {
         if (!done) {
           done = true;
@@ -188,7 +228,6 @@ export default function AddPassengerModal({ navigation, route }: Props) {
       }, 80);
     });
 
-  // Android hardware back → save + close
   useFocusEffect(
     React.useCallback(() => {
       const sub = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -233,47 +272,75 @@ export default function AddPassengerModal({ navigation, route }: Props) {
 
             {/* Counters */}
             <View style={styles.block}>
-              <Row
-                icon={
-                  <Image
-                    source={assets.images.adultIcon}
-                    style={{ width: 40, height: 40, resizeMode: 'contain' }}
-                  />
-                }
-                title="Adults"
-                subtitle="Ages 13 or above"
-                value={adults}
-                onMinus={() => change(setAdults, -1, 1)}
-                onPlus={() => change(setAdults, +1)}
-              />
-              <Separator />
-              <Row
-                icon={
-                  <Image
-                    source={assets.images.childrenIcon}
-                    style={{ width: 40, height: 40, resizeMode: 'contain' }}
-                  />
-                }
-                title="Children"
-                subtitle="Ages 2 or 12"
-                value={children}
-                onMinus={() => change(setChildren, -1)}
-                onPlus={() => change(setChildren, +1)}
-              />
-              <Separator />
-              <Row
-                icon={
-                  <Image
-                    source={assets.images.infantIcon}
-                    style={{ width: 40, height: 40, resizeMode: 'contain' }}
-                  />
-                }
-                title="Infants"
-                subtitle="Under 2"
-                value={infants}
-                onMinus={() => change(setInfants, -1)}
-                onPlus={() => change(setInfants, +1)}
-              />
+              {loadingPassengerTypes ? (
+                <View
+                  style={{
+                    height: 100,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'row',
+                  }}
+                >
+                  <ActivityIndicator size="large" color={'#000'} />
+                </View>
+              ) : (
+                passengerTypes.map((pt, idx) => {
+                  const idStr = String(pt.id);
+                  const value = paxCounts[idStr] ?? 0;
+                  const fallbackIcon = (() => {
+                    const l = (pt.label || '').toLowerCase();
+                    if (l.includes('adult')) return assets.images.adultIcon;
+                    if (l.includes('infant') || l.includes('baby'))
+                      return assets.images.infantIcon;
+                    if (l.includes('child') || l.includes('kid'))
+                      return assets.images.childrenIcon;
+                    return assets.images.passengerIcon;
+                  })();
+                  return (
+                    <View key={idStr}>
+                      <Row
+                        icon={
+                          pt.image_url ? (
+                            <Image
+                              source={{ uri: pt.image_url }}
+                              style={{
+                                width: 40,
+                                height: 40,
+                                resizeMode: 'contain',
+                              }}
+                            />
+                          ) : (
+                            <Image
+                              source={fallbackIcon}
+                              style={{
+                                width: 40,
+                                height: 40,
+                                resizeMode: 'contain',
+                              }}
+                            />
+                          )
+                        }
+                        title={pt.label}
+                        subtitle={pt.description ?? ''}
+                        value={value}
+                        onMinus={() =>
+                          setPaxCounts(cur => ({
+                            ...cur,
+                            [idStr]: Math.max(0, (cur[idStr] ?? 0) - 1),
+                          }))
+                        }
+                        onPlus={() =>
+                          setPaxCounts(cur => ({
+                            ...cur,
+                            [idStr]: Math.min(8, (cur[idStr] ?? 0) + 1),
+                          }))
+                        }
+                      />
+                      {idx < passengerTypes.length - 1 && <Separator />}
+                    </View>
+                  );
+                })
+              )}
             </View>
 
             {/* Child seats */}
@@ -284,11 +351,7 @@ export default function AddPassengerModal({ navigation, route }: Props) {
 
               <View style={styles.seatHeader}>
                 <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 6,
-                  }}
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}
                 >
                   <Text style={styles.seatTitle}>
                     Add Child Car Seat &amp; Stroller
@@ -314,32 +377,59 @@ export default function AddPassengerModal({ navigation, route }: Props) {
 
               <FlatList
                 ref={seatListRef}
-                data={SEATS}
-                keyExtractor={it => it.id}
+                data={seatTypes}
+                keyExtractor={it => String(it.id)}
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={{
                   paddingHorizontal: 4,
                   paddingTop: 8,
                 }}
-                renderItem={({ item }) => (
-                  <SeatCard
-                    title={item.title}
-                    value={seats[item.id] ?? 0}
-                    onMinus={() => changeSeat(item.id, -1)}
-                    onPlus={() => changeSeat(item.id, +1)}
-                    icon={
-                      <Image
-                        source={item.icon}
-                        style={{
-                          width: 70,
-                          height: 70,
-                          resizeMode: 'contain',
-                        }}
-                      />
-                    }
-                  />
-                )}
+                renderItem={({ item }) => {
+                  const idStr = String(item.id);
+                  const url = item.image_url;
+                  return (
+                    <SeatCard
+                      title={item.label}
+                      value={seats[idStr] ?? 0}
+                      onMinus={() => changeSeat(idStr, -1)}
+                      onPlus={() => changeSeat(idStr, +1)}
+                      icon={
+                        url ? (
+                          <Image
+                            source={{ uri: url }}
+                            style={{
+                              width: 70,
+                              height: 70,
+                              resizeMode: 'contain',
+                            }}
+                          />
+                        ) : (
+                          <View
+                            style={{
+                              width: 70,
+                              height: 70,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              borderRadius: 12,
+                              backgroundColor: '#F4F4F5',
+                            }}
+                          >
+                            <Text
+                              style={{
+                                color: '#111',
+                                fontSize: 28,
+                                fontWeight: '800',
+                              }}
+                            >
+                              ?
+                            </Text>
+                          </View>
+                        )
+                      }
+                    />
+                  );
+                }}
               />
             </View>
           </ScrollView>
@@ -351,18 +441,14 @@ export default function AddPassengerModal({ navigation, route }: Props) {
               onPress={async () => {
                 if (isNavigatingRef.current) return;
                 isNavigatingRef.current = true;
-                // Persist passenger counts first
                 route.params?.onDone?.(payload);
-                // Dismiss keyboard and wait briefly for it to hide (avoids jitter)
                 Keyboard.dismiss();
                 await waitForKeyboardHide();
-                // Ensure keyboard translation is reset before closing animation
                 try {
-                  // @ts-ignore stopAnimation exists on Animated.Value in runtime
+                  // @ts-ignore
                   keyboardTranslate.stopAnimation?.();
                 } catch {}
                 keyboardTranslate.setValue(0);
-                // Slide this sheet down fully BEFORE mounting the next modal
                 await new Promise<void>(resolve => {
                   Animated.timing(slide, {
                     toValue: 1,
@@ -371,15 +457,14 @@ export default function AddPassengerModal({ navigation, route }: Props) {
                     useNativeDriver: true,
                   }).start(() => resolve());
                 });
-                // After animations/interactions settle, replace with AddLuggage
                 InteractionManager.runAfterInteractions(() => {
-                    navigation.replace('AddLuggage', {
-                      initial: route.params?.luggage ?? [],
-                      start: route.params?.start,
-                      dest: route.params?.dest,
-                      when: route.params?.when,
-                      onDone: items => route.params?.onEditLuggage?.(items),
-                    });
+                  navigation.replace('AddLuggage', {
+                    initial: route.params?.luggage ?? [],
+                    start: route.params?.start,
+                    dest: route.params?.dest,
+                    when: route.params?.when,
+                    onDone: items => route.params?.onEditLuggage?.(items),
+                  });
                 });
               }}
             >
@@ -466,6 +551,7 @@ function SeatCard({
         style={{
           flexDirection: 'row',
           alignItems: 'center',
+          justifyContent: 'space-between',
           marginBottom: 3,
           padding: 0,
         }}
@@ -497,12 +583,10 @@ function SeatCard({
 /* styles */
 const styles = StyleSheet.create({
   fill: { flex: 1 },
-  // DIMMED BACKDROP
   backdrop: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.35)',
   },
-
   sheetWrap: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -570,7 +654,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   rowTitle: { color: '#111', fontWeight: '700' },
-  rowSub: { color: '#777', fontSize: 12, marginTop: 2 },
+  rowSub: { color: '#777', fontSize: 12, marginTop: 2, width: '90%' },
   separator: { height: 1, backgroundColor: '#F0F0F0', marginHorizontal: 8 },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   stepBtn: {
@@ -583,10 +667,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EEE',
   },
-  stepBtnPlus: {
-    backgroundColor: '#111',
-    borderColor: '#111',
-  },
+  stepBtnPlus: { backgroundColor: '#111', borderColor: '#111' },
   stepVal: { width: 20, textAlign: 'center', color: '#111', fontWeight: '700' },
 
   freePill: {
@@ -607,7 +688,7 @@ const styles = StyleSheet.create({
   link: { color: '#6086C1', fontWeight: '600' },
 
   seatCard: {
-    width: 160,
+    width: 180,
     borderRadius: 14,
     backgroundColor: '#fff',
     borderWidth: 1,
@@ -615,11 +696,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginRight: 10,
   },
-  seatTitleSmall: {
-    color: '#111',
-    fontWeight: '400',
-    width: 80,
-  },
+  seatTitleSmall: { color: '#111', fontWeight: '400', width: 80 },
   seatStepper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -637,14 +714,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EEE',
   },
-  seatBtnPlus: {
-    backgroundColor: '#111',
-    borderColor: '#111',
-  },
-  seatBtnMinus: {
-    backgroundColor: '#F0F2F3',
-    borderColor: '#EEE',
-  },
+  seatBtnPlus: { backgroundColor: '#111', borderColor: '#111' },
+  seatBtnMinus: { backgroundColor: '#F0F2F3', borderColor: '#EEE' },
   seatVal: {
     fontSize: 24,
     width: 18,

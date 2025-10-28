@@ -44,9 +44,11 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
   );
 
   const title = useMemo(() => {
-    const right = q.seatText ? ` ${q.seatText}` : '';
-    return `${q.tier}${right}`;
+    const seatOrDetails = q.seatText || q.details || '';
+    return `${q.tier}${seatOrDetails ? ' – ' + seatOrDetails : ''}`;
   }, [q]);
+
+  console.log('q', q);
 
   const openPolicies = () => navigation.navigate('Policies');
 
@@ -87,14 +89,9 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
   };
 
   // ---- choose car image cleanly
-  const tier = (q.tier || '').toLowerCase();
-  const carSrc =
-    (q.image as any) ||
-    (tier.includes('premium')
-      ? (assets.images.sedanIcon as any)
-      : tier.includes('economy')
-      ? (assets.images.suvIcon as any)
-      : (assets.images.escaladeIcon as any));
+  const carSrc = q.image
+    ? { uri: q.image }
+    : require('../../assets/icons/no-car-icon.jpg');
 
   return (
     <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
@@ -111,14 +108,8 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
         showsVerticalScrollIndicator={false}
       >
         {/* Title + subtitle */}
-        <Text style={styles.h1}>
-          {title} <Text style={styles.light}>Or Similar</Text>
-        </Text>
-        <Text style={styles.sub}>
-          Sedan limos are a great choice for transportation to and from the
-          airport to any part of the GTA.
-        </Text>
-
+        <Text style={styles.h1}>{q?.tier}</Text>
+        <Text style={styles.light}>{q.seatText}</Text>
         {/* Payment label */}
         <View style={styles.rowHead}>
           <Text style={styles.section}>Payment</Text>
@@ -176,9 +167,18 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
             color={'#111'}
           />
         </Pressable>
-        <Text style={styles.policySub}>
-          Flat Rate – No Surge, No Per-KM, No Per-MIN Charges
-        </Text>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Text style={styles.policySub}>
+            Fare per km {q?.fare_per_km}, Max Luggage {q?.max_luggage}, Max
+            Passengers {q?.max_passengers}
+          </Text>
+        </View>
 
         {/* Special request */}
         {/* <Pressable style={styles.specialRow} onPress={openSpecial}>
@@ -343,7 +343,6 @@ const styles = StyleSheet.create({
   policyStrong: { color: '#111', fontWeight: '700' },
   policySub: {
     color: '#9AA0A6',
-    marginHorizontal: 50,
     marginVertical: 12,
   },
 

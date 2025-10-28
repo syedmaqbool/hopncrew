@@ -27,6 +27,7 @@ import type {
   LuggageItem,
   LuggageSize,
 } from '../navigation/types';
+import { getLuggageTypes, type LuggageType } from '../services/app';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AddLuggage'>;
 
@@ -99,8 +100,9 @@ export default function AddLuggageModal({ navigation, route }: Props) {
     };
   }, [keyboardTranslate]);
 
-  const [selected, setSelected] = useState<LuggageSize>(
-    route.params?.initial?.[0]?.size ?? 'L',
+  // Selected label now driven by API labels; fallback to 'L'
+  const [selected, setSelected] = useState<string>(
+    (route.params?.initial?.[0]?.size as string) ?? 'L',
   );
   const [count, setCount] = useState<number>(
     route.params?.initial?.[0]?.count ?? 1,
@@ -112,7 +114,14 @@ export default function AddLuggageModal({ navigation, route }: Props) {
   const primary: LuggageItem[] = useMemo(
     () =>
       count > 0
-        ? [{ size: selected, count, weightKg, dimsCm: { w: 36, h: 55 } }]
+        ? [
+            {
+              size: selected as LuggageSize,
+              count,
+              weightKg,
+              dimsCm: { w: 36, h: 55 },
+            },
+          ]
         : [],
     [selected, count, weightKg],
   );
@@ -125,6 +134,35 @@ export default function AddLuggageModal({ navigation, route }: Props) {
     () => [...primary, ...oversized],
     [primary, oversized],
   );
+
+  // Fetch luggage types from API and use their labels and images
+  const [luggageTypes, setLuggageTypes] = useState<LuggageType[]>([]);
+  const [loadingTypes, setLoadingTypes] = useState<boolean>(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoadingTypes(true);
+        const types = await getLuggageTypes();
+        setLuggageTypes(types);
+        // If current selected not present, default to first label
+        if (types.length > 0) {
+          const labels = types.map(t => t.label);
+          if (!labels.includes(selected)) setSelected(labels[0]);
+        }
+      } catch {
+        // keep fallback sizes
+      } finally {
+        setLoadingTypes(false);
+      }
+    })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const apiLabelToImageUrl = (label: string): string | null => {
+    const t = luggageTypes.find(x => x.label === label);
+    return t?.image_url ?? null;
+  };
 
   const exit = (emit = true) => {
     if (emit) route.params?.onDone?.(items);
@@ -190,19 +228,35 @@ export default function AddLuggageModal({ navigation, route }: Props) {
               <View style={[styles.corner, styles.cornerTR]} />
               <View style={[styles.corner, styles.cornerBL]} />
               <View style={[styles.corner, styles.cornerBR]} />
-              {imagesBySize[selected] ? (
-                <Image
-                  source={imagesBySize[selected] as any}
-                  style={styles.previewImage}
-                  resizeMode="contain"
-                />
-              ) : (
-                <MaterialCommunityIcons
-                  name="suitcase-rolling"
-                  size={84}
-                  color="#111"
-                />
-              )}
+              {(() => {
+                const url = apiLabelToImageUrl(selected);
+                if (url) {
+                  return (
+                    <Image
+                      source={{ uri: url }}
+                      style={styles.previewImage}
+                      resizeMode="contain"
+                    />
+                  );
+                }
+                const localSrc = (imagesBySize as any)[selected];
+                if (localSrc) {
+                  return (
+                    <Image
+                      source={localSrc}
+                      style={styles.previewImage}
+                      resizeMode="contain"
+                    />
+                  );
+                }
+                return (
+                  <MaterialCommunityIcons
+                    name="suitcase-rolling"
+                    size={84}
+                    color="#111"
+                  />
+                );
+              })()}
               {/* Side dimensions centered between corner cuts */}
               <Text style={styles.leftDim}>55 cm</Text>
               <Text style={styles.weightBubble}>{`${weightKg} kg`}</Text>
@@ -253,7 +307,9 @@ export default function AddLuggageModal({ navigation, route }: Props) {
           {/* Size chips */}
           <FlatList
             horizontal
-            data={SIZES}
+            data={
+              luggageTypes.length > 0 ? luggageTypes.map(t => t.label) : SIZES
+            }
             keyExtractor={s => s}
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
@@ -265,7 +321,8 @@ export default function AddLuggageModal({ navigation, route }: Props) {
                 item === 'XL' ? 80 : item === 'L' ? 70 : item === 'M' ? 60 : 50;
               const imgSize = Math.max(28, boxSize - 28);
               const isSelected = selected === item;
-              const src =
+              const url = apiLabelToImageUrl(item);
+              const localSrc =
                 item === 'Backpack'
                   ? require('../../assets/icons/backpack-icon.png')
                   : item === 'Carry-on'
@@ -289,11 +346,19 @@ export default function AddLuggageModal({ navigation, route }: Props) {
                       isSelected && styles.sizeBoxSelected,
                     ]}
                   >
-                    <Image
-                      source={src}
-                      style={{ width: imgSize, height: imgSize }}
-                      resizeMode="contain"
-                    />
+                    {url ? (
+                      <Image
+                        source={{ uri: url }}
+                        style={{ width: imgSize, height: imgSize }}
+                        resizeMode="contain"
+                      />
+                    ) : (
+                      <Image
+                        source={localSrc}
+                        style={{ width: imgSize, height: imgSize }}
+                        resizeMode="contain"
+                      />
+                    )}
                   </View>
                   <Text style={styles.sizeLabel}>{item}</Text>
                 </Pressable>
@@ -326,9 +391,27 @@ export default function AddLuggageModal({ navigation, route }: Props) {
             onPress={() => {
               if (route.params?.when) {
                 const quotes = [
-                  { id: 'esc', tier: 'Escalade', price: 51, oldPrice: 85, seatText: 'Or Similar' },
-                  { id: 'prm', tier: 'Premium', price: 32, oldPrice: 55, seatText: 'Sedan X2' },
-                  { id: 'eco', tier: 'Economy', price: 43, oldPrice: 67, seatText: 'SUV X2' },
+                  {
+                    id: 'esc',
+                    tier: 'Escalade',
+                    price: 51,
+                    oldPrice: 85,
+                    seatText: 'Or Similar',
+                  },
+                  {
+                    id: 'prm',
+                    tier: 'Premium',
+                    price: 32,
+                    oldPrice: 55,
+                    seatText: 'Sedan X2',
+                  },
+                  {
+                    id: 'eco',
+                    tier: 'Economy',
+                    price: 43,
+                    oldPrice: 67,
+                    seatText: 'SUV X2',
+                  },
                 ];
                 navigation.navigate('FareOptions', {
                   etaMinutes: 18,
@@ -346,7 +429,9 @@ export default function AddLuggageModal({ navigation, route }: Props) {
               }
             }}
           >
-            <Text style={styles.ctaText}>{route.params?.when ? 'Fare Options' : '+ Date & Time'}</Text>
+            <Text style={styles.ctaText}>
+              {route.params?.when ? 'Fare Options' : '+ Date & Time'}
+            </Text>
             <View style={styles.ctaIcon}>
               {route.params?.when ? (
                 <AntDesign name="arrowright" size={18} color="#111" />

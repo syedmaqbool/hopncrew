@@ -1,5 +1,5 @@
 // src/screens/ChildSeatInfoModal.tsx
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
+import { getChildSeatTypes, type ChildSeatType } from '../services/app';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ChildSeatInfo'>;
 
@@ -45,6 +46,22 @@ const SEAT_GUIDES = [
 ];
 
 export default function ChildSeatInfoModal({ navigation }: Props) {
+  const [seatTypes, setSeatTypes] = useState<ChildSeatType[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const list = await getChildSeatTypes();
+        setSeatTypes(list);
+      } catch {
+        setSeatTypes([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
   return (
     <View style={styles.fill}>
       <Pressable style={styles.backdrop} onPress={() => navigation.goBack()} />
@@ -63,21 +80,36 @@ export default function ChildSeatInfoModal({ navigation }: Props) {
           </View>
 
           <FlatList
-            data={SEAT_GUIDES}
-            keyExtractor={it => it.id}
+            data={seatTypes}
+            keyExtractor={it => String(it.id)}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 4, paddingTop: 8 }}
             renderItem={({ item }) => (
               <View style={styles.card}>
                 <View style={{ alignItems: 'center', marginBottom: 8 }}>
-                  <Image
-                    source={item.icon}
-                    style={{ width: 100, height: 100, resizeMode: 'contain' }}
-                  />
+                  {item.image_url ? (
+                    <Image
+                      source={{ uri: item.image_url }}
+                      style={{ width: 100, height: 100, resizeMode: 'contain' }}
+                    />
+                  ) : (
+                    <View
+                      style={{
+                        width: 100,
+                        height: 100,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 16,
+                        backgroundColor: '#F4F4F5',
+                      }}
+                    >
+                      <Text style={{ color: '#111', fontSize: 34, fontWeight: '800' }}>?</Text>
+                    </View>
+                  )}
                 </View>
-                <Text style={styles.cardTitle}>{item.title}</Text>
-                <Text style={styles.cardBody}>{item.body}</Text>
+                <Text style={styles.cardTitle}>{item.label}</Text>
+                <Text style={styles.cardBody}>{item.description}</Text>
               </View>
             )}
           />

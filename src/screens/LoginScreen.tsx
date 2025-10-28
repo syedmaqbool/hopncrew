@@ -23,7 +23,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import assets from '../../assets';
 import { useAuth } from '../context/AuthContext';
 import type { RootStackParamList } from '../navigation/types';
-import { login } from '../services/login';
+import { login } from '../services/auth';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
