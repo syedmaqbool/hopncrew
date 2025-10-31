@@ -11,7 +11,12 @@ export type RootStackParamList = {
   MapTracking: undefined;
   PlaceSearch: { onPick?: (d: Destination) => void } | undefined;
   Trip:
-    | { start?: Destination; dest?: Destination; flow?: 'regular' | 'airport'; when?: Date }
+    | {
+        start?: Destination;
+        dest?: Destination;
+        flow?: 'regular' | 'airport';
+        when?: Date;
+      }
     | undefined;
   FlightDetails:
     | {
@@ -194,9 +199,9 @@ export type RootStackParamList = {
     | undefined;
   BookingReceivedTerms:
     | {
-      onOkay?: () => void;
-      onCancel?: () => void;
-    }
+        onOkay?: () => void;
+        onCancel?: () => void;
+      }
     | undefined;
   CancelRide:
     | {
@@ -438,6 +443,8 @@ export type FareQuote = {
   oldPrice?: number;
   tax?: number;
   image?: any;
+  eta?: any;
+  price_breakdown?: any;
 };
 
 export type SpecialRequestPayload = {
@@ -462,4 +469,3 @@ export type SavedCard = {
 };
 
 export type PayMethodKey = 'card' | 'wallet' | 'cash';
-

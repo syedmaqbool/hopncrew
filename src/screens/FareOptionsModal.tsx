@@ -9,6 +9,7 @@ import {
   Image,
   Dimensions,
   FlatList,
+  Alert,
 } from 'react-native';
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
 import {
@@ -20,11 +21,16 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type {
   RootStackParamList,
-  FareQuote,
   SpecialRequestPayload,
 } from '../navigation/types';
 import assets from '../../assets';
-import { getVehicleTypes, type VehicleType } from '../services/app';
+
+// NEW: ride calculation service + mapper
+import {
+  calculateRideCost,
+  vehicleOptionsToQuotes,
+  type RideCostResult,
+} from '../services/app';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FareOptions'>;
 
@@ -35,71 +41,37 @@ const BORDER = '#EFEFEF';
 export default function FareOptionsScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
 
-  const eta = route.params?.etaMinutes ?? 18;
-  const routeQuotes = route.params?.quotes ?? [];
-  const [vehicleTypes, setVehicleTypes] = useState<VehicleType[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [selectedId, setSelectedId] = useState<any>(vehicleTypes[0]?.id);
-
-  useEffect(() => {
-    console.log('routeQuotes', routeQuotes);
-    (async () => {
-      setLoading(true);
-      try {
-        const list = await getVehicleTypes();
-        console.log('?>>>>>>>>>>>>>>', list);
-
-        setVehicleTypes(list);
-      } catch (err) {
-        console.error('Failed to fetch vehicle types:', err);
-        setVehicleTypes([]);
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, []);
-
-  const dynamicQuotes = useMemo(() => {
-    return vehicleTypes.map(v => ({
-      id: String(v.id),
-      tier: v.name,
-      seatText: v.details,
-      details: v.details,
-      price: Number(v.base_fare),
-      image: v.image_url,
-      fare_per_km: v.fare_per_km,
-      max_passengers: v.max_passengers,
-      max_luggage: v.max_luggage,
-    }));
-  }, [vehicleTypes]);
-
-  const quotes = dynamicQuotes;
-
-  useEffect(() => {
-    if (!selectedId && quotes.length > 0) setSelectedId(quotes[0].id);
-  }, [quotes, selectedId]);
-  const [payMethod, setPayMethod] = useState(route.params?.payMethod ?? 'Card');
-  const [hasNote, setHasNote] = useState(false);
-  const [special, setSpecial] = useState<SpecialRequestPayload>({
-    caringPet: false,
-    quietRide: false,
-    note: '',
-  });
-
-  const selected = useMemo(
-    () => quotes.find(q => q.id === selectedId) ?? quotes[0],
-    [quotes, selectedId],
+  // ETA now comes from backend (duration_minutes)
+  const [etaMinutes, setEtaMinutes] = useState<number>(
+    route.params?.etaMinutes ?? 0,
   );
+
+  // Quotes built from vehicle_options
+  const [quotes, setQuotes] = useState<
+    Array<{
+      id: string;
+      tier: string;
+      seatText?: string;
+      details?: string;
+      price: number;
+      image?: string | null;
+      fare_per_km?: number;
+      max_passengers?: number;
+      max_luggage?: number;
+      price_breakdown?: any;
+      eta?: number;
+    }>
+  >([]);
+
+  const [loading, setLoading] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
   // Map points from Trip start/destination (fallbacks if missing)
   const start = route.params?.start;
   const dest = route.params?.dest;
+
   const mapRef = useRef<MapView | null>(null);
-  const coords = useMemo(() => {
-    const a = start ?? { latitude: 43.6532, longitude: -79.3832 };
-    const b = dest ?? { latitude: 43.6426, longitude: -79.3871 };
-    return [a, b];
-  }, [start, dest]);
+  const coords = useMemo(() => [start, dest], [start, dest]);
 
   useEffect(() => {
     if (mapRef.current) {
@@ -110,17 +82,60 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
     }
   }, [coords]);
 
+  // Fetch ride calculation on mount (and when start/dest change)
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      try {
+        const result: RideCostResult = await calculateRideCost({
+          origin: { lat: start?.latitude, lng: start?.longitude },
+          destination: { lat: dest?.latitude, lng: dest?.longitude },
+        });
+
+        // ETA from backend
+        const minutes = Number(result?.route_info?.duration_minutes ?? 0);
+        setEtaMinutes(minutes > 0 ? minutes : 0);
+
+        // Map vehicle options → FareQuote-like objects
+        const mapped = vehicleOptionsToQuotes(result?.vehicle_options ?? []);
+        setQuotes(mapped);
+
+        // Default selection
+        if (mapped.length > 0) setSelectedId(mapped[0].id);
+      } catch (e: any) {
+        console.error('calculateRideCost failed:', e?.message || e);
+        setQuotes([]);
+        setEtaMinutes(0);
+        Alert.alert(
+          'Error',
+          'Unable to calculate ride cost. Please try again.',
+        );
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [start?.latitude, start?.longitude, dest?.latitude, dest?.longitude]);
+
+  const [payMethod, setPayMethod] = useState(
+    route.params?.payMethod ?? 'Payment Breakdown',
+  );
+  const [hasNote, setHasNote] = useState(false);
+  const [special, setSpecial] = useState<SpecialRequestPayload>({
+    caringPet: false,
+    quietRide: false,
+    note: '',
+  });
+
+  const selected = useMemo(
+    () => quotes.find(q => q.id === selectedId),
+    [quotes, selectedId],
+  );
+
   const confirm = () => {
-    if (!selectedId) {
-      alert('Please select a vehicle before continuing.');
+    if (!selectedId || !selected) {
+      Alert.alert('Required', 'Please select a vehicle before continuing.');
       return;
     }
-
-    // const selected = quotes.find(q => q.id === selectedId);
-    // if (!selected) {
-    //   alert('Please select a valid vehicle.');
-    //   return;
-    // }
 
     const payload = { payMethod, special: hasNote ? special : null };
 
@@ -128,10 +143,10 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
       route.params.onConfirm(selected, payload);
     }
 
-    console.log('??????????????', selected);
+    console.log('selected', selected, quotes);
 
     navigation.navigate('ConfirmRequest', {
-      quote: selected,
+      quote: { ...selected, eta: etaMinutes },
       payMethod,
       special: hasNote ? special : null,
       start: route.params?.start,
@@ -155,6 +170,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             longitudeDelta: 0.08,
           }}
         >
+          {/* (Optional) If you later want to draw the provided polyline, decode & render here */}
           <Polyline
             coordinates={coords as any}
             strokeWidth={4}
@@ -201,7 +217,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
           </Pressable>
 
           <View style={styles.etaPill}>
-            <Text style={styles.etaNum}>{eta}</Text>
+            <Text style={styles.etaNum}>{etaMinutes || 0}</Text>
             <Text style={styles.etaTxt}>Min</Text>
           </View>
 
@@ -225,15 +241,15 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
           <View style={{ marginTop: 12 }}>
             {loading ? (
               <View style={{ alignItems: 'center', paddingVertical: 40 }}>
-                <Text style={{ color: '#888' }}>Loading vehicle types...</Text>
+                <Text style={{ color: '#888' }}>Calculating fares…</Text>
               </View>
-            ) : dynamicQuotes.length === 0 ? (
+            ) : quotes.length === 0 ? (
               <View style={{ alignItems: 'center', paddingVertical: 40 }}>
                 <Text style={{ color: '#888' }}>No vehicles available</Text>
               </View>
             ) : (
               <FlatList
-                data={dynamicQuotes}
+                data={quotes}
                 keyExtractor={q => q.id}
                 renderItem={({ item, index }) => (
                   <FareRow
@@ -254,6 +270,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
               />
             )}
           </View>
+
           {/* Policy row (slim pill) */}
           <Pressable
             style={styles.policyRow}
@@ -278,7 +295,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
           <Pressable
             style={styles.rowCard}
             onPress={() => {
-              // payment picker later
+              /* future picker */
             }}
           >
             <View style={styles.rowIcon}>
@@ -286,7 +303,6 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
                 source={require('../../assets/icons/card-icon.png')}
                 style={{ width: 30, height: 30, resizeMode: 'contain' }}
               />
-              {/* <Ionicons name="person-circle-outline" size={20} color={TEXT} /> */}
             </View>
             <Text style={styles.rowMain}>{payMethod}</Text>
 
@@ -336,7 +352,6 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
                 source={require('../../assets/icons/specreq-icon.png')}
                 style={{ width: 24, height: 24, resizeMode: 'contain' }}
               />
-              {/* <Ionicons name="sparkles-outline" size={18} color={TEXT} /> */}
               <Text>I have special request</Text>
               <View
                 style={[styles.squareCheck, hasNote && styles.squareCheckOn]}
@@ -356,7 +371,11 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             { paddingBottom: Math.max(insets.bottom, 12) },
           ]}
         >
-          <Pressable style={styles.cta} onPress={confirm} disabled={!selected}>
+          <Pressable
+            style={styles.cta}
+            onPress={confirm}
+            disabled={!selectedId}
+          >
             <Text style={styles.ctaText}>Confirm and Request</Text>
             <View style={styles.ctaIcon}>
               <AntDesign name="arrowright" size={18} color={TEXT} />
@@ -379,9 +398,10 @@ function FareRow({
     id: string;
     tier: string;
     seatText?: string;
+    details?: string;
     price: number;
     image?: string | null;
-    fare_per_km?: string;
+    fare_per_km?: number;
     max_passengers?: number;
     max_luggage?: number;
   };
@@ -389,7 +409,6 @@ function FareRow({
   onPress?: () => void;
   variant?: number;
 }) {
-  // Only use API image if exists
   const carSrc = quote.image ? { uri: quote.image } : undefined;
 
   return (
@@ -405,7 +424,7 @@ function FareRow({
       {/* Right white bubble */}
       <View style={[styles.rightBubble, selected && styles.rightBubbleActive]}>
         <Text style={styles.tierTitle}>{quote.tier}</Text>
-        {/* Show image only if API provides one */}
+
         {carSrc ? (
           <Image
             source={carSrc}
@@ -420,24 +439,28 @@ function FareRow({
           />
         )}
 
-        <Text>
-          {quote.seatText ? (
-            <Text style={styles.tierSub}>{quote.seatText}</Text>
-          ) : null}
-        </Text>
+        {!!(quote.seatText || quote.details) && (
+          <Text style={styles.tierSub}>{quote.seatText || quote.details}</Text>
+        )}
 
         {/* Expand details when selected */}
         {selected && (
           <View style={{ marginTop: 6, alignItems: 'flex-end' }}>
-            <Text style={{ color: '#6C7075', fontSize: 11 }}>
-              Fare per km: ${quote.fare_per_km}
-            </Text>
-            <Text style={{ color: '#6C7075', fontSize: 11 }}>
-              Max Passengers: {quote.max_passengers}
-            </Text>
-            <Text style={{ color: '#6C7075', fontSize: 11 }}>
-              Max Luggage: {quote.max_luggage}
-            </Text>
+            {quote.fare_per_km != null && (
+              <Text style={{ color: '#6C7075', fontSize: 11 }}>
+                Fare per km: ${quote.fare_per_km}
+              </Text>
+            )}
+            {quote.max_passengers != null && (
+              <Text style={{ color: '#6C7075', fontSize: 11 }}>
+                Max Passengers: {quote.max_passengers}
+              </Text>
+            )}
+            {quote.max_luggage != null && (
+              <Text style={{ color: '#6C7075', fontSize: 11 }}>
+                Max Luggage: {quote.max_luggage}
+              </Text>
+            )}
           </View>
         )}
       </View>
@@ -450,8 +473,6 @@ const styles = StyleSheet.create({
   /* header map */
   mapWrap: {
     height: Math.round(Dimensions.get('window').height * 0.3),
-    // borderBottomLeftRadius: 24,
-    // borderBottomRightRadius: 24,
     overflow: 'hidden',
     justifyContent: 'flex-start',
   },
@@ -484,12 +505,6 @@ const styles = StyleSheet.create({
   },
   etaNum: { color: '#fff', fontWeight: '800' },
   etaTxt: { color: '#fff' },
-
-  markerLayer: {
-    ...StyleSheet.absoluteFillObject,
-  },
-  pin: { position: 'absolute', width: 18, height: 18 },
-  car: { position: 'absolute', width: 28, height: 28 },
 
   /* sheet */
   sheet: {
@@ -554,7 +569,7 @@ const styles = StyleSheet.create({
 
   rightBubble: {
     flex: 1,
-    marginLeft: -10, // overlap into the slab to mimic the mock’s shape
+    marginLeft: -10,
     backgroundColor: '#fff',
     paddingHorizontal: 12,
     paddingVertical: 10,
@@ -591,8 +606,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 50,
     borderRadius: 999,
     backgroundColor: '#F6F7F8',
-    // borderWidth: 1,
-    // borderColor: '#EEE',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -609,14 +622,10 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
     backgroundColor: '#fff',
-    // borderWidth: 1,
-    // borderColor: '#F0F0F0',
   },
   rowIcon: {
     width: 28,
     height: 28,
-    // borderRadius: 14,
-    // backgroundColor: '#F6F7F8',
     alignItems: 'center',
     justifyContent: 'center',
   },

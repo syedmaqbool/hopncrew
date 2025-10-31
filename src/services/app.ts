@@ -252,3 +252,136 @@ export async function getVehicleTypes(): Promise<VehicleType[]> {
 
   return mapped;
 }
+
+// POST /calculate-ride-cost -> returns list of vehicle types and times and duration KM
+
+export type RidePoint = { lat: number; lng: number };
+
+export type RideCalculatePayload = {
+  origin: RidePoint;
+  destination: RidePoint;
+  stop_overs?: RidePoint[]; // optional, keep for future
+};
+
+export type RouteInfo = {
+  origin: RidePoint;
+  destination: RidePoint;
+  stop_overs: RidePoint[];
+  distance_km: number;
+  duration_minutes: number;
+  polyline?: string | null;
+};
+
+export type VehicleCapacity = {
+  max_passengers: number;
+  max_luggage: number;
+};
+
+export type PriceBreakdown = {
+  base_fare: number;
+  distance_km: number;
+  fare_per_km: number;
+  distance_fare: number;
+};
+
+export type VehicleOption = {
+  vehicle_type_id: number;
+  vehicle_name: string;
+  vehicle_details?: string | null;
+  total_price: number;
+  price_breakdown: PriceBreakdown;
+  vehicle_capacity: VehicleCapacity;
+  estimated_duration_minutes: number;
+  image_url?: string | null; // in case backend adds it later
+};
+
+export type RideCostResult = {
+  route_info: RouteInfo;
+  vehicle_options: VehicleOption[];
+};
+
+// ---------- API call ----------
+export async function calculateRideCost(
+  payload: RideCalculatePayload,
+): Promise<RideCostResult> {
+  const res = await api.post('/rides/calculate-ride-cost', payload, {
+    validateStatus: () => true,
+  });
+
+  const body = res.data as any;
+
+  // Defensive extraction in case backend wraps differently
+  const data = body?.data ?? body?.result ?? body; // fallbacks
+
+  const r = data?.route_info ?? {};
+
+  const route_info: RouteInfo = {
+    origin: {
+      lat: Number(r?.origin?.lat ?? 0),
+      lng: Number(r?.origin?.lng ?? 0),
+    },
+    destination: {
+      lat: Number(r?.destination?.lat ?? 0),
+      lng: Number(r?.destination?.lng ?? 0),
+    },
+    stop_overs: Array.isArray(r?.stop_overs) ? r.stop_overs : [],
+    distance_km: Number(r?.distance_km ?? 0),
+    duration_minutes: Number(r?.duration_minutes ?? 0),
+    polyline: r?.polyline ?? null,
+  };
+
+  const optionsRaw: any[] = Array.isArray(data?.vehicle_options)
+    ? data.vehicle_options
+    : [];
+
+  const vehicle_options: VehicleOption[] = optionsRaw.map(it => ({
+    vehicle_type_id: Number(it?.vehicle_type_id),
+    vehicle_name: String(it?.vehicle_name ?? ''),
+    vehicle_details: it?.vehicle_details ?? null,
+    total_price: Number(it?.total_price ?? 0),
+    price_breakdown: {
+      base_fare: Number(it?.price_breakdown?.base_fare ?? 0),
+      distance_km: Number(it?.price_breakdown?.distance_km ?? 0),
+      fare_per_km: Number(it?.price_breakdown?.fare_per_km ?? 0),
+      distance_fare: Number(it?.price_breakdown?.distance_fare ?? 0),
+    },
+    vehicle_capacity: {
+      max_passengers: Number(it?.vehicle_capacity?.max_passengers ?? 0),
+      max_luggage: Number(it?.vehicle_capacity?.max_luggage ?? 0),
+    },
+    estimated_duration_minutes: Number(
+      it?.estimated_duration_minutes ?? route_info.duration_minutes ?? 0,
+    ),
+    image_url: it?.image_url ?? null,
+  }));
+
+  return { route_info, vehicle_options };
+}
+
+// ---------- Optional: map to your FareQuote shape (for UI reuse) ----------
+export type FareQuote = {
+  id: string;
+  tier: string; // vehicle_name
+  seatText?: string; // vehicle_details
+  price: number; // total_price
+  image?: string | null;
+  fare_per_km?: number;
+  max_passengers?: number;
+  max_luggage?: number;
+  details?: string; // keep raw details too
+};
+
+export function vehicleOptionsToQuotes(options: VehicleOption[]): FareQuote[] {
+  return options.map(v => ({
+    id: String(v.vehicle_type_id),
+    tier: v.vehicle_name,
+    seatText: v.vehicle_details ?? undefined,
+    details: v.vehicle_details ?? undefined,
+    price: Number(v.total_price || 0),
+    image: v.image_url ?? null,
+    fare_per_km: v.price_breakdown?.fare_per_km,
+    max_passengers: v.vehicle_capacity?.max_passengers,
+    max_luggage: v.vehicle_capacity?.max_luggage,
+    price_breakdown: v.price_breakdown,
+  }));
+}

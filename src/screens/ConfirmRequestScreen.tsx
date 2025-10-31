@@ -77,12 +77,23 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
   const openBreakdown = () => {
     navigation.navigate('PaymentBreakdown', {
       rows: [
-        { label: 'Base Price', value: 100 },
-        { label: 'Online Discount (20%)', value: -15 },
-        { label: 'Coupon Code', value: -10 },
-        { label: 'Airport pickup fee', value: '1 hr', money: false },
+        { label: 'Base Price', value: q?.price_breakdown?.base_fare },
+        { label: 'Distance Fare', value: q?.price_breakdown?.distance_fare },
+        {
+          label: 'Distance kilometers',
+          value: `${q?.price_breakdown?.distance_km} km`,
+          money: false,
+        },
+        {
+          label: 'Fare per kilometers',
+          value: `${q?.price_breakdown?.fare_per_km} km`,
+          money: false,
+        },
+        { label: 'Online Discount', value: 0 },
+        { label: 'Coupon Code', value: 0 },
+        { label: 'Pickup time', value: `${q?.eta} Mints`, money: false },
         { label: 'Tax', value: q.tax ?? 0 },
-        { label: 'Stopover', value: 85 },
+        { label: 'Stopover', value: 0 },
       ],
       footnote: 'Toll hwy and other costs may apply',
     });
@@ -233,7 +244,7 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
           <Pressable style={styles.payChip} onPress={openBreakdown}>
             <Ionicons name="card-outline" size={18} color="#111" />
             <Text style={styles.payTxt}>{payMethod}</Text>
-            <Ionicons name="chevron-down" size={16} color="#111" />
+            {/* <Ionicons name="chevron-down" size={16} color="#111" /> */}
           </Pressable>
 
           <View style={styles.couponChip}>
@@ -316,7 +327,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   priceCard: {
-    width: 150,
+    width: 200,
     borderRadius: 16,
     backgroundColor: '#F2F3F5',
     padding: 12,
