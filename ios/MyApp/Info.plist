@@ -49,28 +49,10 @@
 	<false/>
 	<key>UIAppFonts</key>
 	<array>
-		<string>BiennaleBlackItRegular.ttf</string>
-		<string>BiennaleBlackRegular.ttf</string>
-		<string>BiennaleBoldItRegular.ttf</string>
-		<string>BiennaleBoldRegular.ttf</string>
-		<string>BiennaleBookItRegular.ttf</string>
-		<string>BiennaleBookRegular.ttf</string>
-		<string>BiennaleHairItRegular.ttf</string>
-		<string>BiennaleHairRegular.ttf</string>
-		<string>BiennaleHeavyItRegular.ttf</string>
-		<string>BiennaleHeavyRegular.ttf</string>
-		<string>BiennaleItRegular.ttf</string>
-		<string>BiennaleLightItRegular.ttf</string>
-		<string>BiennaleLightRegular.ttf</string>
-		<string>BiennaleMediumItRegular.ttf</string>
-		<string>BiennaleMediumRegular.ttf</string>
 		<string>BiennaleRegular.ttf</string>
-		<string>BiennaleSemiBoldItRegular.ttf</string>
-		<string>BiennaleSemiBoldRegular.ttf</string>
-		<string>BiennaleThinItRegular.ttf</string>
-		<string>BiennaleThinRegular.ttf</string>
-		<string>BiennaleUltraLightItRegular.ttf</string>
-		<string>BiennaleUltraLightRegular.ttf</string>
+		<string>BiennaleBold.ttf</string>
+		<string>BiennaleMedium.ttf</string>
+		<string>BiennaleSemiBold.ttf</string>
 	</array>
 </dict>
 </plist>

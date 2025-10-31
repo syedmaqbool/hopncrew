@@ -13,28 +13,10 @@
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		1AA47D631C904BBE9D12F666 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 164D26BB1E574E3C8C7C824C /* BootSplash.storyboard */; };
 		9211CCE83E3B4F59BF2B1E05 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BBBDAFABB24B416CA42BA60B /* Colors.xcassets */; };
-		3F265E7FC5E34D0988B9D651 /* BiennaleBlackItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4C678981720B4A34922B1A3D /* BiennaleBlackItRegular.ttf */; };
-		1062EF9BB1FC4BDC88EB41A1 /* BiennaleBlackRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1D4E43D8D0E7495491654803 /* BiennaleBlackRegular.ttf */; };
-		95A4F8BEF379406B9242C6C9 /* BiennaleBoldItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F60F27AE21F44D0A9750D1F0 /* BiennaleBoldItRegular.ttf */; };
-		8810AF315CFE44989C3B11D9 /* BiennaleBoldRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0028C60B18BC44C9B34C3A7F /* BiennaleBoldRegular.ttf */; };
-		85B9450625D54B9ABCDC8843 /* BiennaleBookItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7E8E2588BE394C19BF67CE1D /* BiennaleBookItRegular.ttf */; };
-		238B3E98B880449F90951925 /* BiennaleBookRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3D979E5BC0645B8A52AF456 /* BiennaleBookRegular.ttf */; };
-		537175512ACE4EFFB9F538E6 /* BiennaleHairItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8F0DCE2455064D5ABE54FF9C /* BiennaleHairItRegular.ttf */; };
-		4ABABBA3BB9A4EAB8371FA4D /* BiennaleHairRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CC9ECE7A240446CF8FA3F265 /* BiennaleHairRegular.ttf */; };
-		40232A378E5144269CD60C1A /* BiennaleHeavyItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 144D534FB836440BA99D21A4 /* BiennaleHeavyItRegular.ttf */; };
-		79D855116B0B4332ADF5675F /* BiennaleHeavyRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B410B3D458C248DE9D9890C6 /* BiennaleHeavyRegular.ttf */; };
-		6D9C663D684C486987B94EE4 /* BiennaleItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F3ADAFE8C0FA452AA57EB809 /* BiennaleItRegular.ttf */; };
-		1E2E0D70BA8746888A9BC2DE /* BiennaleLightItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DC541239D39432596AF2EB7 /* BiennaleLightItRegular.ttf */; };
-		C7E8E6930BF84D13BCE7194D /* BiennaleLightRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 19109A16273642E580016DEB /* BiennaleLightRegular.ttf */; };
-		852F8D0D9E7B4BBA9D1EC45C /* BiennaleMediumItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AAED8C73C21D4B5693502783 /* BiennaleMediumItRegular.ttf */; };
-		065D4AE65D394BA99BE3D58D /* BiennaleMediumRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E4E6D4C099A04640835D676C /* BiennaleMediumRegular.ttf */; };
 		8C443F7B20FE4913BD80A4B9 /* BiennaleRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 17C3D652B5944653B40BB150 /* BiennaleRegular.ttf */; };
-		C1CF8B896BA446A38354AE4F /* BiennaleSemiBoldItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0FF5BEF4B43142A194697F4A /* BiennaleSemiBoldItRegular.ttf */; };
-		7A3701A66F954700940F947F /* BiennaleSemiBoldRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C632812C44F45F8850D0AE5 /* BiennaleSemiBoldRegular.ttf */; };
-		48A6DACDA850419AB11B0FBE /* BiennaleThinItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = CDCBEB1EA06F4FE198D52FFA /* BiennaleThinItRegular.ttf */; };
-		1FB0A3A52BB74A65A3A09151 /* BiennaleThinRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0C6B714B4E164DDAB7B2500D /* BiennaleThinRegular.ttf */; };
-		F6639412153C4A3E8F59872A /* BiennaleUltraLightItRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6526E27C85154AF1960374E1 /* BiennaleUltraLightItRegular.ttf */; };
-		CD844C987C884C128EFB0CA0 /* BiennaleUltraLightRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 4FF90D916AF84694867C2165 /* BiennaleUltraLightRegular.ttf */; };
+		41998B57F2FF4629A0E034E9 /* BiennaleBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 83F17507473B447C96EC8C05 /* BiennaleBold.ttf */; };
+		2983B1E5873B4DD5BE21347F /* BiennaleMedium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D2E42355251B45A7AE2F0D7B /* BiennaleMedium.ttf */; };
+		9A95FDDDA6CA456E9702ED9A /* BiennaleSemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C63C1CA5F5F64FEBA4B49F50 /* BiennaleSemiBold.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -50,28 +32,10 @@
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		164D26BB1E574E3C8C7C824C /* BootSplash.storyboard */ = {isa = PBXFileReference; name = "BootSplash.storyboard"; path = "MyApp/BootSplash.storyboard"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		BBBDAFABB24B416CA42BA60B /* Colors.xcassets */ = {isa = PBXFileReference; name = "Colors.xcassets"; path = "MyApp/Colors.xcassets"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = folder.assetcatalog; explicitFileType = undefined; includeInIndex = 0; };
-		4C678981720B4A34922B1A3D /* BiennaleBlackItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleBlackItRegular.ttf"; path = "../assets/fonts/BiennaleBlackItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		1D4E43D8D0E7495491654803 /* BiennaleBlackRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleBlackRegular.ttf"; path = "../assets/fonts/BiennaleBlackRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F60F27AE21F44D0A9750D1F0 /* BiennaleBoldItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleBoldItRegular.ttf"; path = "../assets/fonts/BiennaleBoldItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		0028C60B18BC44C9B34C3A7F /* BiennaleBoldRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleBoldRegular.ttf"; path = "../assets/fonts/BiennaleBoldRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		7E8E2588BE394C19BF67CE1D /* BiennaleBookItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleBookItRegular.ttf"; path = "../assets/fonts/BiennaleBookItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		C3D979E5BC0645B8A52AF456 /* BiennaleBookRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleBookRegular.ttf"; path = "../assets/fonts/BiennaleBookRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		8F0DCE2455064D5ABE54FF9C /* BiennaleHairItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleHairItRegular.ttf"; path = "../assets/fonts/BiennaleHairItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		CC9ECE7A240446CF8FA3F265 /* BiennaleHairRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleHairRegular.ttf"; path = "../assets/fonts/BiennaleHairRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		144D534FB836440BA99D21A4 /* BiennaleHeavyItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleHeavyItRegular.ttf"; path = "../assets/fonts/BiennaleHeavyItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		B410B3D458C248DE9D9890C6 /* BiennaleHeavyRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleHeavyRegular.ttf"; path = "../assets/fonts/BiennaleHeavyRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		F3ADAFE8C0FA452AA57EB809 /* BiennaleItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleItRegular.ttf"; path = "../assets/fonts/BiennaleItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		9DC541239D39432596AF2EB7 /* BiennaleLightItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleLightItRegular.ttf"; path = "../assets/fonts/BiennaleLightItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		19109A16273642E580016DEB /* BiennaleLightRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleLightRegular.ttf"; path = "../assets/fonts/BiennaleLightRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		AAED8C73C21D4B5693502783 /* BiennaleMediumItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleMediumItRegular.ttf"; path = "../assets/fonts/BiennaleMediumItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		E4E6D4C099A04640835D676C /* BiennaleMediumRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleMediumRegular.ttf"; path = "../assets/fonts/BiennaleMediumRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		17C3D652B5944653B40BB150 /* BiennaleRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleRegular.ttf"; path = "../assets/fonts/BiennaleRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		0FF5BEF4B43142A194697F4A /* BiennaleSemiBoldItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleSemiBoldItRegular.ttf"; path = "../assets/fonts/BiennaleSemiBoldItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		6C632812C44F45F8850D0AE5 /* BiennaleSemiBoldRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleSemiBoldRegular.ttf"; path = "../assets/fonts/BiennaleSemiBoldRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		CDCBEB1EA06F4FE198D52FFA /* BiennaleThinItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleThinItRegular.ttf"; path = "../assets/fonts/BiennaleThinItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		0C6B714B4E164DDAB7B2500D /* BiennaleThinRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleThinRegular.ttf"; path = "../assets/fonts/BiennaleThinRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		6526E27C85154AF1960374E1 /* BiennaleUltraLightItRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleUltraLightItRegular.ttf"; path = "../assets/fonts/BiennaleUltraLightItRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
-		4FF90D916AF84694867C2165 /* BiennaleUltraLightRegular.ttf */ = {isa = PBXFileReference; name = "BiennaleUltraLightRegular.ttf"; path = "../assets/fonts/BiennaleUltraLightRegular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		83F17507473B447C96EC8C05 /* BiennaleBold.ttf */ = {isa = PBXFileReference; name = "BiennaleBold.ttf"; path = "../assets/fonts/BiennaleBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		D2E42355251B45A7AE2F0D7B /* BiennaleMedium.ttf */ = {isa = PBXFileReference; name = "BiennaleMedium.ttf"; path = "../assets/fonts/BiennaleMedium.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		C63C1CA5F5F64FEBA4B49F50 /* BiennaleSemiBold.ttf */ = {isa = PBXFileReference; name = "BiennaleSemiBold.ttf"; path = "../assets/fonts/BiennaleSemiBold.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -151,28 +115,10 @@
 		FC3228DB6CA54D979955C085 /* Resources */ = {
 			isa = "PBXGroup";
 			children = (
-				4C678981720B4A34922B1A3D /* BiennaleBlackItRegular.ttf */,
-				1D4E43D8D0E7495491654803 /* BiennaleBlackRegular.ttf */,
-				F60F27AE21F44D0A9750D1F0 /* BiennaleBoldItRegular.ttf */,
-				0028C60B18BC44C9B34C3A7F /* BiennaleBoldRegular.ttf */,
-				7E8E2588BE394C19BF67CE1D /* BiennaleBookItRegular.ttf */,
-				C3D979E5BC0645B8A52AF456 /* BiennaleBookRegular.ttf */,
-				8F0DCE2455064D5ABE54FF9C /* BiennaleHairItRegular.ttf */,
-				CC9ECE7A240446CF8FA3F265 /* BiennaleHairRegular.ttf */,
-				144D534FB836440BA99D21A4 /* BiennaleHeavyItRegular.ttf */,
-				B410B3D458C248DE9D9890C6 /* BiennaleHeavyRegular.ttf */,
-				F3ADAFE8C0FA452AA57EB809 /* BiennaleItRegular.ttf */,
-				9DC541239D39432596AF2EB7 /* BiennaleLightItRegular.ttf */,
-				19109A16273642E580016DEB /* BiennaleLightRegular.ttf */,
-				AAED8C73C21D4B5693502783 /* BiennaleMediumItRegular.ttf */,
-				E4E6D4C099A04640835D676C /* BiennaleMediumRegular.ttf */,
 				17C3D652B5944653B40BB150 /* BiennaleRegular.ttf */,
-				0FF5BEF4B43142A194697F4A /* BiennaleSemiBoldItRegular.ttf */,
-				6C632812C44F45F8850D0AE5 /* BiennaleSemiBoldRegular.ttf */,
-				CDCBEB1EA06F4FE198D52FFA /* BiennaleThinItRegular.ttf */,
-				0C6B714B4E164DDAB7B2500D /* BiennaleThinRegular.ttf */,
-				6526E27C85154AF1960374E1 /* BiennaleUltraLightItRegular.ttf */,
-				4FF90D916AF84694867C2165 /* BiennaleUltraLightRegular.ttf */,
+				83F17507473B447C96EC8C05 /* BiennaleBold.ttf */,
+				D2E42355251B45A7AE2F0D7B /* BiennaleMedium.ttf */,
+				C63C1CA5F5F64FEBA4B49F50 /* BiennaleSemiBold.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -242,28 +188,10 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				1AA47D631C904BBE9D12F666 /* BootSplash.storyboard in Resources */,
 				9211CCE83E3B4F59BF2B1E05 /* Colors.xcassets in Resources */,
-				3F265E7FC5E34D0988B9D651 /* BiennaleBlackItRegular.ttf in Resources */,
-				1062EF9BB1FC4BDC88EB41A1 /* BiennaleBlackRegular.ttf in Resources */,
-				95A4F8BEF379406B9242C6C9 /* BiennaleBoldItRegular.ttf in Resources */,
-				8810AF315CFE44989C3B11D9 /* BiennaleBoldRegular.ttf in Resources */,
-				85B9450625D54B9ABCDC8843 /* BiennaleBookItRegular.ttf in Resources */,
-				238B3E98B880449F90951925 /* BiennaleBookRegular.ttf in Resources */,
-				537175512ACE4EFFB9F538E6 /* BiennaleHairItRegular.ttf in Resources */,
-				4ABABBA3BB9A4EAB8371FA4D /* BiennaleHairRegular.ttf in Resources */,
-				40232A378E5144269CD60C1A /* BiennaleHeavyItRegular.ttf in Resources */,
-				79D855116B0B4332ADF5675F /* BiennaleHeavyRegular.ttf in Resources */,
-				6D9C663D684C486987B94EE4 /* BiennaleItRegular.ttf in Resources */,
-				1E2E0D70BA8746888A9BC2DE /* BiennaleLightItRegular.ttf in Resources */,
-				C7E8E6930BF84D13BCE7194D /* BiennaleLightRegular.ttf in Resources */,
-				852F8D0D9E7B4BBA9D1EC45C /* BiennaleMediumItRegular.ttf in Resources */,
-				065D4AE65D394BA99BE3D58D /* BiennaleMediumRegular.ttf in Resources */,
 				8C443F7B20FE4913BD80A4B9 /* BiennaleRegular.ttf in Resources */,
-				C1CF8B896BA446A38354AE4F /* BiennaleSemiBoldItRegular.ttf in Resources */,
-				7A3701A66F954700940F947F /* BiennaleSemiBoldRegular.ttf in Resources */,
-				48A6DACDA850419AB11B0FBE /* BiennaleThinItRegular.ttf in Resources */,
-				1FB0A3A52BB74A65A3A09151 /* BiennaleThinRegular.ttf in Resources */,
-				F6639412153C4A3E8F59872A /* BiennaleUltraLightItRegular.ttf in Resources */,
-				CD844C987C884C128EFB0CA0 /* BiennaleUltraLightRegular.ttf in Resources */,
+				41998B57F2FF4629A0E034E9 /* BiennaleBold.ttf in Resources */,
+				2983B1E5873B4DD5BE21347F /* BiennaleMedium.ttf in Resources */,
+				9A95FDDDA6CA456E9702ED9A /* BiennaleSemiBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

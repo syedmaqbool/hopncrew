@@ -382,10 +382,11 @@ const styles = StyleSheet.create({
 
   greeting: {
     fontSize: 18,
-    fontWeight: '500',
+    // fontWeight: '500',
     color: '#111',
     marginTop: 12,
     marginBottom: 20,
+    fontFamily: 'BiennaleSemiBold',
   },
   googleText: {
     color: '#1976D2',
@@ -400,7 +401,7 @@ const styles = StyleSheet.create({
     height: 44,
     borderWidth: 0,
     borderColor: '#EEE',
-    elevation: 1,
+    elevation: 2,
     width: '94%',
     margin: 'auto',
   },
@@ -447,7 +448,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: '#EFEFEF',
   },
-  quickText: { color: '#111', fontWeight: '600' },
+  quickText: { color: '#111', fontFamily: 'BiennaleMedium' },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 });
 

@@ -42,18 +42,18 @@ const FONTS = {
     ios: 'BiennaleRegular',
     android: 'BiennaleRegular',
   }),
-  // Add these if you have the files; otherwise you can remove them where unused
   medium: Platform.select({ ios: 'BiennaleMedium', android: 'BiennaleMedium' }),
+  semibold: Platform.select({
+    ios: 'BiennaleSemiBold',
+    android: 'BiennaleSemiBold',
+  }),
   bold: Platform.select({ ios: 'BiennaleBold', android: 'BiennaleBold' }),
 };
 
 // TypeScript-safe defaultProps helper
 function setDefaultFont(component: any, fontFamily: string) {
   component.defaultProps = component.defaultProps || {};
-  // Put previous styles first so icons/components that set their own fontFamily still win
   component.defaultProps.style = [component.defaultProps.style, { fontFamily }];
-  // Optional: lock scaling off globally
-  // component.defaultProps.allowFontScaling = false;
 }
 
 setDefaultFont(Text as any, FONTS.regular!);

@@ -2,63 +2,11 @@
   "migIndex": 1,
   "data": [
     {
-      "path": "assets/fonts/BiennaleBlackItRegular.ttf",
-      "sha1": "f8c553f0c136638f8691c69e18ce9958b3f6a69a"
-    },
-    {
-      "path": "assets/fonts/BiennaleBlackRegular.ttf",
-      "sha1": "9066c0f743b9a98ea1f1804256c2a174efc8275e"
-    },
-    {
-      "path": "assets/fonts/BiennaleBoldItRegular.ttf",
-      "sha1": "a27d57833ccaff08af93e96f4e5fefcaf1bdd3cf"
-    },
-    {
-      "path": "assets/fonts/BiennaleBoldRegular.ttf",
+      "path": "assets/fonts/BiennaleBold.ttf",
       "sha1": "6d90862e6be26b2c84e22ad3cd570f68fa5ac2cc"
     },
     {
-      "path": "assets/fonts/BiennaleBookItRegular.ttf",
-      "sha1": "6f44443cdff8c114d0eb508b5034e79a58fcc5b8"
-    },
-    {
-      "path": "assets/fonts/BiennaleBookRegular.ttf",
-      "sha1": "d9928877b75dec4884ce2b243be08f51cc5954da"
-    },
-    {
-      "path": "assets/fonts/BiennaleHairItRegular.ttf",
-      "sha1": "6d4cf8b0a9aba19e05b78af172783f60fc3e14e9"
-    },
-    {
-      "path": "assets/fonts/BiennaleHairRegular.ttf",
-      "sha1": "7a9e8914c611efbbab4031324d798ec99a37834a"
-    },
-    {
-      "path": "assets/fonts/BiennaleHeavyItRegular.ttf",
-      "sha1": "206ed599059b51d03c19953b95857f97643fc475"
-    },
-    {
-      "path": "assets/fonts/BiennaleHeavyRegular.ttf",
-      "sha1": "fcff3479750212a9ee05e8f3c9bb5987da07513a"
-    },
-    {
-      "path": "assets/fonts/BiennaleItRegular.ttf",
-      "sha1": "387a7c5480c3a813de78b2577e448c1e0f5f4ed4"
-    },
-    {
-      "path": "assets/fonts/BiennaleLightItRegular.ttf",
-      "sha1": "fe54d228cff38b2d5f48f20f36ce7dcb0e171896"
-    },
-    {
-      "path": "assets/fonts/BiennaleLightRegular.ttf",
-      "sha1": "e248e2f056fceb256d8b589b2485ad50d49228e3"
-    },
-    {
-      "path": "assets/fonts/BiennaleMediumItRegular.ttf",
-      "sha1": "3aedda2d3597d209ee8c114d2cc8409ebd3ee8cc"
-    },
-    {
-      "path": "assets/fonts/BiennaleMediumRegular.ttf",
+      "path": "assets/fonts/BiennaleMedium.ttf",
       "sha1": "e99c9997cf98f69b8d5b20c68b9a75a4e175c278"
     },
     {
@@ -66,28 +14,8 @@
       "sha1": "3c745f9bb1abdc7ba02d9936ae9d58c9a19eddb3"
     },
     {
-      "path": "assets/fonts/BiennaleSemiBoldItRegular.ttf",
-      "sha1": "701b90ec4b1e0b77b73bf150e2cf0015f19423c3"
-    },
-    {
-      "path": "assets/fonts/BiennaleSemiBoldRegular.ttf",
+      "path": "assets/fonts/BiennaleSemiBold.ttf",
       "sha1": "3b2047baa4b2f341c747a186a4be90cc5f96d571"
-    },
-    {
-      "path": "assets/fonts/BiennaleThinItRegular.ttf",
-      "sha1": "99d96f3873202f522bc76f6e1e9f67f3ebd84f1d"
-    },
-    {
-      "path": "assets/fonts/BiennaleThinRegular.ttf",
-      "sha1": "1945fc00d6d68925c7eaf4b56a5c4e9b0b39fa8e"
-    },
-    {
-      "path": "assets/fonts/BiennaleUltraLightItRegular.ttf",
-      "sha1": "9e89e36b07f2bcaf561c43f634f5b0a6a1aae098"
-    },
-    {
-      "path": "assets/fonts/BiennaleUltraLightRegular.ttf",
-      "sha1": "1523ad2718cd061e030784270ee1bbc9f332686f"
     }
   ]
 }
