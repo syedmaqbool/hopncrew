@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: 12, paddingBottom: 8, paddingTop: 6,
   },
-  headerTitle: { color: '#111', fontWeight: '800', fontSize: 18 },
+  headerTitle: { color: '#111', fontSize: 18, fontFamily: 'BiennaleBold' },
   roundBtn: {
     width: 34, height: 34, borderRadius: 17, backgroundColor: '#F3F4F5',
     alignItems: 'center', justifyContent: 'center',
@@ -116,11 +116,11 @@ const styles = StyleSheet.create({
     width: 52, borderRadius: 8, backgroundColor: '#F3F4F5',
     alignItems: 'center', justifyContent: 'center', paddingVertical: 6,
   },
-  day: { color: '#111', fontWeight: '800' },
-  mon: { color: '#6C7075', fontSize: 12 },
+  day: { color: '#111', fontFamily: 'BiennaleBold' },
+  mon: { color: '#6C7075', fontSize: 12, fontFamily: 'BiennaleRegular' },
 
-  title: { color: '#111', fontWeight: '800', marginBottom: 4 },
-  body: { color: '#6C7075', lineHeight: 18 },
+  title: { color: '#111', marginBottom: 4, fontFamily: 'BiennaleBold' },
+  body: { color: '#6C7075', lineHeight: 18, fontFamily: 'BiennaleRegular' },
 
   separator: { height: 1, backgroundColor: '#EEE', marginLeft: 74, marginRight: 10 },
 

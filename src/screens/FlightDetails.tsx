@@ -223,8 +223,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   body: { flex: 1, paddingHorizontal: 16 },
-  title: { fontSize: 22, fontWeight: '800', color: TEXT, marginTop: 8 },
-  sub: { color: '#666', marginTop: 4 },
+  title: { fontSize: 22, color: TEXT, marginTop: 8, fontFamily: 'BiennaleBold' },
+  sub: { color: '#666', marginTop: 4, fontFamily: 'BiennaleRegular' },
 
   row: {
     flexDirection: 'row',
@@ -245,8 +245,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 10,
   },
-  rowTitle: { color: TEXT, fontWeight: '800' },
-  rowHint: { color: '#666', marginTop: 2 },
+  rowTitle: { color: TEXT, fontFamily: 'BiennaleBold' },
+  rowHint: { color: '#666', marginTop: 2, fontFamily: 'BiennaleRegular' },
   rowRightBadge: {
     width: 30,
     height: 30,
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
   },
 
   infoRow: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
-  infoText: { color: '#555', lineHeight: 20, flex: 1 },
+  infoText: { color: '#555', lineHeight: 20, flex: 1, fontFamily: 'BiennaleRegular' },
 
   faqRow: {
     height: 70,
@@ -272,7 +272,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  faqTitle: { color: TEXT, fontWeight: '700', flex: 1, marginRight: 12 },
+  faqTitle: { color: TEXT, flex: 1, marginRight: 12, fontFamily: 'BiennaleBold' },
   faqBody: { color: '#666', marginTop: 8, lineHeight: 18 },
 
   linkRow: {
@@ -284,8 +284,8 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: TEXT,
-    fontWeight: '400',
     textDecorationLine: 'underline',
+    fontFamily: 'BiennaleRegular',
   },
 
   cta: {
@@ -299,7 +299,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 16,
   },
-  ctaText: { color: '#fff', fontWeight: '800' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 30,
     height: 30,

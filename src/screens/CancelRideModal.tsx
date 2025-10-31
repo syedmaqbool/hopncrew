@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  h1: { color: '#111', fontSize: 20, fontWeight: '800' },
+  h1: { color: '#111', fontSize: 20, fontFamily: 'BiennaleBold' },
   close: {
     width: 30,
     height: 30,
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
   },
-  policyLink: { color: '#3C71F5', fontWeight: '700' },
+  policyLink: { color: '#3C71F5', fontFamily: 'BiennaleBold' },
 
   box: {
     borderRadius: 16,
@@ -194,9 +194,9 @@ const styles = StyleSheet.create({
   },
   checkboxOn: { borderColor: '#111' },
   checkboxDot: { width: 12, height: 12, backgroundColor: '#111' },
-  reasonTxt: { color: '#111', fontWeight: '700', flex: 1 },
+  reasonTxt: { color: '#111', flex: 1, fontFamily: 'BiennaleBold' },
 
-  otherLabel: { color: '#111', fontWeight: '700', marginHorizontal: 12, marginTop: 8 },
+  otherLabel: { color: '#111', marginHorizontal: 12, marginTop: 8, fontFamily: 'BiennaleBold' },
   input: {
     minHeight: 72,
     marginHorizontal: 12,
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#F4F4F4',
   },
-  cancelTxt: { color: '#FF5C2A', fontWeight: '800' },
+  cancelTxt: { color: '#FF5C2A', fontFamily: 'BiennaleBold' },
   keepBtn: {
     height: 52,
     borderRadius: 26,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 10,
   },
-  keepTxt: { color: '#fff', fontWeight: '800', flex: 1, textAlign: 'center' },
+  keepTxt: { color: '#fff', flex: 1, textAlign: 'center', fontFamily: 'BiennaleBold' },
   keepIcon: {
     position: 'absolute',
     right: 10,

@@ -242,14 +242,14 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 24,
     padding: 16,
   },
-  title: { fontSize: 22, fontWeight: '700', color: '#111' },
-  sub: { color: '#444', marginTop: 6, lineHeight: 20 },
+  title: { fontSize: 22, color: '#111', fontFamily: 'BiennaleBold' },
+  sub: { color: '#444', marginTop: 6, lineHeight: 20, fontFamily: 'BiennaleRegular' },
   label: {
     marginTop: 18,
     marginBottom: 8,
-    fontWeight: '600',
     color: '#111',
     marginLeft: 30,
+    fontFamily: 'BiennaleSemiBold',
   },
 
   cells: { flexDirection: 'row', gap: 18, marginBottom: 12, marginLeft: 30 },
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 8,
   },
-  ctaText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleSemiBold', fontSize: 16 },
   ctaArrow: {
     width: 30,
     height: 30,
@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4F4F4',
   },
   resendDisabled: { opacity: 0.6 },
-  resendText: { color: '#111', fontWeight: '600' },
+  resendText: { color: '#111', fontFamily: 'BiennaleSemiBold' },
   timer: { marginLeft: 'auto', color: '#666' },
 
   footerText: { textAlign: 'center', color: '#666', marginTop: 18 },

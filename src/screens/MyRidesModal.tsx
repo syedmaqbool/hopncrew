@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     width: 34, height: 34, borderRadius: 17, backgroundColor: '#fff',
     borderWidth: 1, borderColor: '#EEE', alignItems: 'center', justifyContent: 'center',
   },
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111' },
+  headerTitle: { fontSize: 18, color: '#111', fontFamily: 'BiennaleBold' },
 
   segmentWrap: {
     marginHorizontal: 16, marginTop: 10, marginBottom: 6, borderColor: '#EFEFEF', borderWidth: 1,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   segmentActive: { backgroundColor: '#111' },
-  segmentText: { color: '#111', fontWeight: '700' },
+  segmentText: { color: '#111', fontFamily: 'BiennaleBold' },
   segmentTextActive: { color: '#fff' },
 
   card: {
@@ -162,9 +162,9 @@ const styles = StyleSheet.create({
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingHorizontal: 15, paddingVertical: 10,
      position: 'absolute', top: 5, left: 4, right: 0, backgroundColor: '#fff', zIndex: 10, width: '97%',
       marginLeft: 'auto', marginRight : 'auto', borderRadius: 10, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 1, },
-  when: { fontWeight: '400', color: '#111' },
-  fare: { color: '#6C7075', fontWeight: '600' },
-  fareStrong: { color: '#111', fontWeight: '800' },
+  when: { color: '#111', fontFamily: 'BiennaleRegular' },
+  fare: { color: '#6C7075', fontFamily: 'BiennaleSemiBold' },
+  fareStrong: { color: '#111', fontFamily: 'BiennaleBold' },
 
   mapThumb: {
     height: 180, borderRadius: 20, backgroundColor: '#EDEFF1', marginBottom: 10,

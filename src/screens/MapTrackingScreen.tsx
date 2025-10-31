@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   primary: { backgroundColor: '#111' },
   secondary: { backgroundColor: '#F3F3F3' },
-  btnText: { color: '#fff', fontWeight: '600' },
+  btnText: { color: '#fff', fontFamily: 'BiennaleSemiBold' },
   fab: {
     position: 'absolute', right: 10, bottom: 10,
     width: 44, height: 44, borderRadius: 22, backgroundColor: '#fff',

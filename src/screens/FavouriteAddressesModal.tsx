@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: '#F2F3F4', alignItems: 'center', justifyContent: 'center',
   },
-  title: { fontSize: 16, fontWeight: '800', color: '#111' },
+  title: { fontSize: 16, color: '#111', fontFamily: 'BiennaleBold' },
 
   hwCard: {
     marginTop: 8, marginHorizontal: 14,
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1, borderBottomColor: '#EFEFEF',
   },
 
-  section: { marginTop: 16, marginHorizontal: 14, color: '#8C8C8C', fontWeight: '700' },
+  section: { marginTop: 16, marginHorizontal: 14, color: '#8C8C8C', fontFamily: 'BiennaleBold' },
 
   otherRow: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     width: 28, height: 28, borderRadius: 14,
     backgroundColor: '#F6F7F8', alignItems: 'center', justifyContent: 'center',
   },
-  rowTitle: { color: '#111', fontWeight: '700' },
+  rowTitle: { color: '#111', fontFamily: 'BiennaleBold' },
   rowSub: { color: '#8C8C8C' },
 
   cta: {
@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     height: 50, borderRadius: 26, backgroundColor: '#111',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',

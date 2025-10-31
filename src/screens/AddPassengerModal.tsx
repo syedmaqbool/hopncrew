@@ -620,7 +620,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EEE',
   },
-  badgeText: { color: '#444', fontWeight: '600', fontSize: 12 },
+  badgeText: { color: '#444', fontSize: 12, fontFamily: 'BiennaleSemiBold' },
   close: {
     width: 32,
     height: 32,
@@ -630,7 +630,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  title: { fontWeight: '700', color: '#111', fontSize: 16, marginBottom: 10 },
+  title: { color: '#111', fontSize: 16, marginBottom: 10, fontFamily: 'BiennaleBold' },
 
   block: {
     borderRadius: 14,
@@ -653,8 +653,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 10,
   },
-  rowTitle: { color: '#111', fontWeight: '700' },
-  rowSub: { color: '#777', fontSize: 12, marginTop: 2, width: '90%' },
+  rowTitle: { color: '#111', fontFamily: 'BiennaleBold' },
+  rowSub: { color: '#777', fontSize: 12, marginTop: 2, width: '90%', fontFamily: 'BiennaleRegular' },
   separator: { height: 1, backgroundColor: '#F0F0F0', marginHorizontal: 8 },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   stepBtn: {
@@ -668,7 +668,7 @@ const styles = StyleSheet.create({
     borderColor: '#EEE',
   },
   stepBtnPlus: { backgroundColor: '#111', borderColor: '#111' },
-  stepVal: { width: 20, textAlign: 'center', color: '#111', fontWeight: '700' },
+  stepVal: { width: 20, textAlign: 'center', color: '#111', fontFamily: 'BiennaleBold' },
 
   freePill: {
     alignSelf: 'flex-start',
@@ -678,14 +678,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 6,
   },
-  freeText: { color: '#16a34a', fontWeight: '700', fontSize: 12 },
+  freeText: { color: '#16a34a', fontSize: 12, fontFamily: 'BiennaleBold' },
   seatHeader: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  seatTitle: { color: '#111', fontWeight: '400' },
-  link: { color: '#6086C1', fontWeight: '600' },
+  seatTitle: { color: '#111', fontFamily: 'BiennaleRegular' },
+  link: { color: '#6086C1', fontFamily: 'BiennaleSemiBold' },
 
   seatCard: {
     width: 180,
@@ -696,7 +696,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginRight: 10,
   },
-  seatTitleSmall: { color: '#111', fontWeight: '400', width: 80 },
+  seatTitleSmall: { color: '#111', width: 80, fontFamily: 'BiennaleRegular' },
   seatStepper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -721,7 +721,7 @@ const styles = StyleSheet.create({
     width: 18,
     textAlign: 'center',
     color: '#111',
-    fontWeight: '700',
+    fontFamily: 'BiennaleBold',
   },
 
   bottomRow: {
@@ -742,7 +742,7 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 14,
   },
-  luggageText: { color: '#fff', fontWeight: '700' },
+  luggageText: { color: '#fff', fontFamily: 'BiennaleBold' },
   mintCircle: {
     width: 30,
     height: 30,
@@ -753,7 +753,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 10,
   },
-  skip: { color: '#111', fontWeight: '700' },
+  skip: { color: '#111', fontFamily: 'BiennaleBold' },
 });
 function Separator() {
   return <View style={styles.separator} />;

@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', borderWidth: 1, borderColor: '#EEE',
     alignItems: 'center', justifyContent: 'center',
   },
-  title: { fontSize: 16, fontWeight: '800', color: '#111' },
+  title: { fontSize: 16, color: '#111', fontFamily: 'BiennaleBold' },
 
   infoCard: { backgroundColor: CARD_BG, borderRadius: 18, padding: 12 },
   infoText: { color: '#222', lineHeight: 19, margin: 4 },
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F7F8', alignItems: 'center', justifyContent: 'center',
     marginRight: 10,
   },
-  accountName: { color: '#111', fontWeight: '700' },
+  accountName: { color: '#111', fontFamily: 'BiennaleBold' },
   accountMail: { color: '#8C92A0', fontSize: 12 },
   trashBtn: {
     width: 32, height: 32, borderRadius: 16,

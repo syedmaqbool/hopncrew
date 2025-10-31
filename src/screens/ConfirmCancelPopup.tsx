@@ -46,11 +46,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     alignItems: 'center',
   },
-  logo: { fontSize: 20, fontWeight: '800', color: '#111' },
+  logo: { fontSize: 20, color: '#111', fontFamily: 'BiennaleBold' },
   msg: {
     marginTop: 10,
     color: '#111',
     textAlign: 'center',
+    fontFamily: 'BiennaleRegular',
   },
   btn: {
     marginTop: 16,
@@ -61,6 +62,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  btnTxt: { color: '#fff', fontWeight: '800' },
+  btnTxt: { color: '#fff', fontFamily: 'BiennaleBold' },
 });
-

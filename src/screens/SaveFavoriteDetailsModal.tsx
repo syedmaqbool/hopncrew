@@ -362,7 +362,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { fontWeight: '700', color: '#111', fontSize: 16 },
+  title: { color: '#111', fontSize: 16, fontFamily: 'BiennaleBold' },
 
   inputRow: {
     flexDirection: 'row',
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     alignItems: 'center',
   },
-  chipText: { color: '#666' },
+  chipText: { color: '#666', fontFamily: 'BiennaleRegular' },
 
   otherInput: {
     marginTop: 12,
@@ -419,7 +419,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 12, // spacing above bottom safe-area
   },
-  saveText: { color: '#fff', fontWeight: '700' },
+  saveText: { color: '#fff', fontFamily: 'BiennaleBold' },
   saveArrow: {
     width: 30,
     height: 30,

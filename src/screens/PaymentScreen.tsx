@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', borderWidth: 1, borderColor: '#EEE',
     alignItems: 'center', justifyContent: 'center',
   },
-  headerTitle: { color: '#111', fontWeight: '800', fontSize: 18 },
+  headerTitle: { color: '#111', fontSize: 18, fontFamily: 'BiennaleBold' },
 
   sectionPill: {
     alignSelf: 'flex-start',
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     marginLeft: 15,
   },
-  sectionPillText: { color: '#fff', fontWeight: '400' },
+  sectionPillText: { color: '#fff', fontFamily: 'BiennaleRegular' },
 
   tilesWrap: { flexDirection: 'row', gap: 12, marginBottom: 14,  },
 
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6', alignItems: 'center', justifyContent: 'center',
     marginBottom: 10,
   },
-  tileText: { color: '#111', fontWeight: '500' },
+  tileText: { color: '#111', fontFamily: 'BiennaleMedium' },
 
   listCard: {
     backgroundColor: '#fff',
@@ -241,7 +241,7 @@ const styles = StyleSheet.create({
     width: 30, height: 30, borderRadius: 15,
     backgroundColor: '#F5F6F7', alignItems: 'center', justifyContent: 'center',
   },
-  rowTitle: { color: '#111', fontWeight: '800' },
+  rowTitle: { color: '#111', fontFamily: 'BiennaleBold' },
   rowSub: { color: '#9AA0A6', fontSize: 12, marginTop: 2 },
 
   addBtn: {
@@ -249,13 +249,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
     marginBottom: 18,
   },
-  addBtnText: { color: '#fff', fontWeight: '700' },
+  addBtnText: { color: '#fff', fontFamily: 'BiennaleBold' },
   addBtnIcon: {
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
   },
 
-  blockTitle: { color: '#111', fontWeight: '600', marginBottom: 10 },
+  blockTitle: { color: '#111', marginBottom: 10, fontFamily: 'BiennaleSemiBold' },
 
   profileTile: {
     flex: 1,
@@ -271,5 +271,5 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6', alignItems: 'center', justifyContent: 'center',
     marginBottom: 8,
   },
-  profileText: { color: '#111', fontWeight: '700' },
+  profileText: { color: '#111', fontFamily: 'BiennaleBold' },
 });

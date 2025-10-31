@@ -495,7 +495,7 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     zIndex: 1,
   },
-  sizeText: { fontWeight: '700', color: '#111' },
+  sizeText: { color: '#111', fontFamily: 'BiennaleBold' },
   previewBox: {
     width: 160,
     height: 150,

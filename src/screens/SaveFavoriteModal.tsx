@@ -279,7 +279,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 18,
   },
-  headerTitle: { color: '#111', fontWeight: '800', fontSize: 22 },
+  headerTitle: { color: '#111', fontSize: 22, fontFamily: 'BiennaleBold' },
   closeBtn: {
     width: 32,
     height: 32,
@@ -323,8 +323,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 10,
   },
-  resultMain: { color: '#111', fontWeight: '700' },
-  resultSub: { color: '#6F6F6F', fontSize: 12 },
+  resultMain: { color: '#111', fontFamily: 'BiennaleBold' },
+  resultSub: { color: '#6F6F6F', fontSize: 12, fontFamily: 'BiennaleRegular' },
 
   saveBtn: {
     marginTop: 28,
@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  saveText: { color: '#fff', fontWeight: '800', fontSize: 18 },
+  saveText: { color: '#fff', fontSize: 18, fontFamily: 'BiennaleBold' },
   saveArrow: {
     position: 'absolute',
     right: 6,
@@ -348,5 +348,5 @@ const styles = StyleSheet.create({
     borderColor: '#111',
   },
   cancel: { alignItems: 'center', paddingVertical: 18 },
-  cancelText: { color: '#111', fontWeight: '700', fontSize: 18 },
+  cancelText: { color: '#111', fontSize: 18, fontFamily: 'BiennaleBold' },
 });

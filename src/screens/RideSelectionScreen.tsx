@@ -309,9 +309,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.1)',
   },
-  brand: { fontSize: 18, fontWeight: '800', color: TEXT, letterSpacing: 0.5 },
-  title: { fontSize: 20, fontWeight: '800', color: TEXT, marginTop: 6 },
-  subtitle: { marginTop: 4, color: MUTED, textAlign: 'center' },
+  brand: { fontSize: 18, color: TEXT, letterSpacing: 0.5, fontFamily: 'BiennaleBold' },
+  title: { fontSize: 20, color: TEXT, marginTop: 6, fontFamily: 'BiennaleBold' },
+  subtitle: { marginTop: 4, color: MUTED, textAlign: 'center', fontFamily: 'BiennaleRegular' },
 
   cards: { marginTop: 18, gap: 14 },
 
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.08)',
   },
-  heading: { flex: 1, fontSize: 16, fontWeight: '800', color: TEXT },
+  heading: { flex: 1, fontSize: 16, color: TEXT, fontFamily: 'BiennaleBold' },
 
   badge: {
     flexDirection: 'row',
@@ -361,9 +361,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.08)',
   },
-  badgeText: { color: '#0B1220', fontWeight: '700', fontSize: 12 },
+  badgeText: { color: '#0B1220', fontSize: 12, fontFamily: 'BiennaleBold' },
 
-  subcopy: { color: '#334155', marginBottom: 10 },
+  subcopy: { color: '#334155', marginBottom: 10, fontFamily: 'BiennaleRegular' },
 
   cardFooter: { flexDirection: 'row', alignItems: 'center' },
   pill: {
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.06)',
     marginRight: 8,
   },
-  pillText: { color: '#0B1220', fontWeight: '700', fontSize: 12 },
+  pillText: { color: '#0B1220', fontSize: 12, fontFamily: 'BiennaleBold' },
 
   arrowBadge: {
     marginLeft: 'auto',
@@ -400,5 +400,5 @@ const styles = StyleSheet.create({
     gap: 6,
     justifyContent: 'center',
   },
-  footerText: { color: MUTED },
+  footerText: { color: MUTED, fontFamily: 'BiennaleRegular' },
 });

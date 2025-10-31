@@ -152,7 +152,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
   },
-  title: { color: '#111', fontWeight: '700', fontSize: 16 },
+  title: { color: '#111', fontSize: 16, fontFamily: 'BiennaleBold' },
   close: {
     width: 32,
     height: 32,
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 6,
   },
-  freeText: { color: '#16a34a', fontWeight: '700', fontSize: 12 },
+  freeText: { color: '#16a34a', fontSize: 12, fontFamily: 'BiennaleBold' },
   card: {
     width: 208,
     borderRadius: 14,
@@ -179,8 +179,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginRight: 10,
   },
-  cardTitle: { color: '#111', fontWeight: '700', marginBottom: 6 },
-  cardBody: { color: '#666', fontSize: 12, lineHeight: 18 },
+  cardTitle: { color: '#111', marginBottom: 6, fontFamily: 'BiennaleBold' },
+  cardBody: { color: '#666', fontSize: 12, lineHeight: 18, fontFamily: 'BiennaleRegular' },
   cta: {
     marginTop: 16,
     height: 48,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 30,
     height: 30,

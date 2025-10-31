@@ -69,12 +69,12 @@ const styles = StyleSheet.create({
   card: {
     flex: 1, backgroundColor: '#fff', margin: 16, borderRadius: 16, padding: 16,
   },
-  title: { fontSize: 20, fontWeight: '700', color: '#111' },
+  title: { fontSize: 20, color: '#111', fontFamily: 'BiennaleBold' },
   value: { marginTop: 10, color: '#444', lineHeight: 20 },
   btn: {
     marginTop: 12, height: 44, borderRadius: 22, backgroundColor: '#111',
     alignItems: 'center', justifyContent: 'center',
   },
   btnSecondary: { backgroundColor: '#F3F3F3' },
-  btnText: { color: '#fff', fontWeight: '600' },
+  btnText: { color: '#fff', fontFamily: 'BiennaleSemiBold' },
 });

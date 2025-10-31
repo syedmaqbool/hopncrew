@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 16,
   },
-  sosTxt: { color: '#fff', fontWeight: '800' },
+  sosTxt: { color: '#fff', fontFamily: 'BiennaleBold' },
   livePill: {
     backgroundColor: '#fff',
     paddingHorizontal: 12,
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 6,
   },
-  liveTxt: { color: '#111', fontWeight: '700' },
+  liveTxt: { color: '#111', fontFamily: 'BiennaleBold' },
 
   // pins
   startHalo: {

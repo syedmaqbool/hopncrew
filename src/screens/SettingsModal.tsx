@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     width: 32, height: 32, borderRadius: 16, backgroundColor: '#F3F3F4',
     alignItems: 'center', justifyContent: 'center',
   },
-  headerTitle: { fontSize: 16, fontWeight: '800', color: '#111' },
+  headerTitle: { fontSize: 16, color: '#111', fontFamily: 'BiennaleBold' },
 
   /* section header (black pill + “ear”) */
   tabWrap: { height: 50, marginLeft: 8, flexDirection: 'row', alignItems: 'center' },
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
     paddingVertical: 10,
   },
-  tabText: { color: '#fff', fontWeight: '800', fontSize: 12 },
+  tabText: { color: '#fff', fontSize: 12, fontFamily: 'BiennaleBold' },
   tabEar: {
     width: 28,
     height: 24,
@@ -148,5 +148,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 12,
   },
-  cardText: { color: '#111', flex: 1, fontWeight: '600' },
+  cardText: { color: '#111', flex: 1, fontFamily: 'BiennaleSemiBold' },
 });
