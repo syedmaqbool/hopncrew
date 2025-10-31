@@ -109,11 +109,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  sheetTitle: { color: TEXT, fontWeight: '800', fontSize: 20 },
-  sub: { color: '#666', marginTop: 6, marginBottom: 6 },
-  step: { color: TEXT, marginVertical: 4, lineHeight: 20 },
-  note: { color: '#555', marginTop: 6, lineHeight: 20 },
+  sheetTitle: { color: TEXT, fontSize: 20, fontFamily: 'BiennaleBold' },
+  sub: { color: '#666', marginTop: 6, marginBottom: 6, fontFamily: 'BiennaleRegular' },
+  step: { color: TEXT, marginVertical: 4, lineHeight: 20, fontFamily: 'BiennaleRegular' },
+  note: { color: '#555', marginTop: 6, lineHeight: 20, fontFamily: 'BiennaleRegular' },
   close: { flexDirection: 'row', alignItems: 'center', gap: 6, padding: 4 },
-  closeTxt: { color: TEXT, fontWeight: '700' },
+  closeTxt: { color: TEXT, fontFamily: 'BiennaleBold' },
 });
-

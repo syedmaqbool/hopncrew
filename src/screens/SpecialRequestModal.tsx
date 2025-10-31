@@ -111,15 +111,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingTop: 12, paddingBottom: 18,
   },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  title: { color: '#111', fontWeight: '800', fontSize: 16 },
+  title: { color: '#111', fontSize: 16, fontFamily: 'BiennaleBold' },
   close: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center' },
 
-  sub: { color: '#666', marginTop: 6, marginBottom: 10 },
+  sub: { color: '#666', marginTop: 6, marginBottom: 10, fontFamily: 'BiennaleRegular' },
   checkboxRow: { flexDirection: 'row', gap: 18, marginBottom: 10 },
   checkWrap: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  checkLabel: { color: '#111', fontWeight: '600' },
+  checkLabel: { color: '#111', fontFamily: 'BiennaleSemiBold' },
 
-  label: { color: '#111', fontWeight: '700', marginTop: 6, marginBottom: 6 },
+  label: { color: '#111', marginTop: 6, marginBottom: 6, fontFamily: 'BiennaleBold' },
   note: {
     minHeight: 90, borderWidth: 1, borderColor: '#EFEFEF', borderRadius: 12,
     padding: 10, color: '#111', backgroundColor: '#fff',
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     marginTop: 14, height: 48, borderRadius: 28, backgroundColor: '#111',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
     alignItems: 'center', justifyContent: 'center',position: 'absolute', right: 10,

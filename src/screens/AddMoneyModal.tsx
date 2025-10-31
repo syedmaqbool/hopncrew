@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  title: { fontSize: 16, fontWeight: '800', color: '#111' },
+  title: { fontSize: 16, color: '#111', fontFamily: 'BiennaleBold' },
   closeBtn: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: '#F2F3F4',
     alignItems: 'center', justifyContent: 'center',
@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
     height: 50, borderRadius: 28, backgroundColor: '#111',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10, },
   cancel: { alignItems: 'center', paddingVertical: 8 },
-  cancelText: { color: '#6C7075', fontWeight: '600' },
+  cancelText: { color: '#6C7075', fontFamily: 'BiennaleSemiBold' },
 });

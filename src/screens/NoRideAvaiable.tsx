@@ -106,18 +106,19 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   tm: { marginLeft: 2, fontSize: 10, color: '#0B3D3B', marginTop: -6 },
-  titleTop: { marginTop: 10, fontWeight: '800', color: '#FF3B30' },
+  titleTop: { marginTop: 10, color: '#FF3B30', fontFamily: 'BiennaleBold' },
   titleMain: {
     marginTop: 2,
-    fontWeight: '800',
     color: '#FF3B30',
     fontSize: 18,
+    fontFamily: 'BiennaleBold',
   },
   body: {
     marginTop: 10,
     color: '#3C3C43',
     textAlign: 'center',
     lineHeight: 20,
+    fontFamily: 'BiennaleRegular',
   },
   supportBtn: {
     marginTop: 14,
@@ -129,7 +130,7 @@ const styles = StyleSheet.create({
   supportTxt: {
     color: '#111',
     textDecorationLine: 'underline',
-    fontWeight: '700',
+    fontFamily: 'BiennaleBold',
   },
   okBtn: {
     marginTop: 12,
@@ -140,6 +141,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  okTxt: { color: '#fff', fontWeight: '800' },
-  retryTxt: { color: '#111', fontWeight: '800' },
+  okTxt: { color: '#fff', fontFamily: 'BiennaleBold' },
+  retryTxt: { color: '#111', fontFamily: 'BiennaleBold' },
 });

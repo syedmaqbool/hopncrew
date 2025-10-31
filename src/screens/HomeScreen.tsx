@@ -219,13 +219,15 @@ export default function HomeScreen({ navigation, route }: Props) {
         contentContainerStyle={{ paddingBottom: 32 }}
         showsVerticalScrollIndicator={false}
       >
-        <Text style={styles.greeting}>Good afternoon, {name}</Text>
+        <Text style={styles.greeting}>Good afternoon, {name} </Text>
 
         {/* Search pill */}
         <View style={styles.searchRow}>
           <Ionicons name="search" size={18} color="#9AA0A6" />
           <Pressable style={{ flex: 1 }} onPress={() => openPlaces()}>
-            <Text style={{ color: '#000000' }}>Where are you going?</Text>
+            <Text style={{ color: '#000000', fontFamily: 'BiennaleMedium' }}>
+              Where are you going?
+            </Text>
           </Pressable>
           <Pressable
             onPress={() => {
@@ -390,6 +392,7 @@ const styles = StyleSheet.create({
   },
   googleText: {
     color: '#1976D2',
+    fontFamily: 'BiennaleRegular',
   },
   searchRow: {
     flexDirection: 'row',
@@ -431,9 +434,9 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#EAEAEA',
   },
-  cardTitle: { fontWeight: '500', color: '#111' },
-  cardSub: { color: '#888', fontSize: 12 },
-  cardBody: { marginTop: 10, color: '#444' },
+  cardTitle: { color: '#111', fontFamily: 'BiennaleMedium' },
+  cardSub: { color: '#888', fontSize: 12, fontFamily: 'BiennaleRegular' },
+  cardBody: { marginTop: 10, color: '#444', fontFamily: 'BiennaleRegular' },
   starsRow: { flexDirection: 'row', gap: 4, marginTop: 20 },
 
   quickList: { marginTop: 0, gap: 10 },

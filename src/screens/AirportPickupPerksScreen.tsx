@@ -214,14 +214,14 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 10,
   },
-  brandText: { color: '#fff', fontWeight: '800' },
+  brandText: { color: '#fff', fontFamily: 'BiennaleBold' },
   closeRow: { flexDirection: 'row', alignItems: 'flex-end', gap: 8 },
-  closeText: { color: MUTED, fontWeight: '700' },
+  closeText: { color: MUTED, fontFamily: 'BiennaleBold' },
 
   scroll: { paddingHorizontal: 16 },
   title: {
     color: TEXT,
-    fontWeight: '700',
+    fontFamily: 'BiennaleBold',
     fontSize: 48,
     marginTop: 10,
     marginBottom: 12,
@@ -245,8 +245,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  rowTitle: { color: TEXT, fontWeight: '800' },
-  rowBody: { color: '#334155', marginTop: 4 },
+  rowTitle: { color: TEXT, fontFamily: 'BiennaleBold' },
+  rowBody: { color: '#334155', marginTop: 4, fontFamily: 'BiennaleRegular' },
 
   flatRow: {
     flexDirection: 'row',
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0,
     borderBottomColor: BORDER,
   },
-  flatText: { color: TEXT, fontWeight: '700', flex: 1 },
+  flatText: { color: TEXT, flex: 1, fontFamily: 'BiennaleBold' },
 
   noteCard: {
     backgroundColor: '#F3F4F6',
@@ -266,8 +266,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 12,
   },
-  noteTitle: { color: TEXT, fontWeight: '800', marginBottom: 6 },
-  noteBody: { color: '#4B5563', marginBottom: 6 },
+  noteTitle: { color: TEXT, marginBottom: 6, fontFamily: 'BiennaleBold' },
+  noteBody: { color: '#4B5563', marginBottom: 6, fontFamily: 'BiennaleRegular' },
 
   guideRow: {
     flexDirection: 'row',
@@ -286,8 +286,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  guideTitle: { color: TEXT, fontWeight: '800' },
-  guideSub: { color: TEXT, opacity: 0.7 },
+  guideTitle: { color: TEXT, fontFamily: 'BiennaleBold' },
+  guideSub: { color: TEXT, opacity: 0.7, fontFamily: 'BiennaleRegular' },
   dropBadge: {
     width: 28,
     height: 28,

@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
 
   closeBtn: { position: 'absolute', right: 14, top: 40, zIndex: 2 },
-  closeTxt: { color: '#9AA0A6', fontWeight: '700' },
+  closeTxt: { color: '#9AA0A6', fontFamily: 'BiennaleBold' },
 
   brandPill: {
     alignSelf: 'flex-start',
@@ -131,9 +131,9 @@ const styles = StyleSheet.create({
     width: 140,
     textAlign: 'center',
   },
-  brandText: {  fontSize: 20, fontWeight: '800', color: '#111', textAlign: 'center' },
+  brandText: {  fontSize: 20, color: '#111', textAlign: 'center', fontFamily: 'BiennaleBold' },
 
-  h1: { fontSize: 38, fontWeight: '800', color: '#111', lineHeight: 46, marginBottom: 12 },
+  h1: { fontSize: 38, color: '#111', lineHeight: 46, marginBottom: 12, fontFamily: 'BiennaleBold' },
 
   row: {
     flexDirection: 'row',
@@ -148,8 +148,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F7F8', alignItems: 'center', justifyContent: 'center',
     borderWidth: 1, borderColor: '#EEE',
   },
-  rowTitle: { color: '#111', fontWeight: '700' },
-  rowSub: { color: '#666', marginTop: 2 },
+  rowTitle: { color: '#111', fontFamily: 'BiennaleBold' },
+  rowSub: { color: '#666', marginTop: 2, fontFamily: 'BiennaleRegular' },
 
 });
 
@@ -165,6 +165,6 @@ const cardStyles = StyleSheet.create({
     marginBottom: 6,
     borderWidth: 1, borderColor: '#DDF6EE',
   },
-  title: { color: '#111', fontWeight: '800', marginBottom: 4 },
-  body: { color: '#233', lineHeight: 18 },
+  title: { color: '#111', marginBottom: 4, fontFamily: 'BiennaleBold' },
+  body: { color: '#233', lineHeight: 18, fontFamily: 'BiennaleRegular' },
 });

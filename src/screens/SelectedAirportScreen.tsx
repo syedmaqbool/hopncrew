@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hTitle: { color: TEXT, fontWeight: '700', fontSize: 16 },
+  hTitle: { color: TEXT, fontSize: 16, fontFamily: 'BiennaleBold' },
 
   card: {
     backgroundColor: '#fff',
@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 16,
   },
-  cardTitle: { color: TEXT, fontWeight: '700' },
+  cardTitle: { color: TEXT, fontFamily: 'BiennaleBold' },
   divider: { height: 1, backgroundColor: '#EEE', marginVertical: 8 },
   dropdown: {
     flexDirection: 'row',
@@ -282,7 +282,7 @@ const styles = StyleSheet.create({
     paddingRight: 12,
     paddingVertical: 12,
   },
-  dropdownText: { color: TEXT, fontWeight: '700', flex: 1 },
+  dropdownText: { color: TEXT, flex: 1, fontFamily: 'BiennaleBold' },
   menu: {
     marginTop: 8,
     borderRadius: 12,
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 8,
   },
-  menuText: { color: TEXT },
+  menuText: { color: TEXT, fontFamily: 'BiennaleRegular' },
 
   flightCard: {
     backgroundColor: BG,
@@ -315,12 +315,12 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 12,
   },
-  flightAir: { color: TEXT, opacity: 0.8, fontWeight: '700' },
+  flightAir: { color: TEXT, opacity: 0.8, fontFamily: 'BiennaleBold' },
   flightRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
-  city: { color: TEXT, fontWeight: '800' },
-  meta: { color: '#777' },
-  time: { color: TEXT, fontWeight: '800', fontSize: 22, marginTop: 4 },
-  date: { color: '#777' },
+  city: { color: TEXT, fontFamily: 'BiennaleBold' },
+  meta: { color: '#777', fontFamily: 'BiennaleRegular' },
+  time: { color: TEXT, fontSize: 22, marginTop: 4, fontFamily: 'BiennaleBold' },
+  date: { color: '#777', fontFamily: 'BiennaleRegular' },
   midIcon: {
     width: 36,
     height: 36,
@@ -342,7 +342,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 8,
   },
-  manualText: { color: TEXT, fontWeight: '700' },
+  manualText: { color: TEXT, fontFamily: 'BiennaleBold' },
   infoCard: {
     flexDirection: 'row',
     gap: 10,
@@ -360,9 +360,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  infoTitle: { color: TEXT, fontWeight: '800' },
-  infoBody: { color: TEXT },
-  changeRow: { color: TEXT, textAlign: 'center', marginTop: 16 },
+  infoTitle: { color: TEXT, fontFamily: 'BiennaleBold' },
+  infoBody: { color: TEXT, fontFamily: 'BiennaleRegular' },
+  changeRow: { color: TEXT, textAlign: 'center', marginTop: 16, fontFamily: 'BiennaleRegular' },
 
   bottom: { padding: 16 },
   cta: {
@@ -372,7 +372,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ctaText: { color: '#fff', fontWeight: '800' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     position: 'absolute',
     right: 10,

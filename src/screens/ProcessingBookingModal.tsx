@@ -326,7 +326,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#111',
     fontSize: 14,
-    fontWeight: '600',
+    fontFamily: 'BiennaleSemiBold',
   },
   progressTrack: {
     height: 6,
@@ -341,7 +341,7 @@ const styles = StyleSheet.create({
     color: '#111',
     textAlign: 'center',
     marginTop: 8,
-    fontWeight: '700',
+    fontFamily: 'BiennaleBold',
   },
   stars: {
     flexDirection: 'row',
@@ -355,6 +355,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
   },
-  identityTxt: { color: '#111', fontWeight: '600' },
+  identityTxt: { color: '#111', fontFamily: 'BiennaleSemiBold' },
   avatarImg: { width: 24, height: 24, borderRadius: 12, resizeMode: 'cover' },
 });

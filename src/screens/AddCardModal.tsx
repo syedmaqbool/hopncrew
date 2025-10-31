@@ -353,8 +353,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 8,
   },
-  title: { color: '#111', fontWeight: '800', fontSize: 18 },
-  sub: { color: '#6F6F6F', marginBottom: 8 },
+  title: { color: '#111', fontSize: 18, fontFamily: 'BiennaleBold' },
+  sub: { color: '#6F6F6F', marginBottom: 8, fontFamily: 'BiennaleRegular' },
 
   input: {
     height: 46,
@@ -381,6 +381,7 @@ const styles = StyleSheet.create({
     left: 4,
     color: '#6F6F6F',
     fontSize: 12,
+    fontFamily: 'BiennaleRegular',
   },
   picker: {
     height: 56,
@@ -444,7 +445,7 @@ const styles = StyleSheet.create({
     color: '#111',
     marginTop: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '800' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 32,
     height: 32,

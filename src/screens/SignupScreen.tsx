@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
   },
 
   titleWrap: { paddingHorizontal: 16, marginBottom: 25 },
-  title: { fontSize: 24, lineHeight: 30, fontWeight: '700', color: '#111' },
+  title: { fontSize: 24, lineHeight: 30, color: '#111', fontFamily: 'BiennaleBold' },
 
   avatarWrap: { alignItems: 'center', marginTop: 4, marginBottom: 10 },
   avatarCircle: {
@@ -415,8 +415,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#000',
     fontSize: 20,
-    fontWeight: 'bold',
     marginBottom: 12,
+    fontFamily: 'BiennaleBold',
   },
 
   input: {
@@ -487,7 +487,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  signUpText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  signUpText: { color: '#fff', fontFamily: 'BiennaleSemiBold', fontSize: 16 },
   signUpArrow: {
     width: 30,
     height: 30,
@@ -530,8 +530,8 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 16,
-    fontWeight: '600',
     marginBottom: 8,
     color: '#111',
+    fontFamily: 'BiennaleSemiBold',
   },
 });

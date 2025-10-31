@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     width: 34, height: 34, borderRadius: 17,
     backgroundColor: '#F3F4F5', alignItems: 'center', justifyContent: 'center',
   },
-  headerTitle: { color: '#111', fontWeight: '400', fontSize: 18, textAlign: 'left' },
+  headerTitle: { color: '#111', fontSize: 18, textAlign: 'left', fontFamily: 'BiennaleRegular' },
 
   balanceCard: {
     marginHorizontal: 16,
@@ -158,18 +158,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  balanceValue: { color: '#fff', fontWeight: '800', fontSize: 24 },
-  balanceLabel: { color: '#B7BBC1', marginTop: 4 },
+  balanceValue: { color: '#fff', fontSize: 24, fontFamily: 'BiennaleBold' },
+  balanceLabel: { color: '#B7BBC1', marginTop: 4, fontFamily: 'BiennaleRegular' },
   addBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 10,
     borderRadius: 22,
   },
-  addBtnText: { color: '#111', fontWeight: '700' },
+  addBtnText: { color: '#111', fontFamily: 'BiennaleBold' },
 
   sectionTitle: {
     marginTop: 16, marginBottom: 8, marginHorizontal: 4,
-    color: '#6C7075', fontWeight: '700',
+    color: '#6C7075', fontFamily: 'BiennaleBold',
   },
 
   txnRow: {
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
   },
   rowDivider: { height: 10 },
 
-  txnId: { color: '#111', fontWeight: '800' },
-  txnTime: { color: '#9AA0A6', marginTop: 2 },
-  txnAmt: { fontWeight: '800' },
+  txnId: { color: '#111', fontFamily: 'BiennaleBold' },
+  txnTime: { color: '#9AA0A6', marginTop: 2, fontFamily: 'BiennaleRegular' },
+  txnAmt: { fontFamily: 'BiennaleBold' },
 });

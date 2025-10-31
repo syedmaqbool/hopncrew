@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
   },
-  title: { color: '#111', fontWeight: '700', fontSize: 16 },
+  title: { color: '#111', fontSize: 16, fontFamily: 'BiennaleBold' },
   close: {
     width: 32,
     height: 32,
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 30,
     height: 30,
@@ -147,6 +147,6 @@ const stepStyles = StyleSheet.create({
     backgroundColor: '#fff',
     marginTop: 8,
   },
-  title: { color: '#111', fontWeight: '700' },
-  body: { color: '#666', marginTop: 4, lineHeight: 18 },
+  title: { color: '#111', fontFamily: 'BiennaleBold' },
+  body: { color: '#666', marginTop: 4, lineHeight: 18, fontFamily: 'BiennaleRegular' },
 });

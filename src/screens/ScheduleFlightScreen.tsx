@@ -294,7 +294,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
-  headerTitle: { color: '#111', fontWeight: '400', fontSize: 18 },
+  headerTitle: { color: '#111', fontSize: 18, fontFamily: 'BiennaleRegular' },
 
   sheet: {
     flex: 1,
@@ -306,12 +306,12 @@ const styles = StyleSheet.create({
   },
   bigTitle: {
     fontSize: 18,
-    fontWeight: '400',
     color: '#111',
     textAlign: 'center',
     marginTop: 6,
     marginBottom: 36,
     paddingHorizontal: 16,
+    fontFamily: 'BiennaleRegular',
   },
   wheelsWrap: {
     flexDirection: 'row',
@@ -348,7 +348,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   itemTxt: { color: '#9AA0A6' },
-  itemActive: { color: '#111', fontWeight: '700' },
+  itemActive: { color: '#111', fontFamily: 'BiennaleBold' },
 
   bulletIcon: {
     width: 28,
@@ -359,8 +359,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 2,
   },
-  bulletTitle: { color: '#111', fontWeight: '800' },
-  bulletBody: { color: '#666', marginTop: 2 },
+  bulletTitle: { color: '#111', fontFamily: 'BiennaleBold' },
+  bulletBody: { color: '#666', marginTop: 2, fontFamily: 'BiennaleRegular' },
   separator: { height: 1, backgroundColor: '#EFEFEF', marginLeft: 44 },
 
   linkRow: {
@@ -372,8 +372,8 @@ const styles = StyleSheet.create({
   },
   linkText: {
     color: '#111',
-    fontWeight: '400',
     textDecorationLine: 'underline',
+    fontFamily: 'BiennaleRegular',
   },
 
   footer: { paddingHorizontal: 16, paddingTop: 8 },
@@ -387,7 +387,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ctaText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleSemiBold', fontSize: 16 },
   ctaIcon: {
     width: 30,
     height: 30,

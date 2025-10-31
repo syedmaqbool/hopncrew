@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: '#F3F3F4', alignItems: 'center', justifyContent: 'center',
   },
-  title: { fontSize: 16, fontWeight: '800', color: '#111' },
+  title: { fontSize: 16, color: '#111', fontFamily: 'BiennaleBold' },
 
   card: {
     backgroundColor: '#fff',
@@ -118,10 +118,10 @@ const styles = StyleSheet.create({
   },
 
   row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14 },
-  rowTitle: { color: '#111', fontSize: 14, fontWeight: '700' },
-  rowSub: { color: '#8C8C8C', marginTop: 2 },
+  rowTitle: { color: '#111', fontSize: 14, fontFamily: 'BiennaleBold' },
+  rowSub: { color: '#8C8C8C', marginTop: 2, fontFamily: 'BiennaleRegular' },
 
   divider: { height: 1, backgroundColor: '#EFEFEF' },
 
-  delete: { color: '#E53935', fontWeight: '700' },
+  delete: { color: '#E53935', fontFamily: 'BiennaleBold' },
 });

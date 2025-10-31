@@ -290,9 +290,9 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
 
-  h1: { color: '#111', fontWeight: '800', fontSize: 18, marginTop: 8 },
-  light: { color: '#9AA0A6', fontWeight: '700' },
-  sub: { color: '#666', marginTop: 6, lineHeight: 20 },
+  h1: { color: '#111', fontSize: 18, marginTop: 8, fontFamily: 'BiennaleBold' },
+  light: { color: '#9AA0A6', fontFamily: 'BiennaleBold' },
+  sub: { color: '#666', marginTop: 6, lineHeight: 20, fontFamily: 'BiennaleRegular' },
 
   rowHead: {
     flexDirection: 'row',
@@ -300,7 +300,7 @@ const styles = StyleSheet.create({
     gap: 6,
     marginTop: 16,
   },
-  section: { color: '#111', fontWeight: '800' },
+  section: { color: '#111', fontFamily: 'BiennaleBold' },
 
   carRow: {
     flexDirection: 'row',
@@ -336,8 +336,8 @@ const styles = StyleSheet.create({
     paddingEnd: 20,
   },
   taxTxt: { color: '#777', fontSize: 12, marginBottom: 6 },
-  priceNow: { color: '#111', fontSize: 40, fontWeight: '600', lineHeight: 32 },
-  tiny: { color: '#777', marginTop: 6 },
+  priceNow: { color: '#111', fontSize: 40, lineHeight: 32, fontFamily: 'BiennaleSemiBold' },
+  tiny: { color: '#777', marginTop: 6, fontFamily: 'BiennaleRegular' },
 
   policyPill: {
     marginTop: 12,
@@ -351,10 +351,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EEE',
   },
-  policyStrong: { color: '#111', fontWeight: '700' },
+  policyStrong: { color: '#111', fontFamily: 'BiennaleBold' },
   policySub: {
     color: '#9AA0A6',
     marginVertical: 12,
+    fontFamily: 'BiennaleRegular',
   },
 
   specialRow: {
@@ -363,7 +364,7 @@ const styles = StyleSheet.create({
     gap: 10,
     marginTop: 14,
   },
-  specialTxt: { color: '#111', fontWeight: '700', flex: 1 },
+  specialTxt: { color: '#111', flex: 1, fontFamily: 'BiennaleBold' },
 
   bottomRow: { flexDirection: 'row', gap: 10, marginTop: 14 },
   payChip: {
@@ -378,7 +379,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#D6F5EA',
   },
-  payTxt: { color: '#111', fontWeight: '800', flex: 1 },
+  payTxt: { color: '#111', flex: 1, fontFamily: 'BiennaleBold' },
 
   couponChip: {
     flex: 1.1,
@@ -412,7 +413,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 32,
     height: 32,
@@ -438,6 +439,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
   },
-  policyTxt: { color: '#111', fontWeight: '700' },
-  rowMain: { color: '#111', fontWeight: '700', flex: 1 },
+  policyTxt: { color: '#111', fontFamily: 'BiennaleBold' },
+  rowMain: { color: '#111', flex: 1, fontFamily: 'BiennaleBold' },
 });

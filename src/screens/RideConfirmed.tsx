@@ -82,12 +82,13 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   tm: { marginLeft: 2, fontSize: 10, color: '#0B3D3B', marginTop: -6 },
-  h1: { marginTop: 12, fontSize: 20, fontWeight: '800', color: '#111' },
+  h1: { marginTop: 12, fontSize: 20, color: '#111', fontFamily: 'BiennaleBold' },
   body: {
     marginTop: 10,
     color: '#3C3C43',
     textAlign: 'center',
     lineHeight: 20,
+    fontFamily: 'BiennaleRegular',
   },
   infoPill: {
     backgroundColor: '#F4F5F6',
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'stretch',
   },
-  infoTxt: { color: '#111', fontWeight: '800' },
+  infoTxt: { color: '#111', fontFamily: 'BiennaleBold' },
   okBtn: {
     marginTop: 12,
     height: 48,
@@ -110,5 +111,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'stretch',
   },
-  okTxt: { color: '#fff', fontWeight: '800', textAlign: 'center' },
+  okTxt: { color: '#fff', textAlign: 'center', fontFamily: 'BiennaleBold' },
 });

@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hTitle: { color: TEXT, fontWeight: '700', fontSize: 16 },
+  hTitle: { color: TEXT, fontSize: 16, fontFamily: 'BiennaleBold' },
   body: { flex: 1, paddingHorizontal: 16, paddingTop: 8 },
 
   toggleRow: { flexDirection: 'row', marginTop: 10 },
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   toggleActive: { backgroundColor: '#111' },
-  toggleTxt: { color: '#111', fontWeight: '700' },
+  toggleTxt: { color: '#111', fontFamily: 'BiennaleBold' },
   toggleTxtActive: { color: '#fff' },
 
   policyRow: {
@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 18,
   },
-  policyTxt: { color: TEXT, fontWeight: '700' },
+  policyTxt: { color: TEXT, fontFamily: 'BiennaleBold' },
 
   cameraBox: {
     flex: 1,
@@ -271,5 +271,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  scanTxt: { color: '#A9FFE3', fontWeight: '800', textAlign: 'center' },
+  scanTxt: { color: '#A9FFE3', textAlign: 'center', fontFamily: 'BiennaleBold' },
 });

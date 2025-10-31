@@ -364,7 +364,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
-  headerTitle: { color: '#111', fontWeight: '400', fontSize: 18 },
+  headerTitle: { color: '#111', fontSize: 18, fontFamily: 'BiennaleRegular' },
 
   sheet: {
     flex: 1,
@@ -377,12 +377,12 @@ const styles = StyleSheet.create({
 
   bigTitle: {
     fontSize: 22,
-    fontWeight: '800',
     color: '#111',
     textAlign: 'center',
     marginTop: 8,
     marginBottom: 8,
     paddingHorizontal: 16,
+    fontFamily: 'BiennaleBold',
   },
 
   wheelsWrap: {
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   itemTxt: { color: '#9AA0A6' },
-  itemActive: { color: '#111', fontWeight: '700' },
+  itemActive: { color: '#111', fontFamily: 'BiennaleBold' },
 
   infoRow: {
     flexDirection: 'row',
@@ -429,8 +429,8 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   infoIcon: { width: 20, height: 20, resizeMode: 'contain' },
-  infoTitle: { color: '#111', fontWeight: '700' },
-  infoSub: { color: '#666', marginTop: 2 },
+  infoTitle: { color: '#111', fontFamily: 'BiennaleBold' },
+  infoSub: { color: '#666', marginTop: 2, fontFamily: 'BiennaleRegular' },
   footer: { paddingHorizontal: 16, paddingTop: 8 },
   toggleCard: {
     flexDirection: 'row',
@@ -452,7 +452,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  toggleTxt: { color: '#111', fontSize: 12, fontWeight: '500', flexShrink: 1 },
+  toggleTxt: { color: '#111', fontSize: 12, flexShrink: 1, fontFamily: 'BiennaleMedium' },
   infoCircle: {
     width: 20,
     height: 20,
@@ -472,7 +472,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ctaText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleSemiBold', fontSize: 16 },
   ctaIcon: {
     width: 30,
     height: 30,

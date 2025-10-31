@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  title: { color: TEXT, fontWeight: '800', fontSize: 18 },
+  title: { color: TEXT, fontSize: 18, fontFamily: 'BiennaleBold' },
   closeBtn: {
     width: 32,
     height: 32,
@@ -200,7 +200,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CFF6E6',
   },
-  addTxt: { color: TEXT, fontWeight: '800' },
+  addTxt: { color: TEXT, fontFamily: 'BiennaleBold' },
 
   hintCard: {
     flexDirection: 'row',
@@ -221,5 +221,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hintTxt: { color: TEXT, flex: 1 },
+  hintTxt: { color: TEXT, flex: 1, fontFamily: 'BiennaleRegular' },
 });

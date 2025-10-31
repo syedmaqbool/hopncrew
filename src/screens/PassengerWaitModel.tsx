@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 6,
   },
-  headerTxt: { color: '#9AA0A6', fontWeight: '700' },
+  headerTxt: { color: '#9AA0A6', fontFamily: 'BiennaleBold' },
   closeBtn: {
     width: 32,
     height: 32,
@@ -142,8 +142,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
-  h1: { color: '#111', fontWeight: '800', fontSize: 22, marginTop: 10 },
-  body: { color: '#23272F', marginTop: 12, lineHeight: 20 },
+  h1: { color: '#111', fontSize: 22, marginTop: 10, fontFamily: 'BiennaleBold' },
+  body: { color: '#23272F', marginTop: 12, lineHeight: 20, fontFamily: 'BiennaleRegular' },
 
   callout: {
     backgroundColor: MINT,
@@ -151,8 +151,8 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 14,
   },
-  calloutTitle: { color: '#0B3D3B', fontWeight: '800' },
-  calloutSub: { color: '#0B3D3B', opacity: 0.8, marginTop: 4 },
+  calloutTitle: { color: '#0B3D3B', fontFamily: 'BiennaleBold' },
+  calloutSub: { color: '#0B3D3B', opacity: 0.8, marginTop: 4, fontFamily: 'BiennaleRegular' },
 
   note: {
     backgroundColor: '#F1F2F4',
@@ -160,5 +160,5 @@ const styles = StyleSheet.create({
     padding: 12,
     marginTop: 14,
   },
-  noteTxt: { color: '#111', fontWeight: '800' },
+  noteTxt: { color: '#111', fontFamily: 'BiennaleBold' },
 });

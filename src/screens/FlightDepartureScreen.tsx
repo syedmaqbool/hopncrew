@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
-  headerTitle: { color: TEXT, fontWeight: '400', fontSize: 18 },
+  headerTitle: { color: TEXT, fontSize: 18, fontFamily: 'BiennaleRegular' },
 
   sheet: {
     flex: 1,
@@ -161,9 +161,9 @@ const styles = StyleSheet.create({
   },
   bigTitle: {
     fontSize: 22,
-    fontWeight: '800',
     color: TEXT,
     marginTop: 8,
+    fontFamily: 'BiennaleBold',
   },
 
   card: {
@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
     padding: 14,
     marginTop: 26,
   },
-  cardTitle: { color: TEXT, fontWeight: '800', marginBottom: 10 },
+  cardTitle: { color: TEXT, marginBottom: 10, fontFamily: 'BiennaleBold' },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
   },
-  pillText: { color: TEXT, fontWeight: '700', flex: 1 },
+  pillText: { color: TEXT, flex: 1, fontFamily: 'BiennaleBold' },
   pillRight: {
     width: 30,
     height: 30,
@@ -206,8 +206,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 2,
   },
-  rowTitle: { color: TEXT, fontWeight: '800' },
-  rowBody: { color: '#666', marginTop: 2 },
+  rowTitle: { color: TEXT, fontFamily: 'BiennaleBold' },
+  rowBody: { color: '#666', marginTop: 2, fontFamily: 'BiennaleRegular' },
   sep: { height: 1, backgroundColor: '#EFEFEF' },
 
   linkRow: {
@@ -217,5 +217,5 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 26,
   },
-  linkText: { color: TEXT, fontWeight: '400', textDecorationLine: 'underline' },
+  linkText: { color: TEXT, textDecorationLine: 'underline', fontFamily: 'BiennaleRegular' },
 });

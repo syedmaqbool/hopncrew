@@ -396,8 +396,8 @@ const styles = StyleSheet.create({
     // backgroundColor: '#CFFCED', // faint “map” block
   },
   titleWrap: { paddingHorizontal: 16, marginTop: 12 },
-  title: { fontSize: 24, lineHeight: 30, fontWeight: '700', color: '#111' },
-  btnTxt: { color: '#fff', fontWeight: '700' },
+  title: { fontSize: 24, lineHeight: 30, color: '#111', fontFamily: 'BiennaleBold' },
+  btnTxt: { color: '#fff', fontFamily: 'BiennaleBold' },
   card: {
     flex: 1,
     backgroundColor: CARD_BG,
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     padding: 16,
   },
 
-  label: { color: '#111', fontSize: 14, marginBottom: 8, fontWeight: '600' },
+  label: { color: '#111', fontSize: 14, marginBottom: 8, fontFamily: 'BiennaleSemiBold' },
 
   inputRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   ccButton: {
@@ -421,7 +421,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     paddingHorizontal: 12,
   },
-  ccText: { fontSize: 14, color: '#111' },
+  ccText: { fontSize: 14, color: '#111', fontFamily: 'BiennaleRegular' },
 
   input: {
     flex: 1,
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  signInText: { color: '#fff', fontWeight: '600', fontSize: 16 },
+  signInText: { color: '#fff', fontFamily: 'BiennaleSemiBold', fontSize: 16 },
   signInArrow: {
     width: 30,
     height: 30,
@@ -457,7 +457,7 @@ const styles = StyleSheet.create({
   },
 
   divider: { height: 1, backgroundColor: '#EFEFEF', marginVertical: 16 },
-  or: { textAlign: 'center', color: '#666', marginBottom: 12 },
+  or: { textAlign: 'center', color: '#666', marginBottom: 12, fontFamily: 'BiennaleRegular' },
 
   socialRow: { flexDirection: 'row', justifyContent: 'center', gap: 14 },
   social: {
@@ -473,7 +473,7 @@ const styles = StyleSheet.create({
   },
 
   faceId: { alignItems: 'center', marginTop: 18 },
-  faceIdText: { marginTop: 8, color: '#111', fontWeight: '500' },
+  faceIdText: { marginTop: 8, color: '#111', fontFamily: 'BiennaleMedium' },
 
   modalBg: {
     flex: 1,
@@ -490,9 +490,9 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 16,
-    fontWeight: '600',
     marginBottom: 8,
     color: '#111',
+    fontFamily: 'BiennaleSemiBold',
   },
   faceIdButton: {
     marginTop: 18,

@@ -20,6 +20,7 @@ import {
   Platform,
   View,
   ActivityIndicator,
+  TextStyle,
 } from 'react-native';
 import {
   SafeAreaProvider,
@@ -59,6 +60,45 @@ function setDefaultFont(component: any, fontFamily: string) {
 setDefaultFont(Text as any, FONTS.regular!);
 setDefaultFont(TextInput as any, FONTS.regular!);
 // ---------------------------------------------------------------
+
+// Map fontWeight -> Biennale variants and strip weight from styles
+const originalTextRender = (Text as any).render;
+(Text as any).render = function render(...args: any[]) {
+  const origin = originalTextRender.apply(this, args);
+  const props = origin?.props || {};
+  const flattened: TextStyle = StyleSheet.flatten(props.style) || {};
+
+  // Normalize weight to a string number when possible
+  const weightRaw: any = flattened.fontWeight as any;
+  const weight =
+    typeof weightRaw === 'number'
+      ? String(weightRaw)
+      : typeof weightRaw === 'string'
+      ? weightRaw
+      : undefined;
+
+  let computedFamily = flattened.fontFamily as string | undefined;
+  if (!computedFamily) {
+    if (weight === '700' || weight === '800' || weight === '900' || weight === 'bold') {
+      computedFamily = FONTS.bold || 'BiennaleBold';
+    } else if (weight === '600') {
+      computedFamily = FONTS.semibold || 'BiennaleSemiBold';
+    } else if (weight === '500') {
+      computedFamily = FONTS.medium || 'BiennaleMedium';
+    } else {
+      computedFamily = FONTS.regular || 'BiennaleRegular';
+    }
+  }
+
+  // Remove fontWeight to avoid conflicts with custom family
+  const { fontWeight, ...rest } = flattened as any;
+  const nextStyle = [rest, { fontFamily: computedFamily }];
+
+  return React.cloneElement(origin, {
+    ...props,
+    style: nextStyle,
+  });
+};
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';

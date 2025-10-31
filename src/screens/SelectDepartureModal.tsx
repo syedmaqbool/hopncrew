@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  title: { fontWeight: '800', fontSize: 16, color: TEXT },
+  title: { fontSize: 16, color: TEXT, fontFamily: 'BiennaleBold' },
   closeBtn: {
     width: 28,
     height: 28,
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 6,
   },
-  dropdownText: { flex: 1, color: TEXT, fontWeight: '700' },
+  dropdownText: { flex: 1, color: TEXT, fontFamily: 'BiennaleBold' },
   truncate: { minWidth: 0 },
   resultsCard: {
     marginTop: 8,
@@ -396,8 +396,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   rowTextWrap: { flex: 1, minWidth: 0 },
-  rowTitle: { color: TEXT, fontWeight: '800' },
-  rowSub: { color: SUBTEXT, fontSize: 12, marginTop: 2 },
+  rowTitle: { color: TEXT, fontFamily: 'BiennaleBold' },
+  rowSub: { color: SUBTEXT, fontSize: 12, marginTop: 2, fontFamily: 'BiennaleRegular' },
   iconCircle: {
     width: 34,
     height: 34,
@@ -414,11 +414,12 @@ const styles = StyleSheet.create({
     gap: 8,
     paddingVertical: 12,
   },
-  loadingTxt: { color: SUBTEXT },
+  loadingTxt: { color: SUBTEXT, fontFamily: 'BiennaleRegular' },
   emptyTxt: {
     textAlign: 'center',
     color: SUBTEXT,
     paddingVertical: 10,
+    fontFamily: 'BiennaleRegular',
   },
   cta: {
     marginTop: 14,
@@ -429,7 +430,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 30,
     height: 30,

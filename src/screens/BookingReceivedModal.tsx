@@ -122,20 +122,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 2,
   },
-  logoTxt: { fontWeight: '800', color: '#111', fontSize: 16 },
+  logoTxt: { color: '#111', fontSize: 16, fontFamily: 'BiennaleBold' },
   logoTm: { color: '#111', fontSize: 10, marginTop: -6 },
-  h1: { marginTop: 14, fontSize: 20, fontWeight: '800', color: '#111' },
+  h1: { marginTop: 14, fontSize: 20, color: '#111', fontFamily: 'BiennaleBold' },
   body: {
     marginTop: 12,
     textAlign: 'center',
     color: '#3C3C43',
     lineHeight: 20,
+    fontFamily: 'BiennaleRegular',
   },
   link: {
     color: '#111',
     textDecorationLine: 'underline',
     textAlign: 'center',
-    fontWeight: '600',
+    fontFamily: 'BiennaleSemiBold',
   },
   cta: {
     marginTop: 16,
@@ -157,5 +158,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ctaTxt: { color: '#fff', fontWeight: '800' },
+  ctaTxt: { color: '#fff', fontFamily: 'BiennaleBold' },
 });

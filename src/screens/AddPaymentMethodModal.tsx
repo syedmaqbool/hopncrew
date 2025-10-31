@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  title: { fontSize: 16, fontWeight: '800', color: '#111' },
+  title: { fontSize: 16, color: '#111', fontFamily: 'BiennaleBold' },
   closeBtn: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: '#F3F3F4',
     alignItems: 'center', justifyContent: 'center',
@@ -109,5 +109,5 @@ const styles = StyleSheet.create({
     backgroundColor: MINT,
     alignItems: 'center', justifyContent: 'center',
   },
-  rowText: { flex: 1, color: '#fff', fontWeight: '700' },
+  rowText: { flex: 1, color: '#fff', fontFamily: 'BiennaleBold' },
 });

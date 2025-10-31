@@ -187,7 +187,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scanText: { color: '#111', fontWeight: '700' },
+  scanText: { color: '#111', fontFamily: 'BiennaleBold' },
 
   card: {
     flex: 1,
@@ -204,7 +204,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  cardTitle: { color: '#111', fontWeight: '400', maxWidth: 90 },
+  cardTitle: { color: '#111', maxWidth: 90, fontFamily: 'BiennaleRegular' },
 
   stepper: {
     flexDirection: 'row',
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stepBtnDark: { backgroundColor: '#111' },
-  stepVal: { width: 24, textAlign: 'center', color: '#111', fontWeight: '700' },
+  stepVal: { width: 24, textAlign: 'center', color: '#111', fontFamily: 'BiennaleBold' },
 
   cta: {
     marginTop: 6,
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 30,
     height: 30,

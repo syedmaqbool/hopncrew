@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 10,
   },
-  headerTxt: { color: '#9AA0A6', fontWeight: '700' },
+  headerTxt: { color: '#9AA0A6', fontFamily: 'BiennaleBold' },
   closeBtn: {
     width: 30,
     height: 30,
@@ -155,9 +155,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  h1: { color: '#111', fontWeight: '800', fontSize: 18 },
-  h2: { color: '#111', fontWeight: '800', marginTop: 6 },
-  body: { color: '#3C3C43', marginTop: 8, lineHeight: 20 },
+  h1: { color: '#111', fontSize: 18, fontFamily: 'BiennaleBold' },
+  h2: { color: '#111', marginTop: 6, fontFamily: 'BiennaleBold' },
+  body: { color: '#3C3C43', marginTop: 8, lineHeight: 20, fontFamily: 'BiennaleRegular' },
 
   importantBox: {
     marginTop: 14,
@@ -166,8 +166,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F1F2F4',
   },
   impHeader: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  impTitle: { color: '#111', fontWeight: '800' },
-  impBody: { color: '#111', marginTop: 6, lineHeight: 18 },
+  impTitle: { color: '#111', fontFamily: 'BiennaleBold' },
+  impBody: { color: '#111', marginTop: 6, lineHeight: 18, fontFamily: 'BiennaleRegular' },
 
   disclaimerCard: {
     marginTop: 14,
@@ -175,10 +175,10 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 12,
   },
-  disclaimerTitle: { color: '#0B3D3B', fontWeight: '800' },
+  disclaimerTitle: { color: '#0B3D3B', fontFamily: 'BiennaleBold' },
   liRow: { flexDirection: 'row', gap: 8 },
   bullet: { color: '#0B3D3B', fontSize: 18, lineHeight: 20 },
-  liText: { flex: 1, color: '#0B3D3B', lineHeight: 18 },
+  liText: { flex: 1, color: '#0B3D3B', lineHeight: 18, fontFamily: 'BiennaleRegular' },
 
   actions: {
     flexDirection: 'row',
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  okayTxt: { color: '#fff', fontWeight: '800' },
+  okayTxt: { color: '#fff', fontFamily: 'BiennaleBold' },
   cancelBtn: {
     flex: 1,
     height: 46,
@@ -206,5 +206,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  cancelTxt: { color: '#111', fontWeight: '800' },
+  cancelTxt: { color: '#111', fontFamily: 'BiennaleBold' },
 });

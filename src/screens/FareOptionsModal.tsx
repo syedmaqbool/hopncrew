@@ -164,8 +164,8 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
           style={StyleSheet.absoluteFill}
           provider={PROVIDER_GOOGLE}
           initialRegion={{
-            latitude: coords[0].latitude,
-            longitude: coords[0].longitude,
+            latitude: coords[0]?.latitude,
+            longitude: coords[0]?.longitude,
             latitudeDelta: 0.08,
             longitudeDelta: 0.08,
           }}
@@ -194,8 +194,8 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
           <Marker
             coordinate={
               {
-                latitude: (coords[0].latitude + coords[1].latitude) / 2,
-                longitude: (coords[0].longitude + coords[1].longitude) / 2,
+                latitude: (coords[0]?.latitude + coords[1]?.latitude) / 2,
+                longitude: (coords[0]?.longitude + coords[1]?.longitude) / 2,
               } as any
             }
             anchor={{ x: 0.5, y: 0.5 }}
@@ -281,7 +281,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             }
           >
             <Text style={styles.policyTxt}>
-              Late Arrival - Waiting Time - No Show
+              Late Arrival . Waiting Time . No Show
             </Text>
             <AntDesign
               name="arrowright"
@@ -503,8 +503,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
   },
-  etaNum: { color: '#fff', fontWeight: '800' },
-  etaTxt: { color: '#fff' },
+  etaNum: { color: '#fff', fontFamily: 'BiennaleRegular' },
+  etaTxt: { color: '#fff', fontFamily: 'BiennaleRegular' },
 
   /* sheet */
   sheet: {
@@ -519,11 +519,11 @@ const styles = StyleSheet.create({
   blurb: {
     color: TEXT,
     fontSize: 12,
-    fontWeight: '400',
     backgroundColor: '#F6F7F8',
     borderRadius: 12,
     padding: 8,
     lineHeight: 18,
+    fontFamily: 'BiennaleRegular',
   },
 
   /* fare rows */
@@ -559,7 +559,12 @@ const styles = StyleSheet.create({
   },
   leftSlabActive: { backgroundColor: '#111' },
 
-  priceBig: { color: '#fff', fontSize: 34, fontWeight: '800', lineHeight: 40 },
+  priceBig: {
+    color: '#fff',
+    fontSize: 34,
+    lineHeight: 40,
+    fontFamily: 'BiennaleBold',
+  },
   priceStrike: {
     color: '#D7D7D7',
     textDecorationLine: 'line-through',
@@ -592,11 +597,11 @@ const styles = StyleSheet.create({
   },
   tierTitle: {
     color: TEXT,
-    fontWeight: '800',
     textAlign: 'right',
     fontSize: 20,
+    fontFamily: 'BiennaleBold',
   },
-  tierSub: { color: '#6C7075', fontWeight: '500' },
+  tierSub: { color: '#6C7075', fontFamily: 'BiennaleMedium' },
 
   /* policy pill */
   policyRow: {
@@ -611,7 +616,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 8,
   },
-  policyTxt: { color: TEXT, fontWeight: '700' },
+  policyTxt: { color: TEXT, fontFamily: 'BiennaleBold' },
 
   /* rows */
   rowCard: {
@@ -629,7 +634,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  rowMain: { color: TEXT, fontWeight: '700', flex: 1 },
+  rowMain: { color: TEXT, flex: 1, fontFamily: 'BiennaleBold' },
 
   mintMini: {
     width: 30,
@@ -664,7 +669,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 32,
     height: 32,

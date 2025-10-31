@@ -198,14 +198,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     marginBottom: 10,
   },
-  pillTxt: { color: '#111', fontWeight: '800' },
+  pillTxt: { color: '#111', fontFamily: 'BiennaleBold' },
 
   h1: {
     color: '#111',
-    fontWeight: '800',
     fontSize: 26,
     lineHeight: 30,
     marginBottom: 6,
+    fontFamily: 'BiennaleBold',
   },
 
   row: { flexDirection: 'row', alignItems: 'center', gap: 10 },
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
   },
-  rowTitle: { color: '#111', fontWeight: '700', flex: 1, marginRight: 8 },
+  rowTitle: { color: '#111', flex: 1, marginRight: 8, fontFamily: 'BiennaleBold' },
 
   card: {
     marginTop: 14,
@@ -237,6 +237,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 12,
   },
-  cardTitle: { color: '#111', fontWeight: '800', marginBottom: 6 },
-  cardBody: { color: '#233', lineHeight: 18 },
+  cardTitle: { color: '#111', marginBottom: 6, fontFamily: 'BiennaleBold' },
+  cardBody: { color: '#233', lineHeight: 18, fontFamily: 'BiennaleRegular' },
 });

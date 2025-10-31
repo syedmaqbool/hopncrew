@@ -307,7 +307,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  h1: { flex: 1, color: '#111', fontWeight: '800', fontSize: 18 },
+  h1: { flex: 1, color: '#111', fontSize: 18, fontFamily: 'BiennaleBold' },
   close: {
     width: 30,
     height: 30,
@@ -321,6 +321,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
     marginBottom: 6,
     paddingHorizontal: 16,
+    fontFamily: 'BiennaleRegular',
   },
 
   radioRow: {
@@ -338,7 +339,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  radioLabel: { color: '#111', fontWeight: '700', flex: 1 },
+  radioLabel: { color: '#111', flex: 1, fontFamily: 'BiennaleBold' },
 
   sectionHead: {
     marginTop: 8,
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  sectionTitle: { flex: 1, color: '#111', fontWeight: '800' },
+  sectionTitle: { flex: 1, color: '#111', fontFamily: 'BiennaleBold' },
   iconBtn: {
     width: 34,
     height: 34,
@@ -369,8 +370,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: 8,
   },
-  cardTitle: { color: '#111', fontWeight: '700' },
-  cardSub: { color: '#9AA0A6', fontSize: 12, marginTop: 2 },
+  cardTitle: { color: '#111', fontFamily: 'BiennaleBold' },
+  cardSub: { color: '#9AA0A6', fontSize: 12, marginTop: 2, fontFamily: 'BiennaleRegular' },
 
   squarePill: {
     marginTop: 16,
@@ -390,7 +391,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  squareTxt: { color: '#111', fontWeight: '700' },
+  squareTxt: { color: '#111', fontFamily: 'BiennaleBold' },
 
   cta: {
     margin: 16,
@@ -402,7 +403,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '800' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 32,
     height: 32,

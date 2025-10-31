@@ -185,11 +185,11 @@ const styles = StyleSheet.create({
   },
   driverName: {
     color: '#111',
-    fontWeight: '800',
     fontSize: 18,
     textAlign: 'right',
+    fontFamily: 'BiennaleBold',
   },
-  subtitle: { color: '#6F6F6F', fontSize: 12 },
+  subtitle: { color: '#6F6F6F', fontSize: 12, fontFamily: 'BiennaleRegular' },
   avatar: { width: 46, height: 46, borderRadius: 18 },
 
   // chat
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
   },
   mine: { backgroundColor: '#DDF0FF', borderTopRightRadius: 4 },
   theirs: { backgroundColor: '#EFEFEF', borderTopLeftRadius: 4 },
-  time: { marginTop: 4, color: '#6F6F6F', fontSize: 10, textAlign: 'right' },
+  time: { marginTop: 4, color: '#6F6F6F', fontSize: 10, textAlign: 'right', fontFamily: 'BiennaleRegular' },
   msgAvatar: { width: 28, height: 28, borderRadius: 14, marginHorizontal: 8 },
 
   inputRow: {

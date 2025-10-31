@@ -430,9 +430,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     lineHeight: 14,
   },
-  labelLeftBot: { color: '#fff', opacity: 0.9, fontSize: 12, lineHeight: 14 },
-  labelTitle: { color: '#111', fontWeight: '800' },
-  dropTiny: { color: '#9AA0A6', fontSize: 12 },
+  labelLeftBot: { color: '#fff', opacity: 0.9, fontSize: 12, lineHeight: 14, fontFamily: 'BiennaleRegular' },
+  labelTitle: { color: '#111', fontFamily: 'BiennaleBold' },
+  dropTiny: { color: '#9AA0A6', fontSize: 12, fontFamily: 'BiennaleRegular' },
   stepCircle: {
     marginRight: 6,
     width: 20,
@@ -442,7 +442,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  stepTxt: { color: '#111', fontWeight: '800', fontSize: 12 },
+  stepTxt: { color: '#111', fontSize: 12, fontFamily: 'BiennaleBold' },
 
   // sheet
   sheetWrap: { flex: 0.45, backgroundColor: 'transparent' },
@@ -466,8 +466,8 @@ const styles = StyleSheet.create({
   },
 
   etaRow: { flexDirection: 'row', alignItems: 'center' },
-  hi: { color: '#111', fontWeight: '800', fontSize: 22 },
-  pick: { color: '#111', fontWeight: '800', marginTop: 2 },
+  hi: { color: '#111', fontSize: 22, fontFamily: 'BiennaleBold' },
+  pick: { color: '#111', marginTop: 2, fontFamily: 'BiennaleBold' },
   etaPill: {
     width: 96,
     height: 96,
@@ -476,8 +476,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  etaNum: { color: '#EFFF5A', fontSize: 36, fontWeight: '800', lineHeight: 40 },
-  etaUnit: { color: '#fff', marginTop: -6 },
+  etaNum: { color: '#EFFF5A', fontSize: 36, lineHeight: 40, fontFamily: 'BiennaleBold' },
+  etaUnit: { color: '#fff', marginTop: -6, fontFamily: 'BiennaleRegular' },
 
   policies: {
     marginTop: 14,
@@ -494,8 +494,8 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 16,
   },
-  policiesChipTxt: { color: '#fff', fontWeight: '800' },
-  policiesSub: { color: '#6F6F6F', flex: 1 },
+  policiesChipTxt: { color: '#fff', fontFamily: 'BiennaleBold' },
+  policiesSub: { color: '#6F6F6F', flex: 1, fontFamily: 'BiennaleRegular' },
 
   driverCard: {
     marginTop: 14,
@@ -509,9 +509,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 10,
   },
-  driverName: { color: '#111', fontWeight: '800' },
-  driverSub: { color: '#6F6F6F', marginTop: 2 },
-  verified: { color: '#111', fontWeight: '700' },
+  driverName: { color: '#111', fontFamily: 'BiennaleBold' },
+  driverSub: { color: '#6F6F6F', marginTop: 2, fontFamily: 'BiennaleRegular' },
+  verified: { color: '#111', fontFamily: 'BiennaleBold' },
   proBadge: {
     position: 'absolute',
     right: -2,
@@ -523,7 +523,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#111',
   },
-  proTxt: { color: '#111', fontWeight: '800', fontSize: 10 },
+  proTxt: { color: '#111', fontSize: 10, fontFamily: 'BiennaleBold' },
 
   plate: {
     marginTop: 6,
@@ -533,7 +533,7 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     alignItems: 'center',
   },
-  plateNum: { fontWeight: '800', color: '#111' },
+  plateNum: { color: '#111', fontFamily: 'BiennaleBold' },
   plateSub: { color: '#6F6F6F', fontSize: 12 },
 
   actionRow: {
@@ -554,5 +554,5 @@ const styles = StyleSheet.create({
     gap: 6,
     backgroundColor: '#fff',
   },
-  hollowTxt: { color: '#111', fontWeight: '800' },
+  hollowTxt: { color: '#111', fontFamily: 'BiennaleBold' },
 });

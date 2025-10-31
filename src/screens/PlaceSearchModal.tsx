@@ -303,7 +303,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { fontSize: 16, fontWeight: '700', color: '#111' },
+  title: { fontSize: 16, color: '#111', fontFamily: 'BiennaleBold' },
 
   /** Google input + list */
   gContainer: { flex: 1 },
@@ -344,8 +344,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  rowTitle: { color: '#111', fontSize: 14, fontWeight: '600' },
-  rowSub: { color: '#6B7280', fontSize: 12, marginTop: 2 },
+  rowTitle: { color: '#111', fontSize: 14, fontFamily: 'BiennaleSemiBold' },
+  rowSub: { color: '#6B7280', fontSize: 12, marginTop: 2, fontFamily: 'BiennaleRegular' },
 
   separator: {
     height: StyleSheet.hairlineWidth,
@@ -371,8 +371,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  sectionTitle: { fontSize: 13, fontWeight: '700', color: '#111' },
-  clearAll: { fontSize: 12, color: '#EF4444', fontWeight: '600' },
+  sectionTitle: { fontSize: 13, color: '#111', fontFamily: 'BiennaleBold' },
+  clearAll: { fontSize: 12, color: '#EF4444', fontFamily: 'BiennaleSemiBold' },
   recentRow: {
     paddingVertical: 10,
     paddingHorizontal: 8,
@@ -388,8 +388,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  recentTitle: { fontSize: 14, fontWeight: '600', color: '#111' },
-  recentSub: { fontSize: 11, color: '#9CA3AF', marginTop: 1 },
+  recentTitle: { fontSize: 14, color: '#111', fontFamily: 'BiennaleSemiBold' },
+  recentSub: { fontSize: 11, color: '#9CA3AF', marginTop: 1, fontFamily: 'BiennaleRegular' },
 
   /** Chips */
   chipsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
@@ -399,9 +399,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#F3F4F6',
     borderRadius: 999,
   },
-  chipText: { color: '#111', fontSize: 12, fontWeight: '600' },
+  chipText: { color: '#111', fontSize: 12, fontFamily: 'BiennaleSemiBold' },
   chipActive: { backgroundColor: '#111' },
   chipTextActive: { color: '#fff' },
 
-  emptyText: { color: '#6B7280', fontSize: 13 },
+  emptyText: { color: '#6B7280', fontSize: 13, fontFamily: 'BiennaleRegular' },
 });

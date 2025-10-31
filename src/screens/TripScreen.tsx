@@ -292,9 +292,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hTitle: { fontSize: 16, fontWeight: '700', color: TEXT },
+  hTitle: { fontSize: 16, color: TEXT, fontFamily: 'BiennaleBold' },
   doneBtn: { paddingHorizontal: 8, paddingVertical: 4 },
-  doneText: { color: TEXT, fontWeight: '700' },
+  doneText: { color: TEXT, fontFamily: 'BiennaleBold' },
 
   // non-scroll container
   content: {
@@ -336,8 +336,8 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   rowTextWrap: { flex: 1 },
-  rowLabel: { fontSize: 12, color: '#6F7378', fontWeight: '600' },
-  rowValue: { fontSize: 14.5, color: TEXT, fontWeight: '700', marginTop: 2 },
+  rowLabel: { fontSize: 12, color: '#6F7378', fontFamily: 'BiennaleSemiBold' },
+  rowValue: { fontSize: 14.5, color: TEXT, fontFamily: 'BiennaleBold', marginTop: 2 },
   plusBadge: {
     width: 28,
     height: 28,
@@ -356,7 +356,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     marginTop: 16,
   },
-  helperText: { color: TEXT, paddingVertical: 3, fontWeight: '500' },
+  helperText: { color: TEXT, paddingVertical: 3, fontFamily: 'BiennaleMedium' },
   helperPlus: {
     width: 28,
     height: 28,
@@ -373,7 +373,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     marginTop: 16,
   },
-  pinText: { color: TEXT, fontWeight: '700' },
+  pinText: { color: TEXT, fontFamily: 'BiennaleBold' },
 
   summaryChip: {
     alignSelf: 'flex-start',
@@ -388,14 +388,14 @@ const styles = StyleSheet.create({
     borderColor: BORDER,
     marginTop: 12,
   },
-  summaryText: { color: TEXT, fontWeight: '700', maxWidth: '70%' },
-  summaryEdit: { color: '#4F8EF7', fontWeight: '700', marginLeft: 6 },
+  summaryText: { color: TEXT, fontFamily: 'BiennaleBold', maxWidth: '70%' },
+  summaryEdit: { color: '#4F8EF7', fontFamily: 'BiennaleBold', marginLeft: 6 },
 
-  inlineMeta: { color: '#50545A', marginTop: 10 },
+  inlineMeta: { color: '#50545A', marginTop: 10, fontFamily: 'BiennaleRegular' },
 
   bullet: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
-  bTitle: { color: TEXT, fontWeight: '800' },
-  bBody: { color: '#666', marginTop: 2, lineHeight: 18 },
+  bTitle: { color: TEXT, fontFamily: 'BiennaleBold' },
+  bBody: { color: '#666', marginTop: 2, lineHeight: 18, fontFamily: 'BiennaleRegular' },
 
   bottom: {
     position: 'absolute',
@@ -413,7 +413,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '800' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaArrow: {
     width: 32,
     height: 32,

@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  h1: { color: '#111', fontWeight: '800', fontSize: 18 },
+  h1: { color: '#111', fontSize: 18, fontFamily: 'BiennaleBold' },
 
   table: {
     borderRadius: 12,
@@ -99,12 +99,12 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEE',
   },
-  label: { color: '#111' },
-  val: { color: '#111', fontWeight: '700' },
-  valBold: { fontWeight: '800' },
+  label: { color: '#111', fontFamily: 'BiennaleRegular' },
+  val: { color: '#111', fontFamily: 'BiennaleBold' },
+  valBold: { fontFamily: 'BiennaleBold' },
 
   noteRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12 },
-  noteTxt: { color: '#9AA0A6' },
+  noteTxt: { color: '#9AA0A6', fontFamily: 'BiennaleRegular' },
 
   chip: {
     alignSelf: 'flex-start',

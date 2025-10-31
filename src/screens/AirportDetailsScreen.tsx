@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hTitle: { fontSize: 16, fontWeight: '700', color: '#111' },
+  hTitle: { fontSize: 16, color: '#111', fontFamily: 'BiennaleBold' },
 
   card: {
     flex: 1,
@@ -180,8 +180,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { color: '#111', fontWeight: '700' },
-  subtitle: { color: '#8A8A8A', marginTop: 2, fontSize: 12 },
+  title: { color: '#111', fontFamily: 'BiennaleBold' },
+  subtitle: { color: '#8A8A8A', marginTop: 2, fontSize: 12, fontFamily: 'BiennaleRegular' },
   sep: { height: 1, backgroundColor: '#F0F0F0' },
 
   // custom scrollbar

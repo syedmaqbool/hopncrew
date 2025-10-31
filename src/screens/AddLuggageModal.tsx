@@ -475,7 +475,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
   },
-  title: { color: '#111', fontWeight: '700', fontSize: 16 },
+  title: { color: '#111', fontSize: 16, fontFamily: 'BiennaleBold' },
   close: {
     width: 32,
     height: 32,
@@ -537,6 +537,7 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -8 }],
     color: '#111',
     fontSize: 12,
+    fontFamily: 'BiennaleRegular',
   },
   weightBubble: {
     position: 'absolute',
@@ -552,8 +553,9 @@ const styles = StyleSheet.create({
     fontSize: 12,
     minWidth: 48,
     textAlign: 'center',
+    fontFamily: 'BiennaleRegular',
   },
-  dimBottom: { marginBottom: 6, color: '#777', fontSize: 12 },
+  dimBottom: { marginBottom: 6, color: '#777', fontSize: 12, fontFamily: 'BiennaleRegular' },
 
   stepperPill: {
     alignSelf: 'center',
@@ -584,7 +586,7 @@ const styles = StyleSheet.create({
     width: 30,
     textAlign: 'center',
     color: '#111',
-    fontWeight: '700',
+    fontFamily: 'BiennaleBold',
     fontSize: 18,
   },
   scanSection: {
@@ -606,7 +608,7 @@ const styles = StyleSheet.create({
     gap: 6,
     marginBottom: 8,
   },
-  scanText: { color: '#111', fontWeight: '700' },
+  scanText: { color: '#111', fontFamily: 'BiennaleBold' },
 
   sizePress: {
     alignItems: 'center',
@@ -621,7 +623,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   sizeBoxSelected: { backgroundColor: '#EFEFEF', borderColor: '#EFEFEF' },
-  sizeLabel: { marginTop: 6, color: '#111', fontWeight: '700' },
+  sizeLabel: { marginTop: 6, color: '#111', fontFamily: 'BiennaleBold' },
 
   oversized: {
     flexDirection: 'row',
@@ -631,7 +633,7 @@ const styles = StyleSheet.create({
     marginTop: 22,
     alignSelf: 'center',
   },
-  overText: { color: '#111', fontWeight: '700' },
+  overText: { color: '#111', fontFamily: 'BiennaleBold' },
 
   cta: {
     marginTop: 14,
@@ -643,7 +645,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontWeight: '700' },
+  ctaText: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
     width: 30,
     height: 30,
