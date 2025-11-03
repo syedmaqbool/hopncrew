@@ -21,6 +21,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import assets from '../../assets';
 import type { AppDrawerParamList } from '../navigation/AppDrawer';
 import { useAuth } from '../context/AuthContext';
+import { FONTS } from '../../src/theme/fonts';
 
 //
 // const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -334,6 +335,8 @@ export default function HomeScreen({ navigation, route }: Props) {
   );
 }
 
+// console.log('FONTS', FONTS);
+
 const MINT = '#B9FBE7';
 
 const styles = StyleSheet.create({
@@ -341,7 +344,7 @@ const styles = StyleSheet.create({
 
   // Map occupies the top ~40–45% with rounded bottom corners
   mapWrap: {
-    height: 600,
+    height: 400,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
     overflow: 'hidden',
@@ -388,7 +391,8 @@ const styles = StyleSheet.create({
     color: '#111',
     marginTop: 12,
     marginBottom: 20,
-    fontFamily: 'BiennaleSemiBold',
+    // fontFamily: FONTS.semibold,
+    fontFamily: FONTS.semibold,
   },
   googleText: {
     color: '#1976D2',

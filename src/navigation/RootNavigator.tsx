@@ -42,9 +42,9 @@ import NoRideAvaiable from '../screens/NoRideAvaiable';
 import RideConfirmed from '../screens/RideConfirmed';
 import AssignedVehicle from '../screens/AssignedVehicle';
 import ContactSupport from '../screens/ContactSupport';
-import EnRoutePickupModal from '../screens/EnRoutePickupModal'
-import EditProfileModal from '../screens/EditProfileModal'
-import MyRidesModal from '../screens/MyRidesModal'
+import EnRoutePickupModal from '../screens/EnRoutePickupModal';
+import EditProfileModal from '../screens/EditProfileModal';
+import MyRidesModal from '../screens/MyRidesModal';
 import RideDetailsModal from '../screens/RideDetailsModal';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import WalletScreen from '../screens/WalletScreen';
@@ -68,12 +68,16 @@ import FlightManualModal from '../screens/FlightManualModal';
 import ScanBagSizeScreen from '../screens/ScanBagSizeScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-export default function RootNavigator({ initialRoute = 'RideSelection' as keyof RootStackParamList }) {
+export default function RootNavigator({
+  initialRoute = 'Home' as keyof RootStackParamList,
+}) {
   return (
+    //     </Stack.Navigator>
 
-//     </Stack.Navigator>
-
-<Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      initialRouteName={initialRoute}
+      screenOptions={{ headerShown: false }}
+    >
       {/* Entry */}
       <Stack.Screen name="RideSelection" component={RideSelectionScreen} />
       {/* Auth */}
@@ -88,41 +92,106 @@ export default function RootNavigator({ initialRoute = 'RideSelection' as keyof 
       {/* <Stack.Screen name="Home" component={HomeScreen} />  ← delete */}
 
       {/* Regular stack screens (if not in drawer) */}
-      <Stack.Screen name="Details" component={DetailsScreen} options={{ headerShown: true, title: 'Details' }}/>
+      <Stack.Screen
+        name="Details"
+        component={DetailsScreen}
+        options={{ headerShown: true, title: 'Details' }}
+      />
       <Stack.Screen name="Location" component={LocationScreen} />
-      <Stack.Screen name="FlightDetails" component={FlightDetails} options={{ headerShown: false }} />
-      <Stack.Screen name="FlightDeparture" component={FlightDepartureScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="FlightDetails"
+        component={FlightDetails}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="FlightDeparture"
+        component={FlightDepartureScreen}
+        options={{ headerShown: false }}
+      />
       <Stack.Screen name="MapTracking" component={MapTrackingScreen} />
-      <Stack.Screen name="Trip" component={TripScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="ScanBagSize" component={ScanBagSizeScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="SelectedAirport" component={SelectedAirportScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="ScheduleFlight" component={ScheduleFlightScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="ConfirmRequest" component={ConfirmRequestScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name="Trip"
+        component={TripScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ScanBagSize"
+        component={ScanBagSizeScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="SelectedAirport"
+        component={SelectedAirportScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ScheduleFlight"
+        component={ScheduleFlightScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ConfirmRequest"
+        component={ConfirmRequestScreen}
+        options={{ headerShown: false }}
+      />
       {/* Processing is a regular full screen (not transparent) */}
       <Stack.Screen
         name="Processing"
         component={ProcessingBookingModal}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="AssignedVehicle" component={AssignedVehicle} options={{ headerShown: false }} />
-      <Stack.Screen name="ContactSupport" component={ContactSupport} options={{ headerShown: false }} />
-      <Stack.Screen name="AirportDetails" component={AirportDetailsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Wallet" component={WalletScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Payment" component={PaymentScreen} options={{ headerShown: false }} />
-
-
-
+      <Stack.Screen
+        name="AssignedVehicle"
+        component={AssignedVehicle}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ContactSupport"
+        component={ContactSupport}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AirportDetails"
+        component={AirportDetailsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Notifications"
+        component={NotificationsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Wallet"
+        component={WalletScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Payment"
+        component={PaymentScreen}
+        options={{ headerShown: false }}
+      />
 
       {/* Transparent/bottom-sheet modals */}
-      <Stack.Group screenOptions={{ presentation: 'transparentModal', headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
+      <Stack.Group
+        screenOptions={{
+          presentation: 'transparentModal',
+          headerShown: false,
+          contentStyle: { backgroundColor: 'transparent' },
+        }}
+      >
         <Stack.Screen name="SaveFavorite" component={SaveFavoriteModal} />
-        <Stack.Screen name="SaveFavoriteDetails" component={SaveFavoriteDetailsModal} />
+        <Stack.Screen
+          name="SaveFavoriteDetails"
+          component={SaveFavoriteDetailsModal}
+        />
         <Stack.Screen name="AddPassenger" component={AddPassengerModal} />
         <Stack.Screen name="AddLuggage" component={AddLuggageModal} />
         <Stack.Screen name="LuggageScanInfo" component={LuggageScanInfoModal} />
         <Stack.Screen name="ChildSeatInfo" component={ChildSeatInfoModal} />
-        <Stack.Screen name="OversizedLuggage" component={OversizedLuggageModal} />
+        <Stack.Screen
+          name="OversizedLuggage"
+          component={OversizedLuggageModal}
+        />
         <Stack.Screen name="WhyChooseUs" component={WhyChooseUsModal} />
         <Stack.Screen name="FareOptions" component={FareOptionsModal} />
         <Stack.Screen name="SpecialRequest" component={SpecialRequestModal} />
@@ -131,11 +200,20 @@ export default function RootNavigator({ initialRoute = 'RideSelection' as keyof 
         <Stack.Screen name="DriverLate" component={DriverLateModal} />
         <Stack.Screen name="CancelChange" component={CancelChangeModel} />
         <Stack.Screen name="Refund" component={RefundModal} />
-        <Stack.Screen name="GuaranteedPickup" component={GuaranteedPickupModel} />
+        <Stack.Screen
+          name="GuaranteedPickup"
+          component={GuaranteedPickupModel}
+        />
         <Stack.Screen name="Tolls" component={TollsModel} />
         <Stack.Screen name="ScheduleRide" component={ScheduleRideScreen} />
-        <Stack.Screen name="PaymentBreakdown" component={PaymentBreakdownModal} />
-        <Stack.Screen name="AirportPickupPerks" component={AirportPickupPerksScreen} />
+        <Stack.Screen
+          name="PaymentBreakdown"
+          component={PaymentBreakdownModal}
+        />
+        <Stack.Screen
+          name="AirportPickupPerks"
+          component={AirportPickupPerksScreen}
+        />
         <Stack.Screen name="AirportGuide" component={AirportGuideModal} />
         <Stack.Screen name="SelectDeparture" component={SelectDepartureModal} />
         <Stack.Screen name="FlightManual" component={FlightManualModal} />
@@ -144,12 +222,18 @@ export default function RootNavigator({ initialRoute = 'RideSelection' as keyof 
         <Stack.Screen name="PaymentMethods" component={PaymentMethodsModal} />
         <Stack.Screen name="AddCard" component={AddCardModal} />
         <Stack.Screen name="BookingReceived" component={BookingReceivedModal} />
-        <Stack.Screen name="BookingReceivedTerms" component={BookingReceivedTerms} />
+        <Stack.Screen
+          name="BookingReceivedTerms"
+          component={BookingReceivedTerms}
+        />
         <Stack.Screen name="CancelRide" component={CancelRideModal} />
-        <Stack.Screen name="ConfirmCancelPopup" component={ConfirmCancelPopup} />
+        <Stack.Screen
+          name="ConfirmCancelPopup"
+          component={ConfirmCancelPopup}
+        />
         <Stack.Screen name="NoRideAvaiable" component={NoRideAvaiable} />
         <Stack.Screen name="RideConfirmed" component={RideConfirmed} />
-          <Stack.Screen
+        <Stack.Screen
           name="EnRoute"
           component={EnRoutePickupModal}
           options={{
@@ -186,15 +270,15 @@ export default function RootNavigator({ initialRoute = 'RideSelection' as keyof 
           }}
         />
         <Stack.Screen
-        name="CreditCards"
-        component={CreditCardsModal}
-        options={{
-          presentation: 'transparentModal',
-          headerShown: false,
-          contentStyle: { backgroundColor: 'transparent' },
-        }}
-      />
-      <Stack.Screen
+          name="CreditCards"
+          component={CreditCardsModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
+        <Stack.Screen
           name="GooglePay"
           component={GooglePayModal}
           options={{
@@ -204,24 +288,24 @@ export default function RootNavigator({ initialRoute = 'RideSelection' as keyof 
           }}
         />
         <Stack.Screen
-        name="AddPaymentMethod"
-        component={AddPaymentMethodModal}
-        options={{
-          presentation: 'transparentModal',
-          headerShown: false,
-          contentStyle: { backgroundColor: 'transparent' },
-        }}
-      />
-      <Stack.Screen
-        name="Settings"
-        component={SettingsModal}
-        options={{
-          presentation: 'transparentModal',
-          headerShown: false,
-          contentStyle: { backgroundColor: 'transparent' },
-        }}
-      />
-      <Stack.Screen
+          name="AddPaymentMethod"
+          component={AddPaymentMethodModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
+        <Stack.Screen
+          name="Settings"
+          component={SettingsModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
+        <Stack.Screen
           name="AccountSettings"
           component={AccountSettingsModal}
           options={{
@@ -232,15 +316,14 @@ export default function RootNavigator({ initialRoute = 'RideSelection' as keyof 
         />
 
         <Stack.Screen
-        name="FavouriteAddresses"
-        component={FavouriteAddressesModal}
-        options={{
-          presentation: 'transparentModal',
-          headerShown: false,
-          contentStyle: { backgroundColor: 'transparent' },
-        }}
-      />
-
+          name="FavouriteAddresses"
+          component={FavouriteAddressesModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
       </Stack.Group>
     </Stack.Navigator>
   );
