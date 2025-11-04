@@ -69,7 +69,7 @@ import ScanBagSizeScreen from '../screens/ScanBagSizeScreen';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator({
-  initialRoute = 'Home' as keyof RootStackParamList,
+  initialRoute = 'Login' as keyof RootStackParamList,
 }) {
   return (
     //     </Stack.Navigator>

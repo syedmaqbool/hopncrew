@@ -1,5 +1,11 @@
 import { DrawerActions, useNavigation } from '@react-navigation/native';
-import React, { useMemo, useRef, useEffect, useCallback } from 'react';
+import React, {
+  useMemo,
+  useRef,
+  useEffect,
+  useCallback,
+  useState,
+} from 'react';
 import {
   ActivityIndicator,
   Image,
@@ -55,6 +61,8 @@ export default function HomeScreen({ navigation, route }: Props) {
 
   // Camera ref for controlling the map
   const cameraRef = useRef<MapboxGL.Camera>(null);
+  const [userCoord, setUserCoord] = useState<[number, number] | null>(null);
+  const [hasCentered, setHasCentered] = useState(false);
 
   const insets = useSafeAreaInsets();
   const TOP_PAD = insets.top + 72;
@@ -65,6 +73,18 @@ export default function HomeScreen({ navigation, route }: Props) {
       MapboxGL.requestAndroidLocationPermissions?.();
     }
   }, []);
+
+  // Center camera once when we get a user location fix
+  useEffect(() => {
+    if (userCoord && cameraRef.current && !hasCentered) {
+      cameraRef.current.setCamera({
+        centerCoordinate: userCoord,
+        zoomLevel: 16,
+        animationDuration: 600,
+      });
+      setHasCentered(true);
+    }
+  }, [userCoord, hasCentered]);
 
   const openMenu = () => navigation.dispatch(DrawerActions.openDrawer());
 
@@ -196,17 +216,31 @@ export default function HomeScreen({ navigation, route }: Props) {
             }}
           />
 
-          {/* User blue dot */}
-          {location && (
-            <MapboxGL.UserLocation visible={true} showsUserHeadingIndicator />
-          )}
+          {/* User blue dot and capture updates for custom pin */}
+          <MapboxGL.UserLocation
+            visible={true}
+            showsUserHeadingIndicator
+            onUpdate={(loc: any) => {
+              const lon = loc?.coords?.longitude;
+              const lat = loc?.coords?.latitude;
+              if (typeof lon === 'number' && typeof lat === 'number') {
+                setUserCoord([lon, lat]);
+              }
+            }}
+          />
 
-          {/* Your current marker (if you want a pin in addition to blue dot) */}
-          {location && (
-            <MapboxGL.PointAnnotation
-              id="you"
-              coordinate={[location.lon, location.lat]}
-            />
+          {/* User pointer icon (custom pin) */}
+          {(userCoord || location) && (
+            <MapboxGL.MarkerView
+              coordinate={userCoord ?? [location!.lon, location!.lat]}
+              anchor={{ x: 0.5, y: 1 }}
+              allowOverlap
+            >
+              <Image
+                source={require('../../assets/icons/user-pin.png')}
+                style={{ width: 68, height: 68, resizeMode: 'contain' }}
+              />
+            </MapboxGL.MarkerView>
           )}
 
           {/* Optional destination marker if provided via route */}

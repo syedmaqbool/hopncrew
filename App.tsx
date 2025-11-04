@@ -58,12 +58,13 @@ function App() {
     // <NavigationContainer>
     //   <RootNavigator />
     // </NavigationContainer>
-
-    <AuthProvider>
-      <NavigationContainer>
-        <AppGate />
-      </NavigationContainer>
-    </AuthProvider>
+    <SafeAreaProvider>
+      <AuthProvider>
+        <NavigationContainer>
+          <AppGate />
+        </NavigationContainer>
+      </AuthProvider>
+    </SafeAreaProvider>
   );
 }
 export default App;
