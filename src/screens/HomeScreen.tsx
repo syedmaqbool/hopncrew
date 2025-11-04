@@ -1,21 +1,23 @@
 import { DrawerActions, useNavigation } from '@react-navigation/native';
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useEffect, useCallback } from 'react';
 import {
   ActivityIndicator,
   Image,
   Pressable,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
+  Platform,
 } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { useLocation } from '../hooks/useLocation'; // your hook
+import { useLocation } from '../hooks/useLocation';
 import type { RootStackParamList } from '../navigation/types';
-// import type { RouteProp } from '@react-navigation/native';
 import type { DrawerNavigationProp } from '@react-navigation/drawer';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import assets from '../../assets';
@@ -23,47 +25,50 @@ import type { AppDrawerParamList } from '../navigation/AppDrawer';
 import { useAuth } from '../context/AuthContext';
 import { FONTS } from '../../src/theme/fonts';
 
-//
-// const navigation = useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-// const route = useRoute<RouteProp<RootStackParamList, 'Home'>>();
+import MapboxGL from '@rnmapbox/maps';
+
+// If you haven't set this globally, you can set it here (pk_ is fine for map rendering):
+MapboxGL.setAccessToken(
+  'pk.eyJ1IjoicmFmYXlhc2FkMDEiLCJhIjoiY21oazdxanQwMDR5cTJrc2NiZGZiZ3phMyJ9.beHDnNh5y6l-9ThZ1TR64A',
+);
+
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
 
+type InitialRegion = {
+  latitude: number;
+  longitude: number;
+  latitudeDelta: number;
+  longitudeDelta: number;
+};
+
+// Optional: if your route provides a dest
+type DestParam = { lat: number; lon: number; title?: string } | undefined;
+
 export default function HomeScreen({ navigation, route }: Props) {
+  // 👉 Light theme map
+  const MAP_STYLE = MapboxGL.StyleURL.Outdoors;
+
   const { bootstrapped, auth } = useAuth();
-  const dest = route.params?.dest;
-  const { location, getCurrent, startWatching, stopWatching, watching } =
-    useLocation();
-  const mapRef = useRef<MapView>(null);
+  const dest: DestParam = route.params?.dest as any;
+  const { location, getCurrent } = useLocation();
   const drawer = useNavigation<DrawerNavigationProp<AppDrawerParamList>>();
 
-  const openMenu = () => {
-    // Works from nested screens too
-    navigation.dispatch(DrawerActions.openDrawer());
-  };
-  // Kick off a one-shot location + begin/stop watching while mounted
-  // useEffect(() => {
-  //   void getCurrent();
-  //   startWatching();
-  //   return () => stopWatching();
-  // }, [getCurrent, startWatching, stopWatching]);
+  // Camera ref for controlling the map
+  const cameraRef = useRef<MapboxGL.Camera>(null);
 
-  // // Smoothly move camera whenever we get a fresh fix
-  // useEffect(() => {
-  //   if (location && mapRef.current) {
+  const insets = useSafeAreaInsets();
+  const TOP_PAD = insets.top + 72;
 
-  //     mapRef.current?.setCamera({
-  //       center: {
-  //         latitude: location.lat,
-  //         longitude: location.lon,
-  //       },
-  //       zoom: 15,
-  //       heading: 0,
-  //       pitch: 0,
-  //     });
-  //   }
-  // }, [location]);
+  // Ask for Android location permission (v11 helper). iOS handled by plist.
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      MapboxGL.requestAndroidLocationPermissions?.();
+    }
+  }, []);
 
-  const initialRegion: Region = useMemo(
+  const openMenu = () => navigation.dispatch(DrawerActions.openDrawer());
+
+  const initialRegion: InitialRegion = useMemo(
     () =>
       location
         ? {
@@ -73,7 +78,7 @@ export default function HomeScreen({ navigation, route }: Props) {
             longitudeDelta: 0.01,
           }
         : {
-            // fallback (adjust to your city)
+            // Karachi fallback
             latitude: 24.8607,
             longitude: 67.0011,
             latitudeDelta: 0.15,
@@ -82,32 +87,25 @@ export default function HomeScreen({ navigation, route }: Props) {
     [location],
   );
 
-  const recenter = () => {
-    if (location && mapRef.current) {
-      mapRef.current.animateCamera(
-        {
-          center: { latitude: location.lat, longitude: location.lon },
-          zoom: 16,
-        },
-        { duration: 500 },
-      );
+  const regionToZoom = (latDelta: number) => {
+    const z = Math.max(2, Math.min(20, Math.log2(360 / latDelta)));
+    return z;
+  };
+
+  const recenter = useCallback(() => {
+    if (location && cameraRef.current) {
+      cameraRef.current.flyTo([location.lon, location.lat], 600);
+      cameraRef.current.setCamera({
+        centerCoordinate: [location.lon, location.lat],
+        zoomLevel: 16,
+        animationDuration: 600,
+      });
     } else {
       void getCurrent();
     }
-  };
+  }, [location, getCurrent]);
 
   const openPlaces = () => {
-    //   console.log('openPlaces');
-    // navigation.navigate('PlaceSearch', {
-
-    //     onPick: (d: Destination) => {
-    //       console.log('Picked', d);
-    //       mapRef.current?.animateCamera(
-    //         { center: { latitude: d.latitude, longitude: d.longitude }, zoom: 16 },
-    //         { duration: 600 }
-    //       );
-    //     },
-    //   });
     navigation.navigate('AirportDetails', {
       title: 'Services near Gate B12',
       items: [
@@ -150,10 +148,8 @@ export default function HomeScreen({ navigation, route }: Props) {
           title: 'ATM – Bank Privat 14',
           subtitle: 'Near Security N',
         },
-        // ...
       ],
-      onPick: poi => {
-        // e.g., move map camera, fill destination field, etc.
+      onPick: (poi: any) => {
         console.log('Selected POI:', poi);
       },
     });
@@ -173,48 +169,72 @@ export default function HomeScreen({ navigation, route }: Props) {
   }
 
   return (
-    <SafeAreaView style={styles.safe}>
-      {/* Map header block */}
+    <SafeAreaView style={styles.safe} edges={['left', 'right', 'bottom']}>
+      {/* MAP */}
       <View style={styles.mapWrap}>
-        <MapView
-          ref={mapRef}
+        <MapboxGL.MapView
           style={StyleSheet.absoluteFill}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={initialRegion}
-          showsUserLocation={!!location} // only after permission/getCurrent succeeds
-          showsMyLocationButton={false}
-          toolbarEnabled={false}
+          styleURL={MAP_STYLE}
+          // compassEnabled
+          rotateEnabled
+          scrollEnabled
+          zoomEnabled
+          scaleBarEnabled={false}
+          logoEnabled={false}
         >
+          <MapboxGL.Camera
+            ref={cameraRef}
+            centerCoordinate={[initialRegion.longitude, initialRegion.latitude]}
+            zoomLevel={regionToZoom(initialRegion.latitudeDelta)}
+            animationMode="flyTo"
+            animationDuration={0}
+            padding={{
+              paddingTop: TOP_PAD,
+              paddingBottom: 24,
+              paddingLeft: 16,
+              paddingRight: 16,
+            }}
+          />
+
+          {/* User blue dot */}
           {location && (
-            <Marker
-              coordinate={{ latitude: location.lat, longitude: location.lon }}
-              title="You"
-              description="Current location"
+            <MapboxGL.UserLocation visible={true} showsUserHeadingIndicator />
+          )}
+
+          {/* Your current marker (if you want a pin in addition to blue dot) */}
+          {location && (
+            <MapboxGL.PointAnnotation
+              id="you"
+              coordinate={[location.lon, location.lat]}
             />
           )}
-        </MapView>
 
-        {/* top-left menu button */}
-        <Pressable
-          style={styles.iconBtnTL}
-          onPress={() => {
-            openMenu();
-          }}
-        >
-          {/* <Ionicons name="menu" size={18} color="#111" /> */}
+          {/* Optional destination marker if provided via route */}
+          {dest && (
+            <MapboxGL.PointAnnotation
+              id="dest"
+              coordinate={[dest.lon, dest.lat]}
+            >
+              <View style={styles.destDot} />
+            </MapboxGL.PointAnnotation>
+          )}
+        </MapboxGL.MapView>
+
+        {/* Top-left menu button */}
+        <Pressable style={styles.iconBtnTL} onPress={openMenu}>
           <Image
-            source={assets.images.hamIcon} // <-- **Direct require with correct path**
+            source={assets.images.hamIcon}
             style={{ width: 40, height: 40, borderRadius: 20 }}
           />
         </Pressable>
 
-        {/* top-right recenter button */}
-        <Pressable style={styles.iconBtnTR} onPress={recenter}>
+        {/* Top-right recenter button */}
+        {/* <Pressable style={styles.iconBtnTR} onPress={recenter}>
           <MaterialIcons name="my-location" size={18} color="#111" />
-        </Pressable>
+        </Pressable> */}
       </View>
 
-      {/* Content */}
+      {/* CONTENT */}
       <ScrollView
         style={styles.content}
         contentContainerStyle={{ paddingBottom: 32 }}
@@ -225,7 +245,7 @@ export default function HomeScreen({ navigation, route }: Props) {
         {/* Search pill */}
         <View style={styles.searchRow}>
           <Ionicons name="search" size={18} color="#9AA0A6" />
-          <Pressable style={{ flex: 1 }} onPress={() => openPlaces()}>
+          <Pressable style={{ flex: 1 }} onPress={openPlaces}>
             <Text style={{ color: '#000000', fontFamily: 'BiennaleMedium' }}>
               Where are you going?
             </Text>
@@ -233,11 +253,9 @@ export default function HomeScreen({ navigation, route }: Props) {
           <Pressable
             onPress={() => {
               navigation.navigate('SaveFavorite', {
-                address: '', // or prefill with speech-to-text result
-                onSave: fav => {
+                address: '',
+                onSave: (fav: any) => {
                   console.log('Saved favourite:', fav);
-                  // TODO: persist with AsyncStorage or your backend
-                  // AsyncStorage.setItem(`fav:${fav.id}`, JSON.stringify(fav))
                 },
               });
             }}
@@ -264,7 +282,7 @@ export default function HomeScreen({ navigation, route }: Props) {
               >
                 <View>
                   <Image
-                    source={assets.images.avatarMan} // <-- **Direct require with correct path**
+                    source={assets.images.avatarMan}
                     style={{ width: 40, height: 40, borderRadius: 20 }}
                   />
                 </View>
@@ -276,7 +294,7 @@ export default function HomeScreen({ navigation, route }: Props) {
                 </View>
                 <View>
                   <Image
-                    source={assets.images.googleIcon} // <-- **Direct require with correct path**
+                    source={assets.images.googleIcon}
                     style={{ width: 40, height: 40, borderRadius: 20 }}
                   />
                 </View>
@@ -335,20 +353,16 @@ export default function HomeScreen({ navigation, route }: Props) {
   );
 }
 
-// console.log('FONTS', FONTS);
-
-const MINT = '#B9FBE7';
-
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#000' },
+  safe: { flex: 1, backgroundColor: '#fff' },
 
-  // Map occupies the top ~40–45% with rounded bottom corners
   mapWrap: {
-    height: 400,
+    // height: 400,
+    flex: 0.5,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    overflow: 'hidden',
-    backgroundColor: MINT,
+    // overflow: 'hidden',
+    // backgroundColor: '#070202ff',
   },
 
   iconBtnTL: {
@@ -380,6 +394,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     paddingHorizontal: 16,
+    marginTop: -26,
     paddingTop: 14,
     borderTopLeftRadius: 35,
     borderTopRightRadius: 35,
@@ -387,11 +402,9 @@ const styles = StyleSheet.create({
 
   greeting: {
     fontSize: 18,
-    // fontWeight: '500',
     color: '#111',
     marginTop: 12,
     marginBottom: 20,
-    // fontFamily: FONTS.semibold,
     fontFamily: FONTS.semibold,
   },
   googleText: {
@@ -410,9 +423,8 @@ const styles = StyleSheet.create({
     borderColor: '#EEE',
     elevation: 2,
     width: '94%',
-    margin: 'auto',
+    alignSelf: 'center',
   },
-  searchInput: { flex: 1, color: '#111', paddingVertical: 0 },
 
   card: {
     marginTop: 20,
@@ -425,18 +437,6 @@ const styles = StyleSheet.create({
     borderColor: '#EFEFEF',
     elevation: 1,
     marginBottom: 16,
-  },
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#EAEAEA',
-  },
-  googleIc: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#EAEAEA',
   },
   cardTitle: { color: '#111', fontFamily: 'BiennaleMedium' },
   cardSub: { color: '#888', fontSize: 12, fontFamily: 'BiennaleRegular' },
@@ -456,7 +456,18 @@ const styles = StyleSheet.create({
     borderColor: '#EFEFEF',
   },
   quickText: { color: '#111', fontFamily: 'BiennaleMedium' },
+
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+
+  // Simple dot for destination
+  destDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#FF3B30',
+    borderWidth: 2,
+    borderColor: '#fff',
+  },
 });
 
 const MOCK_POSTS = [

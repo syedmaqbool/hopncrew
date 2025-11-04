@@ -10,8 +10,9 @@ import {
   Dimensions,
   FlatList,
   Alert,
+  StyleSheet as RNStyleSheet,
 } from 'react-native';
-import MapView, { Marker, Polyline, PROVIDER_GOOGLE } from 'react-native-maps';
+import MapboxGL from '@rnmapbox/maps';
 import {
   SafeAreaView,
   useSafeAreaInsets,
@@ -25,7 +26,6 @@ import type {
 } from '../navigation/types';
 import assets from '../../assets';
 
-// NEW: ride calculation service + mapper
 import {
   calculateRideCost,
   vehicleOptionsToQuotes,
@@ -37,16 +37,20 @@ type Props = NativeStackScreenProps<RootStackParamList, 'FareOptions'>;
 const MINT = '#B9FBE7';
 const TEXT = '#111';
 const BORDER = '#EFEFEF';
+const MAP_STYLE = 'mapbox://styles/mapbox/streets-v12';
+
+// 👇 Put your token here or import from env
+const MAPBOX_TOKEN =
+  'pk.eyJ1IjoicmFmYXlhc2FkMDEiLCJhIjoiY21oazdxanQwMDR5cTJrc2NiZGZiZ3phMyJ9.beHDnNh5y6l-9ThZ1TR64A';
 
 export default function FareOptionsScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
+  const cameraRef = useRef<MapboxGL.Camera>(null);
 
-  // ETA now comes from backend (duration_minutes)
   const [etaMinutes, setEtaMinutes] = useState<number>(
     route.params?.etaMinutes ?? 0,
   );
 
-  // Quotes built from vehicle_options
   const [quotes, setQuotes] = useState<
     Array<{
       id: string;
@@ -66,41 +70,127 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
-  // Map points from Trip start/destination (fallbacks if missing)
-  const start = route.params?.start;
-  const dest = route.params?.dest;
+  const start = route.params?.start; // { latitude, longitude }
+  const dest = route.params?.dest; // { latitude, longitude }
 
-  const mapRef = useRef<MapView | null>(null);
-  const coords = useMemo(() => [start, dest], [start, dest]);
+  // === Map helpers
+  const toLngLat = (p?: { latitude: number; longitude: number }) =>
+    p ? ([p.longitude, p.latitude] as [number, number]) : undefined;
 
-  useEffect(() => {
-    if (mapRef.current) {
-      mapRef.current.fitToCoordinates(coords as any, {
-        edgePadding: { top: 60, right: 60, bottom: 60, left: 60 },
-        animated: false,
-      });
+  const startLL = useMemo(() => toLngLat(start), [start]);
+  const endLL = useMemo(() => toLngLat(dest), [dest]);
+
+  // Route state from Mapbox Directions
+  const [routeShape, setRouteShape] = useState<any | null>(null); // GeoJSON FeatureCollection
+  const [routeCoords, setRouteCoords] = useState<[number, number][]>([]); // [lon,lat] list
+
+  // Car icon position (start of route)
+  const carCoord = useMemo<[number, number] | undefined>(
+    () => (routeCoords.length > 0 ? routeCoords[0] : startLL),
+    [routeCoords, startLL],
+  );
+
+  // Compute map bounds from the route (fallback to start/end)
+  const bounds = useMemo(() => {
+    const coords =
+      routeCoords.length > 1
+        ? routeCoords
+        : ([startLL, endLL].filter(Boolean) as [number, number][]);
+    if (!coords || coords.length < 1) return undefined;
+
+    let minLon = Infinity,
+      maxLon = -Infinity,
+      minLat = Infinity,
+      maxLat = -Infinity;
+    coords.forEach(([lon, lat]) => {
+      if (lon < minLon) minLon = lon;
+      if (lon > maxLon) maxLon = lon;
+      if (lat < minLat) minLat = lat;
+      if (lat > maxLat) maxLat = lat;
+    });
+
+    if (
+      !isFinite(minLon) ||
+      !isFinite(maxLon) ||
+      !isFinite(minLat) ||
+      !isFinite(maxLat)
+    ) {
+      return undefined;
     }
-  }, [coords]);
 
-  // Fetch ride calculation on mount (and when start/dest change)
+    return {
+      ne: [maxLon, maxLat] as [number, number],
+      sw: [minLon, minLat] as [number, number],
+      paddingTop: insets.top + 8 + 72,
+      paddingBottom: 32,
+      paddingLeft: 16,
+      paddingRight: 16,
+    };
+  }, [routeCoords, startLL, endLL, insets.top]);
+
+  // === Fetch Mapbox Directions route
   useEffect(() => {
+    const fetchRoute = async () => {
+      if (!startLL || !endLL || !MAPBOX_TOKEN) return;
+
+      try {
+        const url =
+          `https://api.mapbox.com/directions/v5/mapbox/driving/` +
+          `${startLL[0]},${startLL[1]};${endLL[0]},${endLL[1]}` +
+          `?geometries=geojson&overview=full&steps=false&access_token=${MAPBOX_TOKEN}`;
+
+        const res = await fetch(url);
+        const json = await res.json();
+
+        const route = json?.routes?.[0];
+        const coords: [number, number][] = route?.geometry?.coordinates ?? [];
+
+        if (coords.length > 0) {
+          const featureCollection = {
+            type: 'FeatureCollection' as const,
+            features: [
+              {
+                type: 'Feature' as const,
+                geometry: {
+                  type: 'LineString' as const,
+                  coordinates: coords,
+                },
+                properties: {},
+              },
+            ],
+          };
+          setRouteShape(featureCollection);
+          setRouteCoords(coords);
+        } else {
+          setRouteShape(null);
+          setRouteCoords([]);
+        }
+      } catch (err) {
+        console.warn('Directions fetch failed:', err);
+        setRouteShape(null);
+        setRouteCoords([]);
+      }
+    };
+
+    fetchRoute();
+  }, [startLL?.[0], startLL?.[1], endLL?.[0], endLL?.[1]]);
+
+  // === Fare calc (unchanged)
+  useEffect(() => {
+    if (!start || !dest) return;
     (async () => {
       setLoading(true);
       try {
         const result: RideCostResult = await calculateRideCost({
-          origin: { lat: start?.latitude, lng: start?.longitude },
-          destination: { lat: dest?.latitude, lng: dest?.longitude },
+          origin: { lat: start.latitude, lng: start.longitude },
+          destination: { lat: dest.latitude, lng: dest.longitude },
         });
 
-        // ETA from backend
         const minutes = Number(result?.route_info?.duration_minutes ?? 0);
         setEtaMinutes(minutes > 0 ? minutes : 0);
 
-        // Map vehicle options → FareQuote-like objects
         const mapped = vehicleOptionsToQuotes(result?.vehicle_options ?? []);
         setQuotes(mapped);
-
-        // Default selection
         if (mapped.length > 0) setSelectedId(mapped[0].id);
       } catch (e: any) {
         console.error('calculateRideCost failed:', e?.message || e);
@@ -143,8 +233,6 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
       route.params.onConfirm(selected, payload);
     }
 
-    console.log('selected', selected, quotes);
-
     navigation.navigate('ConfirmRequest', {
       quote: { ...selected, eta: etaMinutes },
       payMethod,
@@ -157,55 +245,90 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#F2F3F4' }}>
-      {/* ===== Top map / header (40% height) ===== */}
+      {/* ===== Top map / header (30% height) ===== */}
       <View style={[styles.mapWrap, { paddingTop: insets.top + 8 }]}>
-        <MapView
-          ref={ref => (mapRef.current = ref)}
-          style={StyleSheet.absoluteFill}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={{
-            latitude: coords[0]?.latitude,
-            longitude: coords[0]?.longitude,
-            latitudeDelta: 0.08,
-            longitudeDelta: 0.08,
-          }}
+        <MapboxGL.MapView
+          style={RNStyleSheet.absoluteFill}
+          styleURL={MAP_STYLE}
+          // compassEnabled
+          rotateEnabled
+          scrollEnabled
+          zoomEnabled
+          scaleBarEnabled={false}
+          logoEnabled={false}
         >
-          {/* (Optional) If you later want to draw the provided polyline, decode & render here */}
-          <Polyline
-            coordinates={coords as any}
-            strokeWidth={4}
-            strokeColor="#50E3C2"
-          />
+          {bounds ? (
+            <MapboxGL.Camera ref={cameraRef} bounds={bounds} />
+          ) : (
+            <MapboxGL.Camera
+              zoomLevel={12}
+              centerCoordinate={
+                startLL ??
+                endLL ?? [
+                  67.0011, // Karachi lon (fallback)
+                  24.8607, // Karachi lat (fallback)
+                ]
+              }
+            />
+          )}
+
+          {/* Real route from Directions */}
+          {routeShape && (
+            <MapboxGL.ShapeSource id="route" shape={routeShape}>
+              <MapboxGL.LineLayer
+                id="route-line"
+                style={{
+                  lineColor: '#ffbf00ff',
+                  lineWidth: 4,
+                  lineCap: 'round',
+                  lineJoin: 'round',
+                }}
+              />
+            </MapboxGL.ShapeSource>
+          )}
+
           {/* Start pin */}
-          <Marker coordinate={coords[0] as any} anchor={{ x: 0.5, y: 1 }}>
-            <Image
-              source={assets.images.locationPin}
-              style={{ width: 18, height: 18 }}
-            />
-          </Marker>
+          {startLL && (
+            <MapboxGL.MarkerView
+              coordinate={startLL}
+              anchor={{ x: 0.5, y: 1 }}
+              allowOverlap
+            >
+              <Image
+                source={assets.images.locationPin}
+                style={{ width: 18, height: 18, resizeMode: 'contain' }}
+              />
+            </MapboxGL.MarkerView>
+          )}
+
           {/* End pin */}
-          <Marker coordinate={coords[1] as any} anchor={{ x: 0.5, y: 1 }}>
-            <Image
-              source={assets.images.locationPin}
-              style={{ width: 18, height: 18 }}
-            />
-          </Marker>
-          {/* Car marker at midpoint */}
-          <Marker
-            coordinate={
-              {
-                latitude: (coords[0]?.latitude + coords[1]?.latitude) / 2,
-                longitude: (coords[0]?.longitude + coords[1]?.longitude) / 2,
-              } as any
-            }
-            anchor={{ x: 0.5, y: 0.5 }}
-          >
-            <Image
-              source={assets.images.escaladeIcon}
-              style={{ width: 28, height: 28 }}
-            />
-          </Marker>
-        </MapView>
+          {endLL && (
+            <MapboxGL.MarkerView
+              coordinate={endLL}
+              anchor={{ x: 0.5, y: 1 }}
+              allowOverlap
+            >
+              <Image
+                source={assets.images.locationPin}
+                style={{ width: 18, height: 18, resizeMode: 'contain' }}
+              />
+            </MapboxGL.MarkerView>
+          )}
+
+          {/* Car icon at the start of the route */}
+          {carCoord && (
+            <MapboxGL.MarkerView
+              coordinate={carCoord}
+              anchor={{ x: 0.5, y: 0.5 }}
+              allowOverlap
+            >
+              <Image
+                source={require('../../assets/icons/car-icon.png')}
+                style={{ width: 28, height: 28, resizeMode: 'contain' }}
+              />
+            </MapboxGL.MarkerView>
+          )}
+        </MapboxGL.MapView>
 
         {/* nav + ETA row overlay */}
         <View style={[styles.headerRow, { paddingHorizontal: 20 }]}>
@@ -221,7 +344,6 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             <Text style={styles.etaTxt}>Min</Text>
           </View>
 
-          {/* spacer */}
           <View style={{ width: 36, height: 36 }} />
         </View>
       </View>
@@ -237,7 +359,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             trained to limousine standards.”
           </Text>
 
-          {/* Fare cards (scrollable with limited height) */}
+          {/* Fare cards */}
           <View style={{ marginTop: 12 }}>
             {loading ? (
               <View style={{ alignItems: 'center', paddingVertical: 40 }}>
@@ -271,7 +393,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             )}
           </View>
 
-          {/* Policy row (slim pill) */}
+          {/* Policy row */}
           <Pressable
             style={styles.policyRow}
             onPress={() =>
@@ -291,7 +413,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             />
           </Pressable>
 
-          {/* Payment row + mint micro button */}
+          {/* Payment row */}
           <Pressable
             style={styles.rowCard}
             onPress={() => {
@@ -311,7 +433,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             </View>
           </Pressable>
 
-          {/* Special request as checkbox-like toggle */}
+          {/* Special request toggle */}
           <Pressable
             style={{
               alignItems: 'center',
@@ -387,7 +509,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
   );
 }
 
-/* ====== Fare row (matches mock) ====== */
+/* ====== Fare row (unchanged) ====== */
 function FareRow({
   quote,
   selected,
@@ -416,12 +538,10 @@ function FareRow({
       onPress={onPress}
       style={[styles.rowWrap, selected && styles.rowWrapActive]}
     >
-      {/* Left dark slab */}
       <View style={[styles.leftSlab, selected && styles.leftSlabActive]}>
         <Text style={styles.priceBig}>${quote.price}</Text>
       </View>
 
-      {/* Right white bubble */}
       <View style={[styles.rightBubble, selected && styles.rightBubbleActive]}>
         <Text style={styles.tierTitle}>{quote.tier}</Text>
 
@@ -443,8 +563,7 @@ function FareRow({
           <Text style={styles.tierSub}>{quote.seatText || quote.details}</Text>
         )}
 
-        {/* Expand details when selected */}
-        {selected && (
+        {/* {selected && (
           <View style={{ marginTop: 6, alignItems: 'flex-end' }}>
             {quote.fare_per_km != null && (
               <Text style={{ color: '#6C7075', fontSize: 11 }}>
@@ -462,7 +581,7 @@ function FareRow({
               </Text>
             )}
           </View>
-        )}
+        )} */}
       </View>
     </Pressable>
   );
@@ -470,13 +589,17 @@ function FareRow({
 
 /* ====== styles ====== */
 const styles = StyleSheet.create({
-  /* header map */
   mapWrap: {
     height: Math.round(Dimensions.get('window').height * 0.3),
     overflow: 'hidden',
     justifyContent: 'flex-start',
   },
   headerRow: {
+    position: 'absolute',
+    top: 52,
+    left: 0,
+    right: 0,
+    height: 48,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -495,18 +618,19 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   etaPill: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
+    position: 'relative',
+    top: 20,
     alignItems: 'center',
-    gap: 6,
+    gap: 2,
     backgroundColor: '#111',
     borderRadius: 16,
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 10,
   },
-  etaNum: { color: '#fff', fontFamily: 'BiennaleRegular' },
+  etaNum: { color: '#FDFF51', fontFamily: 'BiennaleSemiBold' },
   etaTxt: { color: '#fff', fontFamily: 'BiennaleRegular' },
 
-  /* sheet */
   sheet: {
     flex: 1,
     backgroundColor: '#fff',
@@ -526,7 +650,6 @@ const styles = StyleSheet.create({
     fontFamily: 'BiennaleRegular',
   },
 
-  /* fare rows */
   rowWrap: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -603,7 +726,6 @@ const styles = StyleSheet.create({
   },
   tierSub: { color: '#6C7075', fontFamily: 'BiennaleMedium' },
 
-  /* policy pill */
   policyRow: {
     marginTop: 22,
     paddingHorizontal: 14,
@@ -618,7 +740,6 @@ const styles = StyleSheet.create({
   },
   policyTxt: { color: TEXT, fontFamily: 'BiennaleBold' },
 
-  /* rows */
   rowCard: {
     flexDirection: 'row',
     alignItems: 'center',

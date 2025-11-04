@@ -1,13 +1,12 @@
 // src/screens/AssignedVehicle.tsx
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
-import MapView, { LatLng, Marker, PROVIDER_GOOGLE } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
+import MapboxGL from '@rnmapbox/maps';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import type { RootStackParamList } from '../navigation/types';
@@ -15,7 +14,12 @@ import assets from '../../assets';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AssignedVehicle'>;
 
-const GOOGLE_MAPS_APIKEY = 'AIzaSyBp7k8-SYDkEkhcGbXQ9f_fAXPXmwmlvUQ';
+const MAP_STYLE = 'mapbox://styles/mapbox/streets-v12';
+const MAPBOX_TOKEN =
+  'pk.eyJ1IjoicmFmYXlhc2FkMDEiLCJhIjoiY21oazdxanQwMDR5cTJrc2NiZGZiZ3phMyJ9.beHDnNh5y6l-9ThZ1TR64A';
+MapboxGL.setAccessToken(MAPBOX_TOKEN);
+
+type LatLng = { latitude: number; longitude: number };
 
 type LegLabel = {
   coord: LatLng;
@@ -28,7 +32,7 @@ type LegLabel = {
 
 export default function AssignedVehicle({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
-  const mapRef = useRef<MapView | null>(null);
+  const cameraRef = useRef<MapboxGL.Camera>(null);
 
   const start: LatLng =
     (route.params?.start as any) ??
@@ -82,79 +86,181 @@ export default function AssignedVehicle({ navigation, route }: Props) {
     plate: 'ERS 8579',
   };
   const eta = route.params?.etaMinutes ?? 18;
+  
+  // Mapbox helpers/state
+  const toLngLat = (p?: { latitude: number; longitude: number }) =>
+    p ? ([p.longitude, p.latitude] as [number, number]) : undefined;
+  const startLL = useMemo(() => toLngLat(start), [start]);
+  const endLL = useMemo(() => toLngLat(dest), [dest]);
+  const wpLL: [number, number][] = useMemo(
+    () => waypoints.map(w => [w.longitude, w.latitude] as [number, number]),
+    [waypoints],
+  );
+
+  const [routeShape, setRouteShape] = useState<any | null>(null);
+  const [routeCoords, setRouteCoords] = useState<[number, number][]>([]);
+  const carCoord = useMemo<[number, number] | undefined>(
+    () => (routeCoords.length > 0 ? routeCoords[0] : startLL),
+    [routeCoords, startLL],
+  );
+
+  const bounds = useMemo(() => {
+    const coords =
+      routeCoords.length > 1
+        ? routeCoords
+        : ([startLL, ...wpLL, endLL].filter(Boolean) as [number, number][]);
+    if (!coords || coords.length < 1) return undefined;
+    let minLon = Infinity,
+      maxLon = -Infinity,
+      minLat = Infinity,
+      maxLat = -Infinity;
+    coords.forEach(([lon, lat]) => {
+      if (lon < minLon) minLon = lon;
+      if (lon > maxLon) maxLon = lon;
+      if (lat < minLat) minLat = lat;
+      if (lat > maxLat) maxLat = lat;
+    });
+    if (!isFinite(minLon) || !isFinite(maxLon) || !isFinite(minLat) || !isFinite(maxLat)) {
+      return undefined;
+    }
+    return {
+      ne: [maxLon, maxLat] as [number, number],
+      sw: [minLon, minLat] as [number, number],
+      paddingTop: insets.top + 8 + 56,
+      paddingBottom: 32,
+      paddingLeft: 16,
+      paddingRight: 16,
+    };
+  }, [routeCoords, startLL, endLL, wpLL, insets.top]);
+
+  useEffect(() => {
+    const fetchRoute = async () => {
+      if (!startLL || !endLL || !MAPBOX_TOKEN) return;
+      try {
+        const coordsList = [startLL, ...wpLL, endLL].filter(Boolean) as [
+          number,
+          number,
+        ][];
+        const coordsStr = coordsList.map(([lon, lat]) => `${lon},${lat}`).join(';');
+        const url =
+          `https://api.mapbox.com/directions/v5/mapbox/driving/` +
+          `${coordsStr}` +
+          `?geometries=geojson&overview=full&steps=false&access_token=${MAPBOX_TOKEN}`;
+        const res = await fetch(url);
+        const json = await res.json();
+        const route = json?.routes?.[0];
+        const coords: [number, number][] = route?.geometry?.coordinates ?? [];
+        if (coords.length > 0) {
+          const featureCollection = {
+            type: 'FeatureCollection' as const,
+            features: [
+              {
+                type: 'Feature' as const,
+                geometry: { type: 'LineString' as const, coordinates: coords },
+                properties: {},
+              },
+            ],
+          };
+          setRouteShape(featureCollection);
+          setRouteCoords(coords);
+        } else {
+          setRouteShape(null);
+          setRouteCoords([]);
+        }
+      } catch (e) {
+        console.warn('Mapbox directions failed:', e);
+        setRouteShape(null);
+        setRouteCoords([]);
+      }
+    };
+    fetchRoute();
+  }, [startLL?.[0], startLL?.[1], endLL?.[0], endLL?.[1], wpLL.length]);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       {/* Map header */}
       <View style={[styles.mapWrap, { paddingTop: insets.top + 8 }]}>
-        <MapView
-          ref={ref => (mapRef.current = ref)}
+        <MapboxGL.MapView
           style={StyleSheet.absoluteFill}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={{
-            latitude: start.latitude,
-            longitude: start.longitude,
-            latitudeDelta: 0.08,
-            longitudeDelta: 0.08,
-          }}
+          styleURL={MAP_STYLE}
+          compassEnabled
+          rotateEnabled
+          scrollEnabled
+          zoomEnabled
+          scaleBarEnabled={false}
+          logoEnabled={false}
         >
-          <MapViewDirections
-            origin={start}
-            destination={dest}
-            waypoints={waypoints}
-            apikey={GOOGLE_MAPS_APIKEY}
-            strokeWidth={7}
-            strokeColor="#F5B400"
-            lineCap="round"
-            lineJoin="round"
-            optimizeWaypoints={false}
-            onReady={r => {
-              mapRef.current?.fitToCoordinates(r.coordinates, {
-                edgePadding: { top: 60, right: 60, bottom: 60, left: 60 },
-                animated: true,
-              });
-            }}
-          />
+          {bounds ? (
+            <MapboxGL.Camera ref={cameraRef} bounds={bounds} />
+          ) : (
+            <MapboxGL.Camera
+              zoomLevel={12}
+              centerCoordinate={startLL ?? endLL ?? [-79.3832, 43.6532]}
+            />
+          )}
+
+          {/* Route line */}
+          {routeShape && (
+            <MapboxGL.ShapeSource id="route" shape={routeShape}>
+              <MapboxGL.LineLayer
+                id="route-line"
+                style={{
+                  lineColor: '#F5B400',
+                  lineWidth: 7,
+                  lineCap: 'round',
+                  lineJoin: 'round',
+                }}
+              />
+            </MapboxGL.ShapeSource>
+          )}
 
           {/* Start pin with halo */}
-          <Marker coordinate={start} anchor={{ x: 0.5, y: 0.5 }}>
-            <View style={styles.startHalo}>
-              <View style={styles.startDot} />
-            </View>
-          </Marker>
+          {startLL && (
+            <MapboxGL.MarkerView coordinate={startLL} anchor={{ x: 0.5, y: 0.5 }} allowOverlap>
+              <View style={styles.startHalo}>
+                <View style={styles.startDot} />
+              </View>
+            </MapboxGL.MarkerView>
+          )}
 
           {/* Waypoints (small black pins) */}
           {waypoints.map((p, i) => (
-            <Marker key={`wp-${i}`} coordinate={p} anchor={{ x: 0.5, y: 1 }}>
+            <MapboxGL.MarkerView
+              key={`wp-${i}`}
+              coordinate={[p.longitude, p.latitude]}
+              anchor={{ x: 0.5, y: 1 }}
+              allowOverlap
+            >
               <View style={styles.wpPin} />
-            </Marker>
+            </MapboxGL.MarkerView>
           ))}
 
           {/* Destination (small black pin) */}
-          <Marker coordinate={dest} anchor={{ x: 0.5, y: 1 }}>
-            <View style={styles.wpPin} />
-          </Marker>
+          {endLL && (
+            <MapboxGL.MarkerView coordinate={endLL} anchor={{ x: 0.5, y: 1 }} allowOverlap>
+              <View style={styles.wpPin} />
+            </MapboxGL.MarkerView>
+          )}
 
           {/* Car at origin */}
-          <Marker coordinate={start} anchor={{ x: 0.5, y: 0.5 }}>
-            <Image
-              source={
-                (route.params?.vehicle as any)?.image ||
-                assets.images.escaladeIcon
-              }
-              style={{ width: 32, height: 32 }}
-            />
-          </Marker>
+          {startLL && (
+            <MapboxGL.MarkerView coordinate={startLL} anchor={{ x: 0.5, y: 0.5 }} allowOverlap>
+              <Image
+                source={require('../../assets/icons/car-icon.png')}
+                style={{ width: 32, height: 32, resizeMode: 'contain' }}
+              />
+            </MapboxGL.MarkerView>
+          )}
 
           {/* Label pills as custom markers */}
           {labels.map((L, idx) => (
-            <Marker
+            <MapboxGL.MarkerView
               key={`lbl-${idx}`}
-              coordinate={L.coord}
-              anchor={{ x: 0.0, y: 1.1 }}
+              coordinate={[L.coord.longitude, L.coord.latitude]}
+              anchor={{ x: 0.0, y: 1.0 }}
+              allowOverlap
             >
               <View style={styles.labelPill}>
-                {/* left black chip with time + distance (if provided) */}
                 {(L.etaText || L.distText) && (
                   <View style={styles.labelLeft}>
                     {L.etaText ? (
@@ -165,17 +271,12 @@ export default function AssignedVehicle({ navigation, route }: Props) {
                     ) : null}
                   </View>
                 )}
-
-                {/* main title */}
                 <View style={{ paddingHorizontal: 10, paddingRight: 8 }}>
-                  {/* optional small “8:00 AM Drop-off” style */}
                   {L.subtitle ? (
                     <Text style={styles.dropTiny}>{L.subtitle}</Text>
                   ) : null}
                   <Text style={styles.labelTitle}>{L.title}</Text>
                 </View>
-
-                {/* step number or chevron */}
                 {L.step ? (
                   <View style={styles.stepCircle}>
                     <Text style={styles.stepTxt}>{L.step}</Text>
@@ -184,9 +285,9 @@ export default function AssignedVehicle({ navigation, route }: Props) {
                   <Ionicons name="chevron-forward" size={14} color="#111" />
                 )}
               </View>
-            </Marker>
+            </MapboxGL.MarkerView>
           ))}
-        </MapView>
+        </MapboxGL.MapView>
 
         {/* header overlays */}
         <View style={[styles.headerRow, { paddingHorizontal: 16 }]}>

@@ -1,6 +1,6 @@
 // src/screens/ProcessingBookingModal.tsx
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
@@ -16,15 +16,17 @@ import {
 } from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MapView, { Marker, PROVIDER_GOOGLE, LatLng } from 'react-native-maps';
-import MapViewDirections from 'react-native-maps-directions';
+import MapboxGL from '@rnmapbox/maps';
 import type { RootStackParamList } from '../navigation/types';
 import assets from '../../assets';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Processing'>;
 
 const MINT = '#B9FBE7';
-const GOOGLE_MAPS_APIKEY = 'AIzaSyBp7k8-SYDkEkhcGbXQ9f_fAXPXmwmlvUQ';
+const MAP_STYLE = 'mapbox://styles/mapbox/streets-v12';
+const MAPBOX_TOKEN =
+  'pk.eyJ1IjoicmFmYXlhc2FkMDEiLCJhIjoiY21oazdxanQwMDR5cTJrc2NiZGZiZ3phMyJ9.beHDnNh5y6l-9ThZ1TR64A';
+MapboxGL.setAccessToken(MAPBOX_TOKEN);
 
 const avatarImages = [
   assets.images.avatar1,
@@ -44,26 +46,106 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
 
   const start =
     route.params?.start ??
-    ({ latitude: 43.6532, longitude: -79.3832 } as LatLng);
+    ({ latitude: 43.6532, longitude: -79.3832 } as {
+      latitude: number;
+      longitude: number;
+    });
   const dest =
     route.params?.dest ??
-    ({ latitude: 43.6426, longitude: -79.3871 } as LatLng);
-
-  // Map
-  const mapRef = useRef<MapView | null>(null);
-
-  // Fit once route is ready
-  const onDirectionsReady = (result: {
-    distance: number;
-    duration: number;
-    coordinates: LatLng[];
-  }) => {
-    if (!mapRef.current) return;
-    mapRef.current.fitToCoordinates(result.coordinates, {
-      edgePadding: { top: 40, right: 40, bottom: 40, left: 40 },
-      animated: true,
+    ({ latitude: 43.6426, longitude: -79.3871 } as {
+      latitude: number;
+      longitude: number;
     });
-  };
+
+  // Mapbox camera
+  const cameraRef = useRef<MapboxGL.Camera>(null);
+
+  // Helpers for Mapbox coords
+  const toLngLat = (p?: { latitude: number; longitude: number }) =>
+    p ? ([p.longitude, p.latitude] as [number, number]) : undefined;
+  const startLL = useMemo(() => toLngLat(start), [start]);
+  const endLL = useMemo(() => toLngLat(dest), [dest]);
+
+  // Mapbox Directions route state
+  const [routeShape, setRouteShape] = useState<any | null>(null);
+  const [routeCoords, setRouteCoords] = useState<[number, number][]>([]);
+  const carCoord = useMemo<[number, number] | undefined>(
+    () => (routeCoords.length > 0 ? routeCoords[0] : startLL),
+    [routeCoords, startLL],
+  );
+
+  const bounds = useMemo(() => {
+    const coords =
+      routeCoords.length > 1
+        ? routeCoords
+        : ([startLL, endLL].filter(Boolean) as [number, number][]);
+    if (!coords || coords.length < 1) return undefined;
+    let minLon = Infinity,
+      maxLon = -Infinity,
+      minLat = Infinity,
+      maxLat = -Infinity;
+    coords.forEach(([lon, lat]) => {
+      if (lon < minLon) minLon = lon;
+      if (lon > maxLon) maxLon = lon;
+      if (lat < minLat) minLat = lat;
+      if (lat > maxLat) maxLat = lat;
+    });
+    if (
+      !isFinite(minLon) ||
+      !isFinite(maxLon) ||
+      !isFinite(minLat) ||
+      !isFinite(maxLat)
+    ) {
+      return undefined;
+    }
+    return {
+      ne: [maxLon, maxLat] as [number, number],
+      sw: [minLon, minLat] as [number, number],
+      paddingTop: insets.top + 8 + 56,
+      paddingBottom: 32,
+      paddingLeft: 16,
+      paddingRight: 16,
+    };
+  }, [routeCoords, startLL, endLL, insets.top]);
+
+  // Fetch Mapbox Directions
+  useEffect(() => {
+    const fetchRoute = async () => {
+      if (!startLL || !endLL || !MAPBOX_TOKEN) return;
+      try {
+        const url =
+          `https://api.mapbox.com/directions/v5/mapbox/driving/` +
+          `${startLL[0]},${startLL[1]};${endLL[0]},${endLL[1]}` +
+          `?geometries=geojson&overview=full&steps=false&access_token=${MAPBOX_TOKEN}`;
+        const res = await fetch(url);
+        const json = await res.json();
+        const route = json?.routes?.[0];
+        const coords: [number, number][] = route?.geometry?.coordinates ?? [];
+        if (coords.length > 0) {
+          const featureCollection = {
+            type: 'FeatureCollection' as const,
+            features: [
+              {
+                type: 'Feature' as const,
+                geometry: { type: 'LineString' as const, coordinates: coords },
+                properties: {},
+              },
+            ],
+          };
+          setRouteShape(featureCollection);
+          setRouteCoords(coords);
+        } else {
+          setRouteShape(null);
+          setRouteCoords([]);
+        }
+      } catch (e) {
+        console.warn('Mapbox directions failed:', e);
+        setRouteShape(null);
+        setRouteCoords([]);
+      }
+    };
+    fetchRoute();
+  }, [startLL?.[0], startLL?.[1], endLL?.[0], endLL?.[1]]);
 
   // ring rotation
   const spin = useRef(new Animated.Value(0)).current;
@@ -124,58 +206,81 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
     <View style={styles.screen}>
       {/* MAP: 50% */}
       <View style={[styles.mapHalf, { paddingTop: insets.top + 8 }]}>
-        <MapView
-          ref={ref => (mapRef.current = ref)}
+        <MapboxGL.MapView
           style={StyleSheet.absoluteFill}
-          provider={PROVIDER_GOOGLE}
-          initialRegion={{
-            latitude: start.latitude,
-            longitude: start.longitude,
-            latitudeDelta: 0.08,
-            longitudeDelta: 0.08,
-          }}
+          styleURL={MAP_STYLE}
+          // compassEnabled
+          rotateEnabled
+          scrollEnabled
+          zoomEnabled
+          scaleBarEnabled={false}
+          logoEnabled={false}
         >
-          {/* Google Directions overlay (high-detail road-following path) */}
-          <MapViewDirections
-            origin={start}
-            destination={dest}
-            apikey={GOOGLE_MAPS_APIKEY}
-            mode="DRIVING"
-            strokeWidth={7}
-            strokeColor="#F5B400" // route color (warm yellow like mock)
-            lineCap="round"
-            lineJoin="round"
-            optimizeWaypoints
-            onReady={onDirectionsReady}
-            // Optional: show a shadow under the route for contrast
-            strokeColors={['#F5B400']}
-          />
-
-          {/* Start pin + car on start */}
-          <Marker coordinate={start} anchor={{ x: 0.5, y: 1 }}>
-            <View style={styles.pinWrap}>
-              <View style={styles.pinDot} />
-            </View>
-          </Marker>
-          <Marker coordinate={start} anchor={{ x: 0.5, y: 0.5 }}>
-            <Image
-              source={assets.images.escaladeIcon}
-              style={{ width: 28, height: 28 }}
+          {bounds ? (
+            <MapboxGL.Camera ref={cameraRef} bounds={bounds} />
+          ) : (
+            <MapboxGL.Camera
+              zoomLevel={12}
+              centerCoordinate={startLL ?? endLL ?? [-79.3832, 43.6532]}
             />
-          </Marker>
+          )}
+
+          {/* Route line */}
+          {routeShape && (
+            <MapboxGL.ShapeSource id="route" shape={routeShape}>
+              <MapboxGL.LineLayer
+                id="route-line"
+                style={{
+                  lineColor: '#F5B400',
+                  lineWidth: 7,
+                  lineCap: 'round',
+                  lineJoin: 'round',
+                }}
+              />
+            </MapboxGL.ShapeSource>
+          )}
+
+          {/* Start pin */}
+          {startLL && (
+            <MapboxGL.MarkerView
+              coordinate={startLL}
+              anchor={{ x: 0.5, y: 1 }}
+              allowOverlap
+            >
+              <Image
+                source={assets.images.locationPin}
+                style={{ width: 18, height: 18, resizeMode: 'contain' }}
+              />
+            </MapboxGL.MarkerView>
+          )}
+          {/* Car at start */}
+          {startLL && (
+            <MapboxGL.MarkerView
+              coordinate={startLL}
+              anchor={{ x: 0.5, y: 0.5 }}
+              allowOverlap
+            >
+              <Image
+                source={require('../../assets/icons/car-icon.png')}
+                style={{ width: 28, height: 28, resizeMode: 'contain' }}
+              />
+            </MapboxGL.MarkerView>
+          )}
 
           {/* End pin */}
-          <Marker coordinate={dest} anchor={{ x: 0.5, y: 1 }}>
-            <View
-              style={[
-                styles.pinWrap,
-                { backgroundColor: '#111', borderColor: '#111' },
-              ]}
+          {endLL && (
+            <MapboxGL.MarkerView
+              coordinate={endLL}
+              anchor={{ x: 0.5, y: 1 }}
+              allowOverlap
             >
-              <View style={[styles.pinDot, { backgroundColor: '#fff' }]} />
-            </View>
-          </Marker>
-        </MapView>
+              <Image
+                source={assets.images.locationPin}
+                style={{ width: 18, height: 18, resizeMode: 'contain' }}
+              />
+            </MapboxGL.MarkerView>
+          )}
+        </MapboxGL.MapView>
 
         {/* Back button — marginTop: 50 requested */}
         <View

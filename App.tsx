@@ -37,6 +37,8 @@ import AppGate from './src/navigation/AppGate'; // uses useAuth *inside* compone
 import assets from '../../assets';
 import { FONTS } from './src/theme/fonts';
 
+// pk.eyJ1IjoiYWlycG9ydC1saW1vMTIiLCJhIjoiY21oY3d3MW55MjNraTJscTN0YmJnZ3gzdCJ9.OJcjgZ3fYiZpkNu_ntdCoA
+
 // TypeScript-safe defaultProps helper
 function setDefaultFont(component: any, fontFamily: string) {
   component.defaultProps = component.defaultProps || {};

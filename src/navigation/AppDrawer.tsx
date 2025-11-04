@@ -158,7 +158,9 @@ function CustomDrawerContent(props: any) {
           icon={<Ionicons name="home-outline" size={18} color="#fff" />}
           label="Home"
           onPress={() => {
-            try { (navigation as any).closeDrawer?.(); } catch {}
+            try {
+              (navigation as any).closeDrawer?.();
+            } catch {}
             navigation.getParent()?.navigate('RideSelection');
           }}
         />
