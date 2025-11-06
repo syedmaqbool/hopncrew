@@ -1,0 +1,21 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "assets/fonts/BiennaleBold.ttf",
+      "sha1": "6d90862e6be26b2c84e22ad3cd570f68fa5ac2cc"
+    },
+    {
+      "path": "assets/fonts/BiennaleMedium.ttf",
+      "sha1": "e99c9997cf98f69b8d5b20c68b9a75a4e175c278"
+    },
+    {
+      "path": "assets/fonts/BiennaleRegular.ttf",
+      "sha1": "3c745f9bb1abdc7ba02d9936ae9d58c9a19eddb3"
+    },
+    {
+      "path": "assets/fonts/BiennaleSemiBold.ttf",
+      "sha1": "3b2047baa4b2f341c747a186a4be90cc5f96d571"
+    }
+  ]
+}

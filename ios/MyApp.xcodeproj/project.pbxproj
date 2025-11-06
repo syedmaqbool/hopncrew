@@ -9,9 +9,20 @@
 /* Begin PBXBuildFile section */
 		0C80B921A6F3F58F76C31292 /* libPods-MyApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-MyApp.a */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+<<<<<<< HEAD
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		1AA47D631C904BBE9D12F666 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 164D26BB1E574E3C8C7C824C /* BootSplash.storyboard */; };
+=======
+		1AA47D631C904BBE9D12F666 /* BootSplash.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 164D26BB1E574E3C8C7C824C /* BootSplash.storyboard */; };
+		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		874FB4752EBA404B00981875 /* BiennaleRegular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 874FB4732EBA404B00981875 /* BiennaleRegular.ttf */; };
+		874FB4762EBA404B00981875 /* BiennaleBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 874FB4712EBA404B00981875 /* BiennaleBold.ttf */; };
+		874FB4772EBA404B00981875 /* BiennaleMedium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 874FB4722EBA404B00981875 /* BiennaleMedium.ttf */; };
+		874FB4782EBA404B00981875 /* BiennaleSemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 874FB4742EBA404B00981875 /* BiennaleSemiBold.ttf */; };
+		89E0D4167FAA6E8EA715B924 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 		9211CCE83E3B4F59BF2B1E05 /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BBBDAFABB24B416CA42BA60B /* Colors.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -20,14 +31,46 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = MyApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MyApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = MyApp/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+<<<<<<< HEAD
+=======
+		164D26BB1E574E3C8C7C824C /* BootSplash.storyboard */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = BootSplash.storyboard; path = MyApp/BootSplash.storyboard; sourceTree = "<group>"; };
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 		3B4392A12AC88292D35C810B /* Pods-MyApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp.debug.xcconfig"; path = "Target Support Files/Pods-MyApp/Pods-MyApp.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-MyApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyApp.release.xcconfig"; path = "Target Support Files/Pods-MyApp/Pods-MyApp.release.xcconfig"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-MyApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = MyApp/AppDelegate.swift; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = MyApp/LaunchScreen.storyboard; sourceTree = "<group>"; };
+<<<<<<< HEAD
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		164D26BB1E574E3C8C7C824C /* BootSplash.storyboard */ = {isa = PBXFileReference; name = "BootSplash.storyboard"; path = "MyApp/BootSplash.storyboard"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		BBBDAFABB24B416CA42BA60B /* Colors.xcassets */ = {isa = PBXFileReference; name = "Colors.xcassets"; path = "MyApp/Colors.xcassets"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = folder.assetcatalog; explicitFileType = undefined; includeInIndex = 0; };
+=======
+		874FB4492EBA33D300981875 /* AntDesign.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = AntDesign.ttf; sourceTree = "<group>"; };
+		874FB44A2EBA33D300981875 /* Entypo.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Entypo.ttf; sourceTree = "<group>"; };
+		874FB44B2EBA33D300981875 /* EvilIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = EvilIcons.ttf; sourceTree = "<group>"; };
+		874FB44C2EBA33D300981875 /* Feather.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Feather.ttf; sourceTree = "<group>"; };
+		874FB44D2EBA33D300981875 /* FontAwesome.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome.ttf; sourceTree = "<group>"; };
+		874FB44E2EBA33D300981875 /* FontAwesome5_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Brands.ttf; sourceTree = "<group>"; };
+		874FB44F2EBA33D300981875 /* FontAwesome5_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Regular.ttf; sourceTree = "<group>"; };
+		874FB4502EBA33D300981875 /* FontAwesome5_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome5_Solid.ttf; sourceTree = "<group>"; };
+		874FB4512EBA33D300981875 /* FontAwesome6_Brands.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome6_Brands.ttf; sourceTree = "<group>"; };
+		874FB4522EBA33D300981875 /* FontAwesome6_Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome6_Regular.ttf; sourceTree = "<group>"; };
+		874FB4532EBA33D300981875 /* FontAwesome6_Solid.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = FontAwesome6_Solid.ttf; sourceTree = "<group>"; };
+		874FB4542EBA33D300981875 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
+		874FB4552EBA33D300981875 /* Foundation.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Foundation.ttf; sourceTree = "<group>"; };
+		874FB4562EBA33D300981875 /* Ionicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Ionicons.ttf; sourceTree = "<group>"; };
+		874FB4572EBA33D300981875 /* MaterialCommunityIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialCommunityIcons.ttf; sourceTree = "<group>"; };
+		874FB4582EBA33D300981875 /* MaterialIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = MaterialIcons.ttf; sourceTree = "<group>"; };
+		874FB4592EBA33D300981875 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
+		874FB45A2EBA33D300981875 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = SimpleLineIcons.ttf; sourceTree = "<group>"; };
+		874FB45B2EBA33D300981875 /* Zocial.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Zocial.ttf; sourceTree = "<group>"; };
+		874FB4712EBA404B00981875 /* BiennaleBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BiennaleBold.ttf; sourceTree = "<group>"; };
+		874FB4722EBA404B00981875 /* BiennaleMedium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BiennaleMedium.ttf; sourceTree = "<group>"; };
+		874FB4732EBA404B00981875 /* BiennaleRegular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BiennaleRegular.ttf; sourceTree = "<group>"; };
+		874FB4742EBA404B00981875 /* BiennaleSemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = BiennaleSemiBold.ttf; sourceTree = "<group>"; };
+		BBBDAFABB24B416CA42BA60B /* Colors.xcassets */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = folder.assetcatalog; name = Colors.xcassets; path = MyApp/Colors.xcassets; sourceTree = "<group>"; };
+		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +88,10 @@
 		13B07FAE1A68108700A75B9A /* MyApp */ = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD
+=======
+				874FB4702EBA402300981875 /* Fonts */,
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -75,6 +122,10 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+<<<<<<< HEAD
+=======
+				874FB45C2EBA33D300981875 /* Fonts */,
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 				13B07FAE1A68108700A75B9A /* MyApp */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
@@ -94,6 +145,47 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+<<<<<<< HEAD
+=======
+		874FB45C2EBA33D300981875 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				874FB4492EBA33D300981875 /* AntDesign.ttf */,
+				874FB44A2EBA33D300981875 /* Entypo.ttf */,
+				874FB44B2EBA33D300981875 /* EvilIcons.ttf */,
+				874FB44C2EBA33D300981875 /* Feather.ttf */,
+				874FB44D2EBA33D300981875 /* FontAwesome.ttf */,
+				874FB44E2EBA33D300981875 /* FontAwesome5_Brands.ttf */,
+				874FB44F2EBA33D300981875 /* FontAwesome5_Regular.ttf */,
+				874FB4502EBA33D300981875 /* FontAwesome5_Solid.ttf */,
+				874FB4512EBA33D300981875 /* FontAwesome6_Brands.ttf */,
+				874FB4522EBA33D300981875 /* FontAwesome6_Regular.ttf */,
+				874FB4532EBA33D300981875 /* FontAwesome6_Solid.ttf */,
+				874FB4542EBA33D300981875 /* Fontisto.ttf */,
+				874FB4552EBA33D300981875 /* Foundation.ttf */,
+				874FB4562EBA33D300981875 /* Ionicons.ttf */,
+				874FB4572EBA33D300981875 /* MaterialCommunityIcons.ttf */,
+				874FB4582EBA33D300981875 /* MaterialIcons.ttf */,
+				874FB4592EBA33D300981875 /* Octicons.ttf */,
+				874FB45A2EBA33D300981875 /* SimpleLineIcons.ttf */,
+				874FB45B2EBA33D300981875 /* Zocial.ttf */,
+			);
+			name = Fonts;
+			path = "../node_modules/react-native-vector-icons/Fonts";
+			sourceTree = "<group>";
+		};
+		874FB4702EBA402300981875 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				874FB4712EBA404B00981875 /* BiennaleBold.ttf */,
+				874FB4722EBA404B00981875 /* BiennaleMedium.ttf */,
+				874FB4732EBA404B00981875 /* BiennaleRegular.ttf */,
+				874FB4742EBA404B00981875 /* BiennaleSemiBold.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -167,6 +259,14 @@
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				1AA47D631C904BBE9D12F666 /* BootSplash.storyboard in Resources */,
 				9211CCE83E3B4F59BF2B1E05 /* Colors.xcassets in Resources */,
+<<<<<<< HEAD
+=======
+				874FB4752EBA404B00981875 /* BiennaleRegular.ttf in Resources */,
+				874FB4762EBA404B00981875 /* BiennaleBold.ttf in Resources */,
+				874FB4772EBA404B00981875 /* BiennaleMedium.ttf in Resources */,
+				874FB4782EBA404B00981875 /* BiennaleSemiBold.ttf in Resources */,
+				89E0D4167FAA6E8EA715B924 /* PrivacyInfo.xcprivacy in Resources */,
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,8 +366,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+<<<<<<< HEAD
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MyApp/Info.plist;
+=======
+				DEVELOPMENT_TEAM = 9HLX8VNW22;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = MyApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Hop'n";
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -279,10 +386,22 @@
 					"-ObjC",
 					"-lc++",
 				);
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = MyApp;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.urapptech.hopnground;
+				PRODUCT_NAME = MyApp;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -294,7 +413,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+<<<<<<< HEAD
 				INFOPLIST_FILE = MyApp/Info.plist;
+=======
+				DEVELOPMENT_TEAM = 9HLX8VNW22;
+				INFOPLIST_FILE = MyApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Hop'n";
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 				IPHONEOS_DEPLOYMENT_TARGET = 15.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -306,9 +431,20 @@
 					"-ObjC",
 					"-lc++",
 				);
+<<<<<<< HEAD
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = MyApp;
 				SWIFT_VERSION = 5.0;
+=======
+				PRODUCT_BUNDLE_IDENTIFIER = com.urapptech.hopnground;
+				PRODUCT_NAME = MyApp;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
@@ -382,7 +518,14 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
+<<<<<<< HEAD
 				SDKROOT = iphoneos;
+=======
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) DEBUG";
+				USE_HERMES = true;
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 			};
 			name = Debug;
 		};
@@ -447,7 +590,13 @@
 					"-DFOLLY_CFG_NO_COROUTINES=1",
 					"-DFOLLY_HAVE_CLOCK_GETTIME=1",
 				);
+<<<<<<< HEAD
 				SDKROOT = iphoneos;
+=======
+				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
+				SDKROOT = iphoneos;
+				USE_HERMES = true;
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;

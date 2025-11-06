@@ -3,6 +3,10 @@ import { View, Text, Pressable, StyleSheet, SafeAreaView, Platform } from 'react
 import MapView, { Marker, Polyline, PROVIDER_GOOGLE, Region } from 'react-native-maps';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useLocation } from '../hooks/useLocation';
+<<<<<<< HEAD
+=======
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
 
 
@@ -85,7 +89,11 @@ const styles = StyleSheet.create({
   },
   primary: { backgroundColor: '#111' },
   secondary: { backgroundColor: '#F3F3F3' },
+<<<<<<< HEAD
   btnText: { color: '#fff', fontWeight: '600' },
+=======
+  btnText: { color: '#fff', fontFamily: FONTS.semibold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   fab: {
     position: 'absolute', right: 10, bottom: 10,
     width: 44, height: 44, borderRadius: 22, backgroundColor: '#fff',

@@ -2,6 +2,10 @@ import React from 'react';
 import { View, Text, Pressable, StyleSheet, SafeAreaView, Linking, Platform } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useLocation } from '../hooks/useLocation';
+<<<<<<< HEAD
+=======
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -69,12 +73,20 @@ const styles = StyleSheet.create({
   card: {
     flex: 1, backgroundColor: '#fff', margin: 16, borderRadius: 16, padding: 16,
   },
+<<<<<<< HEAD
   title: { fontSize: 20, fontWeight: '700', color: '#111' },
+=======
+  title: { fontSize: 20, color: '#111', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   value: { marginTop: 10, color: '#444', lineHeight: 20 },
   btn: {
     marginTop: 12, height: 44, borderRadius: 22, backgroundColor: '#111',
     alignItems: 'center', justifyContent: 'center',
   },
   btnSecondary: { backgroundColor: '#F3F3F3' },
+<<<<<<< HEAD
   btnText: { color: '#fff', fontWeight: '600' },
+=======
+  btnText: { color: '#fff', fontFamily: FONTS.semibold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

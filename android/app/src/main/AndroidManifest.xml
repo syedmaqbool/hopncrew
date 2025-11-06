@@ -32,6 +32,10 @@
     </activity>
     <meta-data
       android:name="com.google.android.geo.API_KEY"
+<<<<<<< HEAD
       android:value="AIzaSyBp7k8-SYDkEkhcGbXQ9f_fAXPXmwmlvUQ" />
+=======
+      android:value="AIzaSyCQ_g14OfzLkLOD6MGp4iJPuau2mbnjwvw" />
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   </application>
 </manifest>

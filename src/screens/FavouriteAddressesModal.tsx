@@ -7,6 +7,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Swipeable } from 'react-native-gesture-handler';
+<<<<<<< HEAD
+=======
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -162,7 +166,11 @@ const styles = StyleSheet.create({
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: '#F2F3F4', alignItems: 'center', justifyContent: 'center',
   },
+<<<<<<< HEAD
   title: { fontSize: 16, fontWeight: '800', color: '#111' },
+=======
+  title: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   hwCard: {
     marginTop: 8, marginHorizontal: 14,
@@ -175,7 +183,11 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1, borderBottomColor: '#EFEFEF',
   },
 
+<<<<<<< HEAD
   section: { marginTop: 16, marginHorizontal: 14, color: '#8C8C8C', fontWeight: '700' },
+=======
+  section: { marginTop: 16, marginHorizontal: 14, color: '#8C8C8C', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   otherRow: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
@@ -191,7 +203,11 @@ const styles = StyleSheet.create({
     width: 28, height: 28, borderRadius: 14,
     backgroundColor: '#F6F7F8', alignItems: 'center', justifyContent: 'center',
   },
+<<<<<<< HEAD
   rowTitle: { color: '#111', fontWeight: '700' },
+=======
+  rowTitle: { color: '#111', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   rowSub: { color: '#8C8C8C' },
 
   cta: {
@@ -199,7 +215,11 @@ const styles = StyleSheet.create({
     height: 50, borderRadius: 26, backgroundColor: '#111',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
+<<<<<<< HEAD
   ctaText: { color: '#fff', fontWeight: '700' },
+=======
+  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   ctaIcon: {
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',

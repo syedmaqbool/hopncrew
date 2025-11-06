@@ -5,6 +5,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+<<<<<<< HEAD
+=======
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -164,17 +168,28 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 4,
     backgroundColor: '#111', paddingHorizontal: 6, paddingVertical: 3, borderRadius: 10,
   },
+<<<<<<< HEAD
   ratingTxt: { color: '#fff', fontSize: 10, fontWeight: '800' },
   driverName: { color: '#111', fontWeight: '800' },
   driverSub: { color: '#6C7075', marginTop: 2 },
+=======
+  ratingTxt: { color: '#fff', fontSize: 10, fontFamily: FONTS.bold },
+  driverName: { color: '#111', fontFamily: FONTS.bold },
+  driverSub: { color: '#6C7075', marginTop: 2, fontFamily: FONTS.regular },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   statusPill: {
     alignSelf: 'flex-end',
     borderRadius: 12, paddingVertical: 4, paddingHorizontal: 10,
     backgroundColor: '#F3F4F5', borderWidth: 1, borderColor: '#EDEDED',
   },
+<<<<<<< HEAD
   statusTxt: { color: '#111', fontWeight: '700', fontSize: 12 },
   whenTxt: { color: '#6C7075', fontSize: 12 },
+=======
+  statusTxt: { color: '#111', fontSize: 12, fontFamily: FONTS.bold },
+  whenTxt: { color: '#6C7075', fontSize: 12, fontFamily: FONTS.regular },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   routeCard: {
     marginHorizontal: 16, marginTop: 12,
@@ -190,19 +205,33 @@ const styles = StyleSheet.create({
     marginHorizontal: 16, marginTop: 14,
   },
   metricLabel: { color: '#6C7075', fontSize: 12 },
+<<<<<<< HEAD
   metricValue: { color: '#111', fontWeight: '800', marginTop: 4 },
+=======
+  metricValue: { color: '#111', marginTop: 4, fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   fareRow: {
     flexDirection: 'row', justifyContent: 'space-between',
     marginHorizontal: 16, marginTop: 14, alignItems: 'center',
   },
+<<<<<<< HEAD
   fareLabel: { color: '#6C7075', fontWeight: '700' },
   fareValue: { color: '#111', fontWeight: '900' },
+=======
+  fareLabel: { color: '#6C7075', fontFamily: FONTS.bold },
+  fareValue: { color: '#111', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   cta: {
     margin: 16, height: 50, borderRadius: 28, backgroundColor: '#111',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
+<<<<<<< HEAD
   ctaText: { color: '#fff', fontWeight: '700' },
   ctaIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center' },
+=======
+  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10, },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

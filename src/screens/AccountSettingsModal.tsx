@@ -3,6 +3,10 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+<<<<<<< HEAD
+=======
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -105,7 +109,11 @@ const styles = StyleSheet.create({
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: '#F3F3F4', alignItems: 'center', justifyContent: 'center',
   },
+<<<<<<< HEAD
   title: { fontSize: 16, fontWeight: '800', color: '#111' },
+=======
+  title: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   card: {
     backgroundColor: '#fff',
@@ -118,10 +126,19 @@ const styles = StyleSheet.create({
   },
 
   row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14 },
+<<<<<<< HEAD
   rowTitle: { color: '#111', fontSize: 14, fontWeight: '700' },
   rowSub: { color: '#8C8C8C', marginTop: 2 },
 
   divider: { height: 1, backgroundColor: '#EFEFEF' },
 
   delete: { color: '#E53935', fontWeight: '700' },
+=======
+  rowTitle: { color: '#111', fontSize: 14, fontFamily: FONTS.bold },
+  rowSub: { color: '#8C8C8C', marginTop: 2, fontFamily: FONTS.regular },
+
+  divider: { height: 1, backgroundColor: '#EFEFEF' },
+
+  delete: { color: '#E53935', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

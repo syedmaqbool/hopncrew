@@ -6,6 +6,10 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Swipeable } from 'react-native-gesture-handler';
+<<<<<<< HEAD
+=======
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
 type Notice = {
   id: string;
@@ -98,7 +102,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
     paddingHorizontal: 12, paddingBottom: 8, paddingTop: 6,
   },
+<<<<<<< HEAD
   headerTitle: { color: '#111', fontWeight: '800', fontSize: 18 },
+=======
+  headerTitle: { color: '#111', fontSize: 18, fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   roundBtn: {
     width: 34, height: 34, borderRadius: 17, backgroundColor: '#F3F4F5',
     alignItems: 'center', justifyContent: 'center',
@@ -116,11 +124,19 @@ const styles = StyleSheet.create({
     width: 52, borderRadius: 8, backgroundColor: '#F3F4F5',
     alignItems: 'center', justifyContent: 'center', paddingVertical: 6,
   },
+<<<<<<< HEAD
   day: { color: '#111', fontWeight: '800' },
   mon: { color: '#6C7075', fontSize: 12 },
 
   title: { color: '#111', fontWeight: '800', marginBottom: 4 },
   body: { color: '#6C7075', lineHeight: 18 },
+=======
+  day: { color: '#111', fontFamily: FONTS.bold },
+  mon: { color: '#6C7075', fontSize: 12, fontFamily: FONTS.regular },
+
+  title: { color: '#111', marginBottom: 4, fontFamily: FONTS.bold },
+  body: { color: '#6C7075', lineHeight: 18, fontFamily: FONTS.regular },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   separator: { height: 1, backgroundColor: '#EEE', marginLeft: 74, marginRight: 10 },
 

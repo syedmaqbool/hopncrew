@@ -1,6 +1,7 @@
 // src/screens/WalletScreen.tsx
 import React, { useMemo, useState } from 'react';
 import {
+<<<<<<< HEAD
   View,
   Text,
   StyleSheet,
@@ -10,6 +11,20 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AddMoneyModal from './AddMoneyModal';
+=======
+  Image,
+  Pressable,
+  SectionList,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import assets from '../../assets';
+import AddMoneyModal from './AddMoneyModal';
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
 
 type Txn = {
@@ -50,7 +65,11 @@ const seed: Section[] = [
 export default function WalletScreen() {
   const [sections] = useState<Section[]>(seed);
   const [showAdd, setShowAdd] = useState(false);
+<<<<<<< HEAD
     const onAddMoney = () => setShowAdd(true);
+=======
+  const onAddMoney = () => setShowAdd(true);
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   const balance = useMemo(() => {
     // you’d typically fetch this; demo sum here
@@ -58,10 +77,17 @@ export default function WalletScreen() {
     return 486.24 + sum; // seed base
   }, [sections]);
 
+<<<<<<< HEAD
 //   const onAddMoney = () => {
 //     // navigate to Add Money / Payment screen or show bottom sheet
 //     console.log('Add Money tapped');
 //   };
+=======
+  //   const onAddMoney = () => {
+  //     // navigate to Add Money / Payment screen or show bottom sheet
+  //     console.log('Add Money tapped');
+  //   };
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   const renderTxn = ({ item }: { item: Txn }) => {
     const amtStr = `${item.amount >= 0 ? '+' : '-'} $${Math.abs(item.amount).toFixed(2)}`;
@@ -83,7 +109,14 @@ export default function WalletScreen() {
       {/* Header */}
       <View style={styles.header}>
         <Pressable style={styles.roundBtn} onPress={() => console.log('open drawer')}>
+<<<<<<< HEAD
           <Ionicons name="menu" size={18} color="#111" />
+=======
+          <Image
+            source={assets.images.hamIcon}// <-- **Direct require with correct path**
+            style={{ width: 40, height: 40, borderRadius: 20 }}
+          />
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
         </Pressable>
         <Text style={styles.headerTitle}>Wallet</Text>
         <View style={{ width: 34 }} />
@@ -96,6 +129,7 @@ export default function WalletScreen() {
           <Text style={styles.balanceLabel}>Available Balance</Text>
         </View>
         <Pressable style={styles.addBtn} onPress={onAddMoney}>
+<<<<<<< HEAD
         <Ionicons name="add" size={18} color="#111" />
         <Text style={styles.addBtnText}>Add Money</Text>
         </Pressable>
@@ -108,6 +142,20 @@ export default function WalletScreen() {
                     console.log('add', amt);
                 }}
                 />
+=======
+          <Ionicons name="add" size={18} color="#111" />
+          <Text style={styles.addBtnText}>Add Money</Text>
+        </Pressable>
+
+        <AddMoneyModal
+          visible={showAdd}
+          onClose={() => setShowAdd(false)}
+          onAdd={(amt) => {
+            // TODO: call your API, then update balance/transactions locally
+            console.log('add', amt);
+          }}
+        />
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       </View>
 
       {/* Transactions */}
@@ -136,12 +184,20 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingTop: 6,
     justifyContent: 'space-between',
+<<<<<<< HEAD
+=======
+    marginVertical: 10,
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
   roundBtn: {
     width: 34, height: 34, borderRadius: 17,
     backgroundColor: '#F3F4F5', alignItems: 'center', justifyContent: 'center',
   },
+<<<<<<< HEAD
   headerTitle: { color: '#111', fontWeight: '800', fontSize: 18 },
+=======
+  headerTitle: { color: '#111', fontSize: 18, textAlign: 'left', fontFamily: FONTS.regular },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   balanceCard: {
     marginHorizontal: 16,
@@ -152,18 +208,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
+<<<<<<< HEAD
   balanceValue: { color: '#fff', fontWeight: '800', fontSize: 24 },
   balanceLabel: { color: '#B7BBC1', marginTop: 4 },
+=======
+  balanceValue: { color: '#fff', fontSize: 24, fontFamily: FONTS.bold },
+  balanceLabel: { color: '#B7BBC1', marginTop: 4, fontFamily: FONTS.regular },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   addBtn: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: '#fff', paddingHorizontal: 14, paddingVertical: 10,
     borderRadius: 22,
   },
+<<<<<<< HEAD
   addBtnText: { color: '#111', fontWeight: '700' },
 
   sectionTitle: {
     marginTop: 16, marginBottom: 8, marginHorizontal: 4,
     color: '#6C7075', fontWeight: '700',
+=======
+  addBtnText: { color: '#111', fontFamily: FONTS.bold },
+
+  sectionTitle: {
+    marginTop: 16, marginBottom: 8, marginHorizontal: 4,
+    color: '#6C7075', fontFamily: FONTS.bold,
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
 
   txnRow: {
@@ -174,7 +243,13 @@ const styles = StyleSheet.create({
   },
   rowDivider: { height: 10 },
 
+<<<<<<< HEAD
   txnId: { color: '#111', fontWeight: '800' },
   txnTime: { color: '#9AA0A6', marginTop: 2 },
   txnAmt: { fontWeight: '800' },
+=======
+  txnId: { color: '#111', fontFamily: FONTS.bold },
+  txnTime: { color: '#9AA0A6', marginTop: 2, fontFamily: FONTS.regular },
+  txnAmt: { fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

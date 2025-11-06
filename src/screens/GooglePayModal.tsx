@@ -4,6 +4,10 @@ import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+<<<<<<< HEAD
+=======
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -91,7 +95,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', borderWidth: 1, borderColor: '#EEE',
     alignItems: 'center', justifyContent: 'center',
   },
+<<<<<<< HEAD
   title: { fontSize: 16, fontWeight: '800', color: '#111' },
+=======
+  title: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   infoCard: { backgroundColor: CARD_BG, borderRadius: 18, padding: 12 },
   infoText: { color: '#222', lineHeight: 19, margin: 4 },
@@ -105,7 +113,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F7F8', alignItems: 'center', justifyContent: 'center',
     marginRight: 10,
   },
+<<<<<<< HEAD
   accountName: { color: '#111', fontWeight: '700' },
+=======
+  accountName: { color: '#111', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   accountMail: { color: '#8C92A0', fontSize: 12 },
   trashBtn: {
     width: 32, height: 32, borderRadius: 16,

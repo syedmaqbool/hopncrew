@@ -5,6 +5,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+<<<<<<< HEAD
+=======
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -89,7 +93,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+<<<<<<< HEAD
   title: { fontSize: 16, fontWeight: '800', color: '#111' },
+=======
+  title: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   closeBtn: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: '#F3F3F4',
     alignItems: 'center', justifyContent: 'center',
@@ -109,5 +117,9 @@ const styles = StyleSheet.create({
     backgroundColor: MINT,
     alignItems: 'center', justifyContent: 'center',
   },
+<<<<<<< HEAD
   rowText: { flex: 1, color: '#fff', fontWeight: '700' },
+=======
+  rowText: { flex: 1, color: '#fff', fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

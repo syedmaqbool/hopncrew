@@ -3,6 +3,10 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+<<<<<<< HEAD
+=======
+import { FONTS } from '../../src/theme/fonts';
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList, PaymentRow } from '../navigation/types';
 
@@ -82,7 +86,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
+<<<<<<< HEAD
   h1: { color: '#111', fontWeight: '800', fontSize: 18 },
+=======
+  h1: { color: '#111', fontSize: 18, fontFamily: FONTS.bold },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   table: {
     borderRadius: 12,
@@ -99,12 +107,21 @@ const styles = StyleSheet.create({
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: '#EEE',
   },
+<<<<<<< HEAD
   label: { color: '#111' },
   val: { color: '#111', fontWeight: '700' },
   valBold: { fontWeight: '800' },
 
   noteRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12 },
   noteTxt: { color: '#9AA0A6' },
+=======
+  label: { color: '#111', fontFamily: FONTS.regular },
+  val: { color: '#111', fontFamily: FONTS.bold },
+  valBold: { fontFamily: FONTS.bold },
+
+  noteRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12 },
+  noteTxt: { color: '#9AA0A6', fontFamily: FONTS.regular },
+>>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   chip: {
     alignSelf: 'flex-start',
