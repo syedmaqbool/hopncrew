@@ -32,10 +32,9 @@
     </activity>
     <meta-data
       android:name="com.google.android.geo.API_KEY"
-<<<<<<< HEAD
-      android:value="AIzaSyBp7k8-SYDkEkhcGbXQ9f_fAXPXmwmlvUQ" />
-=======
       android:value="AIzaSyCQ_g14OfzLkLOD6MGp4iJPuau2mbnjwvw" />
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
+    <meta-data
+      android:name="com.mapbox.token"
+      android:value="pk.eyJ1IjoicmFmYXlhc2FkMDEiLCJhIjoiY21oazdxanQwMDR5cTJrc2NiZGZiZ3phMyJ9.beHDnNh5y6l-9ThZ1TR64A" />
   </application>
 </manifest>

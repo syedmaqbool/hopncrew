@@ -1,9 +1,4 @@
-<<<<<<< HEAD
 <resources>
   <string name="google_maps_api_key">AIzaSyBp7k8-SYDkEkhcGbXQ9f_fAXPXmwmlvUQ</string>
+  <string name="mapbox_access_token" translatable="false">pk.eyJ1IjoicmFmYXlhc2FkMDEiLCJhIjoiY21oazdxanQwMDR5cTJrc2NiZGZiZ3phMyJ9.beHDnNh5y6l-9ThZ1TR64A</string>
 </resources>
-=======
-<resources>
-  <string name="google_maps_api_key">AIzaSyBp7k8-SYDkEkhcGbXQ9f_fAXPXmwmlvUQ</string>
-</resources>
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
