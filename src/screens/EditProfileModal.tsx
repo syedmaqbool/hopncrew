@@ -13,7 +13,10 @@ import {
   Image,
   Switch,
 } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Picker } from '@react-native-picker/picker';
@@ -25,10 +28,10 @@ type Props = NativeStackScreenProps<RootStackParamList, 'EditProfile'>;
 type Country = { code: string; dial: string; label: string; flag: string };
 
 const COUNTRIES: Country[] = [
-  { code: 'US', dial: '+1',   label: 'United States', flag: '🇺🇸' },
-  { code: 'GB', dial: '+44',  label: 'United Kingdom', flag: '🇬🇧' },
+  { code: 'US', dial: '+1', label: 'United States', flag: '🇺🇸' },
+  { code: 'GB', dial: '+44', label: 'United Kingdom', flag: '🇬🇧' },
   { code: 'AE', dial: '+971', label: 'UAE', flag: '🇦🇪' },
-  { code: 'PK', dial: '+92',  label: 'Pakistan', flag: '🇵🇰' },
+  { code: 'PK', dial: '+92', label: 'Pakistan', flag: '🇵🇰' },
 ];
 
 const MINT = '#B9FBE7';
@@ -55,12 +58,17 @@ export default function EditProfileModal({ navigation, route }: Props) {
   const [phone, setPhone] = useState(initial.phone);
   const [whatsappSame, setWhatsappSame] = useState(initial.whatsappSame);
   const [referral, setReferral] = useState(initial.referral);
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(initial.avatarUrl);
+  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(
+    initial.avatarUrl,
+  );
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const canSave = useMemo(
-    () => name.trim().length > 0 && /\S+@\S+\.\S+/.test(email) && phone.trim().length >= 7,
-    [name, email, phone]
+    () =>
+      name.trim().length > 0 &&
+      /\S+@\S+\.\S+/.test(email) &&
+      phone.trim().length >= 7,
+    [name, email, phone],
   );
 
   const onClose = () => navigation.goBack();
@@ -153,8 +161,13 @@ export default function EditProfileModal({ navigation, route }: Props) {
               />
 
               <View style={styles.phoneRow}>
-                <Pressable style={styles.ccBtn} onPress={() => setPickerOpen(true)}>
-                  <Text style={styles.ccTxt}>{country.flag}  {country.dial}</Text>
+                <Pressable
+                  style={styles.ccBtn}
+                  onPress={() => setPickerOpen(true)}
+                >
+                  <Text style={styles.ccTxt}>
+                    {country.flag} {country.dial}
+                  </Text>
                   <Ionicons name="chevron-down" size={14} color="#777" />
                 </Pressable>
                 <TextInput
@@ -188,7 +201,6 @@ export default function EditProfileModal({ navigation, route }: Props) {
                 value={referral}
                 onChangeText={setReferral}
               />
-
             </ScrollView>
 
             {/* Update CTA */}
@@ -218,7 +230,7 @@ export default function EditProfileModal({ navigation, route }: Props) {
             <Text style={styles.modalTitle}>Select country</Text>
             <Picker
               selectedValue={country.code}
-              onValueChange={(val) => {
+              onValueChange={val => {
                 const next = COUNTRIES.find(c => c.code === val)!;
                 setCountry(next);
               }}
@@ -242,7 +254,10 @@ export default function EditProfileModal({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   fill: { flex: 1, marginTop: 170 },
   // keep background visible (map/screen)
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'transparent' },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'transparent',
+  },
   sheetWrap: { flex: 1, justifyContent: 'flex-end' },
   sheet: {
     backgroundColor: '#fff',
@@ -261,10 +276,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   hamBtn: {
-    width: 34, height: 34, borderRadius: 17,
+    width: 34,
+    height: 34,
+    borderRadius: 17,
     backgroundColor: '#fff',
-    borderWidth: 1, borderColor: '#EEE',
-    alignItems: 'center', justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#EEE',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   headerTitle: { fontSize: 18, color: '#111', fontFamily: 'BiennaleBold' },
 
@@ -278,18 +297,25 @@ const styles = StyleSheet.create({
 
   avatarWrap: { alignItems: 'center', marginTop: 6 },
   avatarCircle: {
-    width: 72, height: 72, borderRadius: 36,
+    width: 72,
+    height: 72,
+    borderRadius: 36,
     backgroundColor: '#EDEFF1',
-    alignItems: 'center', justifyContent: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
     overflow: 'hidden',
   },
   avatarImg: { width: '100%', height: '100%' },
   pencil: {
     marginTop: -14,
     backgroundColor: MINT,
-    width: 26, height: 26, borderRadius: 13,
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: '#D6F6EB',
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#D6F6EB',
   },
   avatarLabel: {
     textAlign: 'center',
@@ -310,21 +336,40 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
 
-  phoneRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 10 },
+  phoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 10,
+  },
   ccBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    borderWidth: 1, borderColor: '#E6E6E6',
-    backgroundColor: '#fff', borderRadius: 24,
-    paddingVertical: 10, paddingHorizontal: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    borderWidth: 1,
+    borderColor: '#E6E6E6',
+    backgroundColor: '#fff',
+    borderRadius: 24,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
   ccTxt: { fontSize: 14, color: '#111', fontFamily: 'BiennaleRegular' },
 
-  switchRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
+  switchRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 12,
+  },
   checkboxLike: {
-    width: 32, height: 32, borderRadius: 16,
-    alignItems: 'center', justifyContent: 'center',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#F6F7F8',
-    borderWidth: 1, borderColor: '#EEE',
+    borderWidth: 1,
+    borderColor: '#EEE',
   },
   switchLabel: { color: '#111', fontFamily: 'BiennaleSemiBold' },
 
@@ -340,11 +385,21 @@ const styles = StyleSheet.create({
   },
   ctaTxt: { color: '#fff', fontFamily: 'BiennaleBold' },
   ctaIcon: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: MINT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    right: 10,
   },
 
-  modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.25)', justifyContent: 'flex-end' },
+  modalBg: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    justifyContent: 'flex-end',
+  },
   modalCard: {
     backgroundColor: '#fff',
     paddingHorizontal: 12,
@@ -353,5 +408,10 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
   },
-  modalTitle: { fontSize: 16, color: '#111', marginBottom: 8, fontFamily: 'BiennaleBold' },
+  modalTitle: {
+    fontSize: 16,
+    color: '#111',
+    marginBottom: 8,
+    fontFamily: 'BiennaleBold',
+  },
 });

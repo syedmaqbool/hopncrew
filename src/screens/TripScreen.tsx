@@ -3,7 +3,15 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useMemo, useState } from 'react';
 import { useFocusEffect } from '@react-navigation/native';
 import { BackHandler } from 'react-native';
-import { Image, Pressable, StyleSheet, Switch, Text, View } from 'react-native';
+import {
+  Image,
+  Pressable,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+  Modal,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -60,6 +68,10 @@ export default function TripScreen({ navigation, route }: Props) {
 
   const [passengers, setPassengers] = useState<PassengerCounts>(DEFAULT_PAX);
   const [luggage, setLuggage] = useState<LuggageItem[]>([]);
+  const [blocker, setBlocker] = useState<{
+    title: string;
+    message: string;
+  } | null>(null);
 
   // ---------- derived text for the “chip” ----------
   const { totalPassengers, totalSeats, chipText } = useMemo(() => {
@@ -96,6 +108,26 @@ export default function TripScreen({ navigation, route }: Props) {
       onDone: (pax: PassengerCounts) => setPassengers(pax),
       onEditLuggage: (items: LuggageItem[]) => setLuggage(items),
     });
+  };
+
+  const onAddPassengerPress = () => {
+    if (!start || !dest) {
+      const title =
+        !dest && start
+          ? 'Select Destination'
+          : !start && dest
+          ? 'Select Start Location'
+          : 'Select Start and Destination';
+      const message =
+        !dest && start
+          ? 'Please select your destination first.'
+          : !start && dest
+          ? 'Please select your start location first.'
+          : 'Please select both start and destination before adding passengers.';
+      setBlocker({ title, message });
+      return;
+    }
+    openAddPassenger();
   };
   const whenText = useMemo(() => {
     if (!when) return null;
@@ -200,7 +232,7 @@ export default function TripScreen({ navigation, route }: Props) {
 
         {/* Passenger summary chip (tap to edit) */}
         {(totalPassengers > 0 || totalSeats > 0) && (
-          <Pressable style={styles.summaryChip} onPress={openAddPassenger}>
+          <Pressable style={styles.summaryChip} onPress={onAddPassengerPress}>
             <Ionicons name="people-outline" size={16} color={TEXT} />
             <Text style={styles.summaryText} numberOfLines={1}>
               {chipText}
@@ -262,13 +294,37 @@ export default function TripScreen({ navigation, route }: Props) {
 
       {/* Bottom CTA */}
       <View style={styles.bottom}>
-        <Pressable style={styles.cta} onPress={openAddPassenger}>
+        <Pressable style={styles.cta} onPress={onAddPassengerPress}>
           <Text style={styles.ctaText}>+ Add Passenger</Text>
           <View style={styles.ctaArrow}>
             <AntDesign name="arrowright" size={18} color={TEXT} />
           </View>
         </Pressable>
       </View>
+
+      {/* Requirement popup */}
+      <Modal
+        visible={!!blocker}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setBlocker(null)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.popupCard}>
+            <View style={styles.popupHeader}>
+              <Text style={styles.popupCloseTxt}>Close</Text>
+              <Pressable onPress={() => setBlocker(null)} hitSlop={10}>
+                <Ionicons name="close" size={18} color="#9AA0A6" />
+              </Pressable>
+            </View>
+            <Text style={styles.popupTitle}>{blocker?.title}</Text>
+            <Text style={styles.popupBody}>{blocker?.message}</Text>
+            <Pressable style={styles.popupCta} onPress={() => setBlocker(null)}>
+              <Text style={styles.popupCtaTxt}>OK</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal>
     </SafeAreaView>
   );
 }
@@ -302,6 +358,59 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingBottom: 140, // keep clear of CTA
   },
+
+  // Popup
+  modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.25)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 24,
+  },
+  popupCard: {
+    width: '100%',
+    maxWidth: 340,
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 6,
+  },
+  popupHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  popupCloseTxt: { color: '#9AA0A6', fontFamily: 'BiennaleRegular' },
+  popupTitle: {
+    color: '#111',
+    fontSize: 18,
+    fontFamily: 'BiennaleBold',
+    textAlign: 'center',
+    marginTop: 6,
+  },
+  popupBody: {
+    color: '#6F6F6F',
+    fontSize: 14,
+    lineHeight: 20,
+    textAlign: 'center',
+    marginTop: 10,
+    paddingHorizontal: 8,
+    fontFamily: 'BiennaleRegular',
+  },
+  popupCta: {
+    alignSelf: 'center',
+    marginTop: 16,
+    backgroundColor: MINT,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  popupCtaTxt: { color: '#111', fontFamily: 'BiennaleBold' },
 
   block: {
     backgroundColor: BG,
@@ -337,7 +446,12 @@ const styles = StyleSheet.create({
   },
   rowTextWrap: { flex: 1 },
   rowLabel: { fontSize: 12, color: '#6F7378', fontFamily: 'BiennaleSemiBold' },
-  rowValue: { fontSize: 14.5, color: TEXT, fontFamily: 'BiennaleBold', marginTop: 2 },
+  rowValue: {
+    fontSize: 14.5,
+    color: TEXT,
+    fontFamily: 'BiennaleBold',
+    marginTop: 2,
+  },
   plusBadge: {
     width: 28,
     height: 28,
@@ -391,11 +505,20 @@ const styles = StyleSheet.create({
   summaryText: { color: TEXT, fontFamily: 'BiennaleBold', maxWidth: '70%' },
   summaryEdit: { color: '#4F8EF7', fontFamily: 'BiennaleBold', marginLeft: 6 },
 
-  inlineMeta: { color: '#50545A', marginTop: 10, fontFamily: 'BiennaleRegular' },
+  inlineMeta: {
+    color: '#50545A',
+    marginTop: 10,
+    fontFamily: 'BiennaleRegular',
+  },
 
   bullet: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
   bTitle: { color: TEXT, fontFamily: 'BiennaleBold' },
-  bBody: { color: '#666', marginTop: 2, lineHeight: 18, fontFamily: 'BiennaleRegular' },
+  bBody: {
+    color: '#666',
+    marginTop: 2,
+    lineHeight: 18,
+    fontFamily: 'BiennaleRegular',
+  },
 
   bottom: {
     position: 'absolute',
