@@ -3,10 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-<<<<<<< HEAD
-=======
 import { FONTS } from '../../src/theme/fonts';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
 const MINT = '#EDE8DF';  // faint map bg tint (optional)
 const INK  = '#121212';
@@ -116,19 +113,6 @@ const styles = StyleSheet.create({
     width: 32, height: 32, borderRadius: 16, backgroundColor: '#F3F3F4',
     alignItems: 'center', justifyContent: 'center',
   },
-<<<<<<< HEAD
-  headerTitle: { fontSize: 16, fontWeight: '800', color: '#111' },
-
-  /* section header (black pill + “ear”) */
-  tabWrap: { height: 32, marginLeft: 8, flexDirection: 'row', alignItems: 'center' },
-  tabPill: {
-    backgroundColor: INK,
-    borderRadius: 10,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-  },
-  tabText: { color: '#fff', fontWeight: '800', fontSize: 12 },
-=======
   headerTitle: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
 
   /* section header (black pill + “ear”) */
@@ -143,7 +127,6 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   tabText: { color: '#fff', fontSize: 12, fontFamily: FONTS.bold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   tabEar: {
     width: 28,
     height: 24,
@@ -166,9 +149,5 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: 12,
   },
-<<<<<<< HEAD
-  cardText: { color: '#111', flex: 1, fontWeight: '600' },
-=======
   cardText: { color: '#111', flex: 1, fontFamily: FONTS.semibold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

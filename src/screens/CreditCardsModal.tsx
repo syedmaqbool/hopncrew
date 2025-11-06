@@ -4,10 +4,7 @@ import { View, Text, StyleSheet, Pressable, ScrollView, Alert } from 'react-nati
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-<<<<<<< HEAD
-=======
 import { FONTS } from '../../src/theme/fonts';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -97,21 +94,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', borderWidth: 1, borderColor: '#EEE',
     alignItems: 'center', justifyContent: 'center',
   },
-<<<<<<< HEAD
-  title: { color: '#111', fontSize: 16, fontWeight: '800' },
-=======
   title: { color: '#111', fontSize: 16, fontFamily: FONTS.bold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   sheet: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-<<<<<<< HEAD
-    maxHeight: '80%',
-=======
     height: 400,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
 
   cardRow: {
@@ -122,17 +111,10 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: '#EFEFEF',
   },
-<<<<<<< HEAD
-  brand: { color: '#6E6E6E', fontWeight: '900', marginBottom: 2 },
-  mask: { color: '#111', fontWeight: '700', marginBottom: 12 },
-  expLabel: { color: '#9BA1A6', fontSize: 12 },
-  expVal: { color: '#111', fontWeight: '700', marginTop: 2 },
-=======
   brand: { color: '#6E6E6E', marginBottom: 2, fontFamily: FONTS.bold },
   mask: { color: '#111', marginBottom: 12, fontFamily: FONTS.bold },
   expLabel: { color: '#9BA1A6', fontSize: 12 },
   expVal: { color: '#111', marginTop: 2, fontFamily: FONTS.bold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   trashBtn: {
     width: 32, height: 32, borderRadius: 16,
@@ -143,16 +125,9 @@ const styles = StyleSheet.create({
     marginTop: 6, height: 50, borderRadius: 28, backgroundColor: '#111',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
-<<<<<<< HEAD
-  addText: { color: '#fff', fontWeight: '700' },
-  addIcon: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',
-=======
   addText: { color: '#fff', fontFamily: FONTS.bold },
   addIcon: {
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
 });

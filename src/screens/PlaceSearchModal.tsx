@@ -1,24 +1,3 @@
-<<<<<<< HEAD
-import React, { useRef } from 'react';
-import { SafeAreaView, View, Pressable, StyleSheet, Text } from 'react-native';
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigation/types';
-import type { GooglePlacesAutocompleteRef } from 'react-native-google-places-autocomplete';
-
-type Props = NativeStackScreenProps<RootStackParamList, 'PlaceSearch'>;
-const GOOGLE_PLACES_API_KEY = 'AIzaSyBp7k8-SYDkEkhcGbXQ9f_fAXPXmwmlvUQ'; // TODO: move to env later
-
-export default function PlaceSearchModal({ navigation, route }: Props) {
-    const ref = useRef<GooglePlacesAutocompleteRef>(null);
-
-  return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.header}>
-        <Pressable onPress={() => navigation.goBack()} style={styles.closeBtn}>
-          <Ionicons name="close" size={20} color="#111" />
-=======
 // src/screens/PlaceSearchModal.tsx
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -218,64 +197,11 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
       <View style={styles.header}>
         <Pressable onPress={() => navigation.goBack()} style={styles.closeBtn}>
           <Ionicons name="chevron-down" size={22} color="#111" />
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
         </Pressable>
         <Text style={styles.title}>Where are you going?</Text>
         <View style={{ width: 36 }} />
       </View>
 
-<<<<<<< HEAD
-      <GooglePlacesAutocomplete
-        ref={ref}
-        placeholder="Search places"
-        fetchDetails
-        textInputProps={{
-        // onFocus: () => {},
-        }}
-        autoFillOnNotFound={false}
-         currentLocation={false}
-         currentLocationLabel="Current location"
-        disableScroll={false}
-        enableHighAccuracyLocation={true}
-        filterReverseGeocodingByTypes={[]}
-        GooglePlacesDetailsQuery={{}}
-        GooglePlacesSearchQuery={{
-            rankby: 'distance',
-            type: 'restaurant',
-        }}
-
-         isRowScrollable={true}
-        keyboardShouldPersistTaps="always"
-        listUnderlayColor="#c8c7cc"
-        listViewDisplayed="auto"
-        keepResultsAfterBlur={false}
-        numberOfLines={1}
-        onFail={() => {
-            console.warn('Autocomplete failed');
-        }}
-        onNotFound={() => {
-            console.log('No results found');
-        }}
-        onTimeout={() =>
-            console.warn('Google Places Autocomplete: Request timeout')
-        }
-        predefinedPlacesAlwaysVisible={false}
-        suppressDefaultStyles={false}
-        textInputHide={false}
-
-        timeout={20000}
-
-        enablePoweredByContainer={false}
-        nearbyPlacesAPI="GooglePlacesSearch"
-        debounce={250}
-        minLength={2}
-        predefinedPlaces={[]}
-        onPress={(data, details) => {
-            console.log(data, details,"test data");
-        if (!details) return;
-          const { lat, lng } = details.geometry.location;
-          const dest = {
-=======
       {/* Search */}
       <GooglePlacesAutocomplete
         ref={ref}
@@ -317,33 +243,10 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
           if (!details) return;
           const { lat, lng } = details.geometry.location;
           handlePick({
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
             latitude: lat,
             longitude: lng,
             description: data.description,
             placeId: data.place_id,
-<<<<<<< HEAD
-          };
-          // OPTION A: merge params into existing Home route
-          // navigation.navigate({ name: 'Home', params: { dest }, merge: true });
-          // navigation.goBack();
-
-          // OPTION B (recommended): callback passed from Home
-          route.params?.onPick?.(dest);
-          navigation.goBack();
-
-
-
-        }}
-        query={{
-          key: GOOGLE_PLACES_API_KEY,
-          language: 'en',
-          // Optional: bias to current country/region
-          // components: 'country:us',
-        }}
-        
-        styles={{
-=======
           });
         }}
         /** Use styles to customize rows instead of custom renderRow (avoids onPress wiring issues) */
@@ -371,17 +274,12 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
         )}
         styles={{
           container: styles.gContainer,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
           textInputContainer: styles.inputContainer,
           textInput: styles.input,
           listView: styles.listView,
           row: styles.row,
           separator: styles.separator,
-<<<<<<< HEAD
-          description: styles.rowText,
-=======
           description: styles.rowTitle, // main text
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
         }}
       />
     </SafeAreaView>
@@ -391,26 +289,6 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
   header: {
-<<<<<<< HEAD
-    height: 56, flexDirection: 'row', alignItems: 'center',
-    paddingHorizontal: 12, justifyContent: 'space-between',
-  },
-  closeBtn: {
-    width: 36, height: 36, borderRadius: 18, backgroundColor: '#F2F2F2',
-    alignItems: 'center', justifyContent: 'center',
-  },
-  title: { fontSize: 16, fontWeight: '700', color: '#111' },
-
-  inputContainer: { paddingHorizontal: 12 },
-  input: {
-    height: 46, backgroundColor: '#F7F7F7', borderRadius: 24,
-    paddingHorizontal: 16, color: '#111',
-  },
-  listView: { marginTop: 8 },
-  row: { paddingVertical: 12, paddingHorizontal: 16 },
-  separator: { height: 1, backgroundColor: '#EFEFEF' },
-  rowText: { color: '#111' },
-=======
     height: 56,
     flexDirection: 'row',
     alignItems: 'center',
@@ -527,5 +405,4 @@ const styles = StyleSheet.create({
   chipTextActive: { color: '#fff' },
 
   emptyText: { color: '#6B7280', fontSize: 13, fontFamily: FONTS.regular },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

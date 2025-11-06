@@ -1,22 +1,9 @@
 // src/screens/AirportDetailsScreen.tsx
-<<<<<<< HEAD
-import React, { useMemo } from 'react';
-import {
-  View,
-  Text,
-  FlatList,
-  Pressable,
-  StyleSheet,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-=======
 import React, { useMemo, useRef, useState } from 'react';
 import { View, Text, FlatList, Pressable, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FONTS } from '../../src/theme/fonts';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList, AirportPOI } from '../navigation/types';
 
@@ -29,11 +16,6 @@ const fallbackData: AirportPOI[] = Array.from({ length: 12 }).map((_, i) => ({
 }));
 
 export default function AirportDetailsScreen({ navigation, route }: Props) {
-<<<<<<< HEAD
-  const items = useMemo<AirportPOI[]>(
-    () => route.params?.items ?? fallbackData,
-    [route.params?.items]
-=======
   const listRef = useRef<FlatList<AirportPOI>>(null);
   const [viewportH, setViewportH] = useState(0);
   const [contentH, setContentH] = useState(1); // avoid divide-by-zero
@@ -42,7 +24,6 @@ export default function AirportDetailsScreen({ navigation, route }: Props) {
   const items = useMemo<AirportPOI[]>(
     () => route.params?.items ?? fallbackData,
     [route.params?.items],
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   );
   const screenTitle = route.params?.title ?? 'Airport details';
 
@@ -59,17 +40,12 @@ export default function AirportDetailsScreen({ navigation, route }: Props) {
         <Ionicons name="location-outline" size={16} color="#111" />
       </View>
       <View style={{ flex: 1 }}>
-<<<<<<< HEAD
-        <Text style={styles.title} numberOfLines={1}>{item.title}</Text>
-        <Text style={styles.subtitle} numberOfLines={1}>{item.subtitle}</Text>
-=======
         <Text style={styles.title} numberOfLines={1}>
           {item.title}
         </Text>
         <Text style={styles.subtitle} numberOfLines={1}>
           {item.subtitle}
         </Text>
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       </View>
     </Pressable>
   );
@@ -86,16 +62,6 @@ export default function AirportDetailsScreen({ navigation, route }: Props) {
       </View>
 
       {/* Rounded scrollable card */}
-<<<<<<< HEAD
-      <View style={styles.card}>
-        <FlatList
-          data={items}
-          keyExtractor={(it) => it.id}
-          renderItem={renderItem}
-          ItemSeparatorComponent={() => <View style={styles.sep} />}
-          contentContainerStyle={{ paddingVertical: 8 }}
-          showsVerticalScrollIndicator
-=======
       <View
         style={styles.card}
         onLayout={e => setViewportH(e.nativeEvent.layout.height)}
@@ -118,15 +84,12 @@ export default function AirportDetailsScreen({ navigation, route }: Props) {
           viewportH={viewportH}
           contentH={contentH}
           scrollY={scrollY}
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
         />
       </View>
     </SafeAreaView>
   );
 }
 
-<<<<<<< HEAD
-=======
 function ScrollBar({
   viewportH,
   contentH,
@@ -167,7 +130,6 @@ function ScrollBar({
   );
 }
 
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
 
@@ -179,12 +141,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   hBtn: {
-<<<<<<< HEAD
-    width: 36, height: 36, borderRadius: 18,
-    backgroundColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center',
-  },
-  hTitle: { fontSize: 16, fontWeight: '700', color: '#111' },
-=======
     width: 36,
     height: 36,
     borderRadius: 18,
@@ -193,7 +149,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   hTitle: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   card: {
     flex: 1,
@@ -204,19 +159,11 @@ const styles = StyleSheet.create({
     borderColor: '#EFEFEF',
     paddingHorizontal: 10,
     // subtle shadow
-<<<<<<< HEAD
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 10,
-    shadowOffset: { width: 0, height: 4 },
-    elevation: 2,
-=======
     // shadowColor: '#000',
     // shadowOpacity: 0.06,
     // shadowRadius: 10,
     // shadowOffset: { width: 0, height: 4 },
     // elevation: 2,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
 
   row: {
@@ -227,15 +174,6 @@ const styles = StyleSheet.create({
     paddingRight: 6,
   },
   pin: {
-<<<<<<< HEAD
-    width: 28, height: 28, borderRadius: 14,
-    backgroundColor: '#F6F7F8',
-    alignItems: 'center', justifyContent: 'center',
-  },
-  title: { color: '#111', fontWeight: '700' },
-  subtitle: { color: '#8A8A8A', marginTop: 2, fontSize: 12 },
-  sep: { height: 1, backgroundColor: '#F0F0F0' },
-=======
     width: 28,
     height: 28,
     borderRadius: 14,
@@ -263,5 +201,4 @@ const styles = StyleSheet.create({
     borderRadius: 3,
     backgroundColor: '#8D8E8F',
   },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

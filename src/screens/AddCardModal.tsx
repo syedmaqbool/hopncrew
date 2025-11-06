@@ -1,18 +1,4 @@
 // src/screens/AddCardModal.tsx
-<<<<<<< HEAD
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import {
-  View, Text, StyleSheet, Pressable, TextInput, ScrollView,
-  KeyboardAvoidingView, Platform, Keyboard           // 👈 add Keyboard
-} from 'react-native';;
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { Picker } from '@react-native-picker/picker';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList, SavedCard } from '../navigation/types';
-
-=======
 import { Picker } from '@react-native-picker/picker';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
@@ -36,7 +22,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import assets from '../../assets';
 import { FONTS } from '../../src/theme/fonts';
 import type { RootStackParamList, SavedCard } from '../navigation/types';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 type Props = NativeStackScreenProps<RootStackParamList, 'AddCard'>;
 
 const MINT = '#B9FBE7';
@@ -44,12 +29,8 @@ const MINT = '#B9FBE7';
 const detectBrand = (num: string): SavedCard['brand'] => {
   const n = num.replace(/\s+/g, '');
   if (/^4\d{12,18}$/.test(n)) return 'visa';
-<<<<<<< HEAD
-  if (/^(5[1-5]|2(2[2-9]|[3-6]\d|7[01]|720))\d{12,15}$/.test(n)) return 'mastercard';
-=======
   if (/^(5[1-5]|2(2[2-9]|[3-6]\d|7[01]|720))\d{12,15}$/.test(n))
     return 'mastercard';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   if (/^3[47]\d{13}$/.test(n)) return 'amex';
   if (/^6(011|5)/.test(n)) return 'discover';
   return 'generic';
@@ -57,13 +38,6 @@ const detectBrand = (num: string): SavedCard['brand'] => {
 
 const luhn = (num: string) => {
   const s = num.replace(/\s+/g, '');
-<<<<<<< HEAD
-  let sum = 0, dbl = false;
-  for (let i = s.length - 1; i >= 0; i--) {
-    let d = parseInt(s[i], 10);
-    if (dbl) { d *= 2; if (d > 9) d -= 9; }
-    sum += d; dbl = !dbl;
-=======
   let sum = 0,
     dbl = false;
   for (let i = s.length - 1; i >= 0; i--) {
@@ -74,7 +48,6 @@ const luhn = (num: string) => {
     }
     sum += d;
     dbl = !dbl;
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   }
   return sum % 10 === 0;
 };
@@ -82,15 +55,9 @@ const luhn = (num: string) => {
 export default function AddCardModal({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const scrollRef = useRef<ScrollView>(null);
-<<<<<<< HEAD
-const [kbHeight, setKbHeight] = useState(0);
-  const [holder, setHolder] = useState('');
-  const [number, setNumber] = useState('');       // formatted with spaces
-=======
   const [kbHeight, setKbHeight] = useState(0);
   const [holder, setHolder] = useState('');
   const [number, setNumber] = useState(''); // formatted with spaces
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   const [month, setMonth] = useState<string>('');
   const [year, setYear] = useState<string>('');
   const [cvv, setCvv] = useState('');
@@ -100,24 +67,12 @@ const [kbHeight, setKbHeight] = useState(0);
 
   const years = useMemo(() => {
     const y: string[] = [];
-<<<<<<< HEAD
-    const start = new Date().getFullYear() % 100;   // YY
-=======
     const start = new Date().getFullYear() % 100; // YY
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     for (let i = 0; i <= 12; i++) y.push(String(start + i).padStart(2, '0'));
     return y;
   }, []);
 
   useEffect(() => {
-<<<<<<< HEAD
-  const showEvt = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-  const hideEvt = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-  const s = Keyboard.addListener(showEvt, e => setKbHeight(e.endCoordinates.height));
-  const h = Keyboard.addListener(hideEvt, () => setKbHeight(0));
-  return () => { s.remove(); h.remove(); };
-}, []);
-=======
     const showEvt =
       Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
     const hideEvt =
@@ -131,7 +86,6 @@ const [kbHeight, setKbHeight] = useState(0);
       h.remove();
     };
   }, []);
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   const valid = useMemo(() => {
     if (holder.trim().length < 2) return false;
@@ -154,26 +108,6 @@ const [kbHeight, setKbHeight] = useState(0);
     return digits.replace(/(.{4})/g, '$1 ').trim();
   };
 
-<<<<<<< HEAD
-  const submit = () => {
-    // if (!valid) return;
-    // const card: SavedCard = {
-    //   id: 'card_' + Date.now(),
-    //   brand,
-    //   last4: clean.slice(-4),
-    //   exp: `${month}/${year}`,
-    //   holder: holder.trim(),
-    // };
-    // route.params?.onAdded?.(card);
-    // navigation.goBack();
-    navigation.navigate('Processing', {
-  durationMs: 12000,
-  onDone: () => {
-    // e.g. go to a confirmation screen, or just close:
-    navigation.goBack();
-  },
-});
-=======
   const submit = async () => {
     if (!valid) return;
 
@@ -211,25 +145,11 @@ const [kbHeight, setKbHeight] = useState(0);
       // show a toast/alert if needed
       // Alert.alert('Card Error', (e as Error).message);
     }
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   };
 
   return (
     <View style={{ flex: 1 }}>
       {/* dim background */}
-<<<<<<< HEAD
-      <Pressable style={[StyleSheet.absoluteFillObject, { backgroundColor: 'rgba(0,0,0,0.12)' }]} onPress={() => navigation.goBack()} />
-      <SafeAreaView edges={['bottom']} style={styles.wrap}>
-       <KeyboardAvoidingView
-            behavior={Platform.select({ ios: 'padding', android: 'height' })}
-            keyboardVerticalOffset={insets.top + 16}   // 👈 important
-            style={{ flex: 1, justifyContent: 'flex-end' }}
-            >
-          <View style={[styles.sheet, { paddingTop: insets.top + 8 }]}>
-            {/* header */}
-            <View style={styles.header}>
-              <Pressable style={styles.close} onPress={() => navigation.goBack()}>
-=======
       <Pressable
         style={[
           StyleSheet.absoluteFillObject,
@@ -250,18 +170,13 @@ const [kbHeight, setKbHeight] = useState(0);
                 style={styles.close}
                 onPress={() => navigation.goBack()}
               >
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
                 <Ionicons name="close" size={18} color="#111" />
               </Pressable>
               <Text style={styles.title}>Add Card</Text>
             </View>
 
             <ScrollView
-<<<<<<< HEAD
-                ref={scrollRef}
-=======
               ref={scrollRef}
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
               keyboardShouldPersistTaps="handled"
               contentContainerStyle={{ padding: 16, paddingBottom: 20 }}
               showsVerticalScrollIndicator={false}
@@ -273,13 +188,9 @@ const [kbHeight, setKbHeight] = useState(0);
                 placeholder="Enter card holder’s name"
                 placeholderTextColor="#9AA0A6"
                 value={holder}
-<<<<<<< HEAD
-                 onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
-=======
                 onFocus={() =>
                   scrollRef.current?.scrollToEnd({ animated: true })
                 }
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
                 onChangeText={setHolder}
                 autoCapitalize="words"
               />
@@ -290,15 +201,10 @@ const [kbHeight, setKbHeight] = useState(0);
                 placeholderTextColor="#9AA0A6"
                 keyboardType="numeric"
                 value={number}
-<<<<<<< HEAD
-                onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}  // 👈 nudge up
-                onChangeText={(t) => setNumber(formatNumber(t))}
-=======
                 onFocus={() =>
                   scrollRef.current?.scrollToEnd({ animated: true })
                 } // 👈 nudge up
                 onChangeText={t => setNumber(formatNumber(t))}
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
                 maxLength={brand === 'amex' ? 17 : 19} // with spaces
               />
 
@@ -307,11 +213,7 @@ const [kbHeight, setKbHeight] = useState(0);
                   <Text style={styles.selectLabel}>Expire</Text>
                   <Picker
                     selectedValue={month}
-<<<<<<< HEAD
-                    onValueChange={(v) => setMonth(v)}
-=======
                     onValueChange={v => setMonth(v)}
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
                     style={styles.picker}
                   >
                     <Picker.Item label="MM" value="" />
@@ -323,16 +225,6 @@ const [kbHeight, setKbHeight] = useState(0);
                 </View>
 
                 <View style={[styles.selectBox, { flex: 1 }]}>
-<<<<<<< HEAD
-                  <Text style={styles.selectLabel}>{' '}</Text>
-                  <Picker
-                    selectedValue={year}
-                    onValueChange={(v) => setYear(v)}
-                    style={styles.picker}
-                  >
-                    <Picker.Item label="YY" value="" />
-                    {years.map((y) => (
-=======
                   <Text style={styles.selectLabel}> </Text>
                   <Picker
                     selectedValue={year}
@@ -341,26 +233,17 @@ const [kbHeight, setKbHeight] = useState(0);
                   >
                     <Picker.Item label="YY" value="" />
                     {years.map(y => (
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
                       <Picker.Item key={y} label={y} value={y} />
                     ))}
                   </Picker>
                 </View>
 
                 <TextInput
-<<<<<<< HEAD
-                  style={[styles.input, { flex: 1 }]}
-=======
                   style={[styles.cvv, { flex: 1 }]}
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
                   placeholder="CVV"
                   placeholderTextColor="#9AA0A6"
                   keyboardType="numeric"
                   value={cvv}
-<<<<<<< HEAD
-                  onFocus={() => scrollRef.current?.scrollToEnd({ animated: true })}
-                  onChangeText={(t) => setCvv(t.replace(/\D+/g, '').slice(0, brand === 'amex' ? 4 : 3))}
-=======
                   onFocus={() =>
                     scrollRef.current?.scrollToEnd({ animated: true })
                   }
@@ -369,7 +252,6 @@ const [kbHeight, setKbHeight] = useState(0);
                       t.replace(/\D+/g, '').slice(0, brand === 'amex' ? 4 : 3),
                     )
                   }
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
                   secureTextEntry
                 />
               </View>
@@ -377,14 +259,6 @@ const [kbHeight, setKbHeight] = useState(0);
               {/* Square info pill */}
               <View style={styles.squarePill}>
                 <View style={styles.squareLogo}>
-<<<<<<< HEAD
-                  <Text style={{ color: '#111', fontWeight: '800' }}>■</Text>
-                </View>
-                <Text style={{ flex: 1, color: '#111' }}>
-                  Square hold funds and charge after drop-off
-                </Text>
-                <Ionicons name="information-circle-outline" size={18} color="#111" />
-=======
                   <Image
                     source={assets.images.squareIcon}
                     style={{ width: 20, height: 20, resizeMode: 'contain' }}
@@ -398,7 +272,6 @@ const [kbHeight, setKbHeight] = useState(0);
                   size={18}
                   color="#111"
                 />
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
               </View>
 
               {/* Supported brands row (visual only) */}
@@ -407,14 +280,6 @@ const [kbHeight, setKbHeight] = useState(0);
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.brandsRow}
               >
-<<<<<<< HEAD
-                <BrandPill label="Visa" />
-                <BrandPill label="Mastercard" />
-                <BrandPill label="Amex" />
-                <BrandPill label="Discover" />
-                <BrandPill label="Apple Pay" />
-                <BrandPill label="G Pay" />
-=======
                 <BrandPill icon={assets.images.payment1} />
                 <BrandPill icon={assets.images.payment2} />
                 <BrandPill icon={assets.images.payment3} />
@@ -422,20 +287,15 @@ const [kbHeight, setKbHeight] = useState(0);
                 <BrandPill icon={assets.images.payment5} />
                 <BrandPill icon={assets.images.payment6} />
                 <BrandPill icon={assets.images.payment7} />
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
               </ScrollView>
             </ScrollView>
 
             {/* CTA */}
-<<<<<<< HEAD
-            <Pressable style={[styles.cta, !valid && { opacity: 0.5 }]} onPress={submit} disabled={!valid}>
-=======
             <Pressable
               style={[styles.cta, !valid && { opacity: 0.5 }]}
               onPress={submit}
               disabled={!valid}
             >
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
               <Text style={styles.ctaText}>+ Add Card</Text>
               <View style={styles.ctaIcon}>
                 <Ionicons name="arrow-forward" size={18} color="#111" />
@@ -448,12 +308,6 @@ const [kbHeight, setKbHeight] = useState(0);
   );
 }
 
-<<<<<<< HEAD
-function BrandPill({ label }: { label: string }) {
-  return (
-    <View style={styles.brandPill}>
-      <Text style={{ color: '#111', fontWeight: '700', fontSize: 12 }}>{label}</Text>
-=======
 function BrandPill({ icon }: { icon: any }) {
   return (
     <View style={styles.brandPill}>
@@ -472,7 +326,6 @@ function BrandPill({ icon }: { icon: any }) {
           }}
         />
       )}
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     </View>
   );
 }
@@ -486,16 +339,6 @@ const styles = StyleSheet.create({
     maxHeight: '96%',
   },
   header: {
-<<<<<<< HEAD
-    flexDirection: 'row', alignItems: 'center', paddingHorizontal: 16, paddingTop: 6, paddingBottom: 6,
-  },
-  close: {
-    width: 32, height: 32, borderRadius: 16, backgroundColor: '#F3F4F6',
-    alignItems: 'center', justifyContent: 'center', marginRight: 8,
-  },
-  title: { color: '#111', fontWeight: '800', fontSize: 18 },
-  sub: { color: '#6F6F6F', marginBottom: 8 },
-=======
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: 16,
@@ -513,7 +356,6 @@ const styles = StyleSheet.create({
   },
   title: { color: '#111', fontSize: 18, fontFamily: FONTS.bold },
   sub: { color: '#6F6F6F', marginBottom: 8, fontFamily: FONTS.regular },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   input: {
     height: 46,
@@ -527,36 +369,6 @@ const styles = StyleSheet.create({
   },
 
   selectBox: {
-<<<<<<< HEAD
-    borderWidth: 1, borderColor: '#E6E6E6', borderRadius: 14, overflow: 'hidden',
-    backgroundColor: '#fff', marginTop: 10,
-  },
-  selectLabel: { position: 'absolute', top: -18, left: 4, color: '#6F6F6F', fontSize: 12 },
-  picker: { height: 46, color: '#111' },
-
-  squarePill: {
-    marginTop: 16, backgroundColor: MINT, borderRadius: 14, padding: 12,
-    flexDirection: 'row', alignItems: 'center', gap: 10,
-  },
-  squareLogo: {
-    width: 26, height: 26, borderRadius: 6, backgroundColor: '#fff',
-    alignItems: 'center', justifyContent: 'center',
-  },
-
-  brandsRow: { gap: 8, paddingHorizontal: 16, paddingBottom: 10, marginTop: 16 },
-  brandPill: {
-    paddingHorizontal: 10, paddingVertical: 8, borderRadius: 10, backgroundColor: '#F6F7F8', borderWidth: 1, borderColor: '#EEE',
-  },
-
-  cta: {
-    margin: 16, height: 50, borderRadius: 28, backgroundColor: '#111',
-    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
-  },
-  ctaText: { color: '#fff', fontWeight: '800' },
-  ctaIcon: {
-    width: 32, height: 32, borderRadius: 16, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
-=======
     borderWidth: 1,
     borderColor: '#E6E6E6',
     borderRadius: 14,
@@ -644,6 +456,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'absolute',
     right: 10,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
 });

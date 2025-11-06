@@ -17,10 +17,7 @@ import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Picker } from '@react-native-picker/picker';
-<<<<<<< HEAD
-=======
 import { FONTS } from '../../src/theme/fonts';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -270,21 +267,14 @@ const styles = StyleSheet.create({
     borderWidth: 1, borderColor: '#EEE',
     alignItems: 'center', justifyContent: 'center',
   },
-<<<<<<< HEAD
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111' },
-=======
   headerTitle: { fontSize: 18, color: '#111', fontFamily: FONTS.bold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   helper: {
     textAlign: 'center',
     color: '#6C7075',
     marginTop: 6,
     marginBottom: 10,
-<<<<<<< HEAD
-=======
     fontFamily: FONTS.regular,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
 
   avatarWrap: { alignItems: 'center', marginTop: 6 },
@@ -305,11 +295,7 @@ const styles = StyleSheet.create({
   avatarLabel: {
     textAlign: 'center',
     color: '#111',
-<<<<<<< HEAD
-    fontWeight: '700',
-=======
     fontFamily: FONTS.bold,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     marginTop: 8,
     marginBottom: 12,
   },
@@ -332,11 +318,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff', borderRadius: 24,
     paddingVertical: 10, paddingHorizontal: 12,
   },
-<<<<<<< HEAD
-  ccTxt: { fontSize: 14, color: '#111' },
-=======
   ccTxt: { fontSize: 14, color: '#111', fontFamily: FONTS.regular },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   switchRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
   checkboxLike: {
@@ -345,17 +327,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#F6F7F8',
     borderWidth: 1, borderColor: '#EEE',
   },
-<<<<<<< HEAD
-  switchLabel: { color: '#111', fontWeight: '600' },
-
-  cta: {
-    margin: 16,
-=======
   switchLabel: { color: '#111', fontFamily: FONTS.semibold },
 
   cta: {
     margin: 20,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     height: 50,
     borderRadius: 28,
     backgroundColor: '#111',
@@ -364,17 +339,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-<<<<<<< HEAD
-  ctaTxt: { color: '#fff', fontWeight: '700' },
-  ctaIcon: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center',
-=======
   ctaTxt: { color: '#fff', fontFamily: FONTS.bold },
   ctaIcon: {
     width: 32, height: 32, borderRadius: 16,
     backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
 
   modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.25)', justifyContent: 'flex-end' },
@@ -386,9 +354,5 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 16,
     borderTopRightRadius: 16,
   },
-<<<<<<< HEAD
-  modalTitle: { fontSize: 16, fontWeight: '700', color: '#111', marginBottom: 8 },
-=======
   modalTitle: { fontSize: 16, color: '#111', marginBottom: 8, fontFamily: FONTS.bold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

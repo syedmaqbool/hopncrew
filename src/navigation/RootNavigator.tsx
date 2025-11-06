@@ -21,9 +21,6 @@ import ScheduleRideScreen from '../screens/ScheduleRideScreen';
 import WhyChooseUsModal from '../screens/WhyChooseUsModal';
 import FareOptionsModal from '../screens/FareOptionsModal';
 import SpecialRequestModal from '../screens/SpecialRequestModal';
-<<<<<<< HEAD
-import PoliciesModal from '../screens/PoliciesModal';
-=======
 import ChildSeatInfoModal from '../screens/ChildSeatInfoModal';
 import PoliciesModal from '../screens/PoliciesModal';
 import PassengerWaitModel from '../screens/PassengerWaitModel';
@@ -32,17 +29,11 @@ import CancelChangeModel from '../screens/CancelChangeModel';
 import RefundModal from '../screens/RefundModal';
 import GuaranteedPickupModel from '../screens/GuaranteedPickupModel';
 import TollsModel from '../screens/TollsModel';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import ConfirmRequestScreen from '../screens/ConfirmRequestScreen';
 import PaymentBreakdownModal from '../screens/PaymentBreakdownModal';
 import PaymentMethodsModal from '../screens/PaymentMethodsModal';
 import AddCardModal from '../screens/AddCardModal';
 import ProcessingBookingModal from '../screens/ProcessingBookingModal';
-<<<<<<< HEAD
-import EnRoutePickupModal from '../screens/EnRoutePickupModal'
-import EditProfileModal from '../screens/EditProfileModal'
-import MyRidesModal from '../screens/MyRidesModal'
-=======
 import BookingReceivedModal from '../screens/BookingReceivedModal';
 import BookingReceivedTerms from '../screens/BookingReceivedTerms';
 import CancelRideModal from '../screens/CancelRideModal';
@@ -54,7 +45,6 @@ import ContactSupport from '../screens/ContactSupport';
 import EnRoutePickupModal from '../screens/EnRoutePickupModal';
 import EditProfileModal from '../screens/EditProfileModal';
 import MyRidesModal from '../screens/MyRidesModal';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import RideDetailsModal from '../screens/RideDetailsModal';
 import NotificationsScreen from '../screens/NotificationsScreen';
 import WalletScreen from '../screens/WalletScreen';
@@ -66,16 +56,6 @@ import SettingsModal from '../screens/SettingsModal';
 import AccountSettingsModal from '../screens/AccountSettingsModal';
 import FavouriteAddressesModal from '../screens/FavouriteAddressesModal';
 import AppDrawer from './AppDrawer';
-<<<<<<< HEAD
-const Stack = createNativeStackNavigator<RootStackParamList>();
-
-export default function RootNavigator({ initialRoute = 'Login' as keyof RootStackParamList }) {
-  return (
-
-//     </Stack.Navigator>
-
-<Stack.Navigator initialRouteName={initialRoute} screenOptions={{ headerShown: false }}>
-=======
 import RideSelectionScreen from '../screens/RideSelectionScreen';
 import FlightDetails from '../screens/FlightDetails';
 import ScheduleFlightScreen from '../screens/ScheduleFlightScreen';
@@ -100,7 +80,6 @@ export default function RootNavigator({
     >
       {/* Entry */}
       <Stack.Screen name="RideSelection" component={RideSelectionScreen} />
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       {/* Auth */}
       <Stack.Screen name="Login" component={LoginScreen} />
       <Stack.Screen name="Signup" component={SignupScreen} />
@@ -113,28 +92,6 @@ export default function RootNavigator({
       {/* <Stack.Screen name="Home" component={HomeScreen} />  ← delete */}
 
       {/* Regular stack screens (if not in drawer) */}
-<<<<<<< HEAD
-      <Stack.Screen name="Details" component={DetailsScreen} options={{ headerShown: true, title: 'Details' }}/>
-      <Stack.Screen name="Location" component={LocationScreen} />
-      <Stack.Screen name="MapTracking" component={MapTrackingScreen} />
-      <Stack.Screen name="Trip" component={TripScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="AirportDetails" component={AirportDetailsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Notifications" component={NotificationsScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Wallet" component={WalletScreen} options={{ headerShown: false }} />
-      <Stack.Screen name="Payment" component={PaymentScreen} options={{ headerShown: false }} />
-
-
-
-
-      {/* Transparent/bottom-sheet modals */}
-      <Stack.Group screenOptions={{ presentation: 'transparentModal', headerShown: false, contentStyle: { backgroundColor: 'transparent' } }}>
-        <Stack.Screen name="SaveFavorite" component={SaveFavoriteModal} />
-        <Stack.Screen name="SaveFavoriteDetails" component={SaveFavoriteDetailsModal} />
-        <Stack.Screen name="AddPassenger" component={AddPassengerModal} />
-        <Stack.Screen name="AddLuggage" component={AddLuggageModal} />
-        <Stack.Screen name="LuggageScanInfo" component={LuggageScanInfoModal} />
-        <Stack.Screen name="OversizedLuggage" component={OversizedLuggageModal} />
-=======
       <Stack.Screen
         name="Details"
         component={DetailsScreen}
@@ -235,16 +192,10 @@ export default function RootNavigator({
           name="OversizedLuggage"
           component={OversizedLuggageModal}
         />
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
         <Stack.Screen name="WhyChooseUs" component={WhyChooseUsModal} />
         <Stack.Screen name="FareOptions" component={FareOptionsModal} />
         <Stack.Screen name="SpecialRequest" component={SpecialRequestModal} />
         <Stack.Screen name="Policies" component={PoliciesModal} />
-<<<<<<< HEAD
-        <Stack.Screen name="ConfirmRequest" component={ConfirmRequestScreen} />
-        <Stack.Screen name="ScheduleRide" component={ScheduleRideScreen} />
-        <Stack.Screen name="PaymentBreakdown" component={PaymentBreakdownModal} />
-=======
         <Stack.Screen name="PassengerWait" component={PassengerWaitModel} />
         <Stack.Screen name="DriverLate" component={DriverLateModal} />
         <Stack.Screen name="CancelChange" component={CancelChangeModel} />
@@ -266,23 +217,10 @@ export default function RootNavigator({
         <Stack.Screen name="AirportGuide" component={AirportGuideModal} />
         <Stack.Screen name="SelectDeparture" component={SelectDepartureModal} />
         <Stack.Screen name="FlightManual" component={FlightManualModal} />
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
         {/* If you want the Places modal here, keep naming consistent */}
         <Stack.Screen name="PlaceSearch" component={PlaceSearchModal} />
         <Stack.Screen name="PaymentMethods" component={PaymentMethodsModal} />
         <Stack.Screen name="AddCard" component={AddCardModal} />
-<<<<<<< HEAD
-        <Stack.Screen
-            name="Processing"
-            component={ProcessingBookingModal}
-            options={{
-              presentation: 'transparentModal',
-              headerShown: false,
-              contentStyle: { backgroundColor: 'transparent' }, // keep map visible
-            }}
-          />
-          <Stack.Screen
-=======
         <Stack.Screen name="BookingReceived" component={BookingReceivedModal} />
         <Stack.Screen
           name="BookingReceivedTerms"
@@ -296,7 +234,6 @@ export default function RootNavigator({
         <Stack.Screen name="NoRideAvaiable" component={NoRideAvaiable} />
         <Stack.Screen name="RideConfirmed" component={RideConfirmed} />
         <Stack.Screen
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
           name="EnRoute"
           component={EnRoutePickupModal}
           options={{
@@ -333,17 +270,6 @@ export default function RootNavigator({
           }}
         />
         <Stack.Screen
-<<<<<<< HEAD
-        name="CreditCards"
-        component={CreditCardsModal}
-        options={{
-          presentation: 'transparentModal',
-          headerShown: false,
-          contentStyle: { backgroundColor: 'transparent' },
-        }}
-      />
-      <Stack.Screen
-=======
           name="CreditCards"
           component={CreditCardsModal}
           options={{
@@ -353,7 +279,6 @@ export default function RootNavigator({
           }}
         />
         <Stack.Screen
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
           name="GooglePay"
           component={GooglePayModal}
           options={{
@@ -363,26 +288,6 @@ export default function RootNavigator({
           }}
         />
         <Stack.Screen
-<<<<<<< HEAD
-        name="AddPaymentMethod"
-        component={AddPaymentMethodModal}
-        options={{
-          presentation: 'transparentModal',
-          headerShown: false,
-          contentStyle: { backgroundColor: 'transparent' },
-        }}
-      />
-      <Stack.Screen
-        name="Settings"
-        component={SettingsModal}
-        options={{
-          presentation: 'transparentModal',
-          headerShown: false,
-          contentStyle: { backgroundColor: 'transparent' },
-        }}
-      />
-      <Stack.Screen
-=======
           name="AddPaymentMethod"
           component={AddPaymentMethodModal}
           options={{
@@ -401,7 +306,6 @@ export default function RootNavigator({
           }}
         />
         <Stack.Screen
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
           name="AccountSettings"
           component={AccountSettingsModal}
           options={{
@@ -412,17 +316,6 @@ export default function RootNavigator({
         />
 
         <Stack.Screen
-<<<<<<< HEAD
-        name="FavouriteAddresses"
-        component={FavouriteAddressesModal}
-        options={{
-          presentation: 'transparentModal',
-          headerShown: false,
-          contentStyle: { backgroundColor: 'transparent' },
-        }}
-      />
-
-=======
           name="FavouriteAddresses"
           component={FavouriteAddressesModal}
           options={{
@@ -431,7 +324,6 @@ export default function RootNavigator({
             contentStyle: { backgroundColor: 'transparent' },
           }}
         />
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       </Stack.Group>
     </Stack.Navigator>
   );

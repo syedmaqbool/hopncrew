@@ -1,22 +1,4 @@
 // src/screens/ProcessingBookingModal.tsx
-<<<<<<< HEAD
-import React, { useEffect, useMemo, useRef } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Pressable,
-  SafeAreaView,
-  Animated,
-  Easing,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigation/types';
-=======
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
@@ -38,22 +20,10 @@ import MapboxGL from '@rnmapbox/maps';
 import type { RootStackParamList } from '../navigation/types';
 import assets from '../../assets';
 import { FONTS } from '../../src/theme/fonts';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Processing'>;
 
 const MINT = '#B9FBE7';
-<<<<<<< HEAD
-
-export default function ProcessingBookingModal({ navigation, route }: Props) {
-  const insets = useSafeAreaInsets();
-  const durationMs = route.params?.durationMs ?? 10000;
-  const onDone = route.params?.onDone;
-
-  // ring rotation
-  const spin = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-=======
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v12';
 const MAPBOX_TOKEN =
   'pk.eyJ1IjoicmFmYXlhc2FkMDEiLCJhIjoiY21oazdxanQwMDR5cTJrc2NiZGZiZ3phMyJ9.beHDnNh5y6l-9ThZ1TR64A';
@@ -181,7 +151,6 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
   // ring rotation
   const spin = useRef(new Animated.Value(0)).current;
   React.useEffect(() => {
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     const loop = Animated.loop(
       Animated.timing(spin, {
         toValue: 1,
@@ -193,35 +162,20 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
     loop.start();
     return () => loop.stop();
   }, [spin]);
-<<<<<<< HEAD
-
-=======
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   const spinDeg = spin.interpolate({
     inputRange: [0, 1],
     outputRange: ['0deg', '360deg'],
   });
 
-<<<<<<< HEAD
-  // progress bar
-  const progress = useRef(new Animated.Value(0)).current;
-  useEffect(() => {
-=======
   // progress
   const progress = useRef(new Animated.Value(0)).current;
   React.useEffect(() => {
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     Animated.timing(progress, {
       toValue: 1,
       duration: durationMs,
       easing: Easing.inOut(Easing.ease),
       useNativeDriver: false,
     }).start(({ finished }) => {
-<<<<<<< HEAD
-      if (finished) onDone?.();
-    });
-  }, [progress, durationMs, onDone]);
-=======
       if (!finished) return;
       if (typeof onDone === 'function') {
         onDone();
@@ -230,46 +184,12 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
       }
     });
   }, [progress, durationMs, onDone, navigation]);
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   const progressWidth = progress.interpolate({
     inputRange: [0, 1],
     outputRange: ['0%', '100%'],
   });
 
-<<<<<<< HEAD
-  // 8 avatars around a circle
-  const dots = useMemo(
-    () =>
-      Array.from({ length: 8 }).map((_, i) => {
-        const angle = (i / 8) * 2 * Math.PI;
-        const r = 54;
-        return {
-          left: 54 + r * Math.cos(angle) - 12,
-          top: 54 + r * Math.sin(angle) - 12,
-          key: i.toString(),
-        };
-      }),
-    [],
-  );
-
-  return (
-    <View style={styles.fill}>
-      {/* tap outside to close (optional) */}
-      <Pressable style={styles.backdrop} onPress={() => navigation.goBack()} />
-
-      {/* Top overlay back button */}
-      <View style={[styles.overlayTop, { paddingTop: insets.top + 6 }]}>
-        <Pressable style={styles.roundBtn} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={18} color="#111" />
-        </Pressable>
-      </View>
-
-      {/* Bottom sheet */}
-      <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
-        <View style={styles.sheet}>
-          {/* circle animation */}
-=======
   // avatar ring dots
   const dots = useMemo(() => {
     return Array.from({ length: avatarImages.length }).map((_, i) => {
@@ -380,46 +300,24 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
       {/* SHEET: 50% */}
       <SafeAreaView style={styles.sheetHalf}>
         <View style={styles.sheet}>
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
           <View style={styles.ringWrap}>
             <Animated.View
               style={[styles.ring, { transform: [{ rotate: spinDeg }] }]}
             >
-<<<<<<< HEAD
-              {dots.map(d => (
-=======
               {dots.map((d, i) => (
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
                 <View
                   key={d.key}
                   style={[styles.dot, { left: d.left, top: d.top }]}
                 >
-<<<<<<< HEAD
-                  <MaterialCommunityIcons
-                    name="account"
-                    size={16}
-                    color="#fff"
-=======
                   <Image
                     source={avatarImages[i % avatarImages.length]}
                     style={styles.avatarImg}
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
                   />
                 </View>
               ))}
             </Animated.View>
           </View>
 
-<<<<<<< HEAD
-          <Text style={styles.title}>We are processing your booking…</Text>
-
-          {/* progress bar */}
-          <View style={styles.progressTrack}>
-            <Animated.View style={[styles.progressFill, { width: progressWidth }]} />
-          </View>
-
-          {/* trust row */}
-=======
           <Text style={styles.title}>We are processing your booking...</Text>
 
           <View style={styles.progressTrack}>
@@ -428,25 +326,16 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
             />
           </View>
 
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
           <View style={{ marginTop: 16, alignItems: 'center' }}>
             <Text style={styles.subhead}>
               Over 8 million km of airport transfers by pro{'\n'}partners in 20
               years
             </Text>
-<<<<<<< HEAD
-
-=======
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
             <View style={styles.stars}>
               {[...Array(5)].map((_, i) => (
                 <AntDesign key={i} name="star" size={16} color="#FFC107" />
               ))}
             </View>
-<<<<<<< HEAD
-
-=======
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
             <View style={styles.identityRow}>
               <Ionicons name="shield-checkmark" size={16} color="#111" />
               <Text style={styles.identityTxt}>Identity verified</Text>
@@ -459,29 +348,6 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
-<<<<<<< HEAD
-  fill: { flex: 1 },
-  backdrop: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'transparent', // keep map visible
-  },
-  overlayTop: {
-    position: 'absolute',
-    top: 0, left: 0, right: 0,
-    zIndex: 10,
-    paddingHorizontal: 12,
-  },
-  roundBtn: {
-    width: 34, height: 34, borderRadius: 17,
-    backgroundColor: '#fff',
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: '#EEE',
-  },
-
-  sheetWrap: { flex: 1, justifyContent: 'flex-end' },
-  sheet: {
-    backgroundColor: '#fff',
-=======
   screen: { flex: 1, backgroundColor: '#fff' },
 
   // Top 50%
@@ -531,27 +397,11 @@ const styles = StyleSheet.create({
   },
   sheet: {
     flex: 1,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 18,
     paddingTop: 18,
     paddingBottom: 22,
-<<<<<<< HEAD
-  },
-
-  ringWrap: { alignItems: 'center', marginTop: 8 },
-  ring: {
-    width: 108, height: 108, borderRadius: 54,
-    backgroundColor: '#F1F2F4',
-    alignItems: 'center', justifyContent: 'center',
-  },
-  dot: {
-    position: 'absolute',
-    width: 24, height: 24, borderRadius: 12,
-    backgroundColor: '#72e0bf',
-    alignItems: 'center', justifyContent: 'center',
-=======
     overflow: 'hidden',
     // marginTop: -24,
     // marginTop: 60,
@@ -575,7 +425,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#72e0bf',
     alignItems: 'center',
     justifyContent: 'center',
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
 
   title: {
@@ -583,14 +432,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#111',
     fontSize: 14,
-<<<<<<< HEAD
-    fontWeight: '600',
-  },
-
-=======
     fontFamily: FONTS.semibold,
   },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   progressTrack: {
     height: 6,
     borderRadius: 3,
@@ -598,24 +441,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     marginTop: 12,
   },
-<<<<<<< HEAD
-  progressFill: {
-    height: '100%',
-    backgroundColor: MINT,
-  },
-=======
   progressFill: { height: '100%', backgroundColor: MINT },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   subhead: {
     color: '#111',
     textAlign: 'center',
     marginTop: 8,
-<<<<<<< HEAD
-    fontWeight: '700',
-=======
     fontFamily: FONTS.bold,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
   stars: {
     flexDirection: 'row',
@@ -629,10 +461,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 8,
   },
-<<<<<<< HEAD
-  identityTxt: { color: '#111', fontWeight: '600' },
-=======
   identityTxt: { color: '#111', fontFamily: FONTS.semibold },
   avatarImg: { width: 24, height: 24, borderRadius: 12, resizeMode: 'cover' },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

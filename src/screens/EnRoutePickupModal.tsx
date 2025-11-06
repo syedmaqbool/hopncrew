@@ -7,10 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-<<<<<<< HEAD
-=======
 import { FONTS } from '../../src/theme/fonts';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
 
@@ -237,40 +234,12 @@ const styles = StyleSheet.create({
 
   // keep using your existing inner styles:
   headerRow: { flexDirection: 'row', alignItems: 'center' },
-<<<<<<< HEAD
-  hi: { color: '#111', fontSize: 22, fontWeight: '800' },
-  sub: { color: '#6C7075', marginTop: 2, fontWeight: '600' },
-=======
   hi: { color: '#111', fontSize: 22, fontFamily: FONTS.bold },
   sub: { color: '#6C7075', marginTop: 2, fontFamily: FONTS.semibold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   eta: {
     width: 74, height: 74, borderRadius: 12,
     backgroundColor: '#111', alignItems: 'center', justifyContent: 'center',
   },
-<<<<<<< HEAD
-  etaNum: { color: '#fff', fontSize: 28, fontWeight: '800' },
-  etaMin: { color: '#fff' },
-  chipsRow: { flexDirection: 'row', gap: 10, marginTop: 12, alignItems: 'center' },
-  chipDark: { backgroundColor: '#111', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 14 },
-  chipDarkTxt: { color: '#fff', fontWeight: '700' },
-  chip: { flexDirection: 'row', alignItems: 'center', gap: 6, borderRadius: 14, paddingHorizontal: 10, paddingVertical: 6, backgroundColor: '#F6F7F8', borderWidth: 1, borderColor: '#EEE' },
-  chipTxt: { color: '#6C7075', fontWeight: '700' },
-  cardRow: { flexDirection: 'row', gap: 12, marginTop: 14, flex: 1 }, // let rows take available height
-  driverCard: { flex: 1, borderRadius: 16, backgroundColor: '#fff', borderWidth: 0, borderColor: '#EFEFEF', padding: 12 },
-  avatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#B9FBE7', alignItems: 'center', justifyContent: 'center' },
-  driverName: { color: '#111', fontWeight: '800' },
-  driverMeta: { color: '#6C7075', fontSize: 12, marginTop: 2 },
-  verifiedRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
-  verifiedTxt: { color: '#111', fontWeight: '600', marginLeft: 6 },
-  vehicleCard: { width: 150, borderRadius: 16, backgroundColor: '#F6F7F8', borderWidth: 1, borderColor: '#EFEFEF', padding: 10 },
-  platePill: { backgroundColor: '#fff', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 10, borderWidth: 1, borderColor: '#EEE' },
-  plateTxt: { color: '#111', fontWeight: '700', fontSize: 12 },
-  vehicleLabel: { color: '#6C7075', fontSize: 11, textAlign: 'right', marginTop: 6 },
-  actionsRow: { flexDirection: 'row', gap: 12, marginTop: 12 },
-  action: { flex: 1, height: 44, borderRadius: 22, backgroundColor: '#fff', borderWidth: 1, borderColor: '#EEE', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8 },
-  actionTxt: { color: '#111', fontWeight: '700' },
-=======
   etaNum: { color: '#fff', fontSize: 28, fontFamily: FONTS.bold },
   etaMin: { color: '#fff', fontFamily: FONTS.regular },
   chipsRow: { flexDirection: 'row', gap: 10, marginTop: 12, alignItems: 'center' },
@@ -292,5 +261,4 @@ const styles = StyleSheet.create({
   actionsRow: { flexDirection: 'row', gap: 12, marginTop: 12 },
   action: { flex: 1, height: 44, borderRadius: 22, backgroundColor: '#fff', borderWidth: 1, borderColor: '#EEE', alignItems: 'center', justifyContent: 'center', flexDirection: 'row', gap: 8 },
   actionTxt: { color: '#111', fontFamily: FONTS.bold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 });

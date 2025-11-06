@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { loadAuth, saveAuth, clearAuth } from '../storage/authStorage';
-
-type AuthUser = { id: number; first_name: string; last_name: string; email: string };
-=======
 import React, {
   createContext,
   useContext,
@@ -21,7 +15,6 @@ type AuthUser = {
   profile_picture?: string | null;
   email: string;
 };
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 type AuthState = { token: string; user: AuthUser };
 
 type AuthCtx = {
@@ -41,34 +34,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     (async () => {
       const restored = await loadAuth();
-<<<<<<< HEAD
-      if (restored) setAuth(restored);
-=======
       if (restored) {
         setAuth(restored);
         await setAuthToken(restored.token);
       } else {
         await setAuthToken(null);
       }
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       setBootstrapped(true);
     })();
   }, []);
 
-<<<<<<< HEAD
-  const value = useMemo<AuthCtx>(() => ({
-    bootstrapped,
-    auth,
-    signIn: async (s) => { await saveAuth(s); setAuth(s); },
-    signOut: async () => { await clearAuth(); setAuth(null); },
-    updateUser: async (patch) => {
-      if (!auth) return;
-      const next = { ...auth, user: { ...auth.user, ...patch } };
-      await saveAuth(next);
-      setAuth(next);
-    },
-  }), [auth, bootstrapped]);
-=======
   const value = useMemo<AuthCtx>(
     () => ({
       bootstrapped,
@@ -92,7 +67,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }),
     [auth, bootstrapped],
   );
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

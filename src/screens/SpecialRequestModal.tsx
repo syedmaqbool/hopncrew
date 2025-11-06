@@ -6,10 +6,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-<<<<<<< HEAD
-=======
 import { FONTS } from '../../src/theme/fonts';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList, SpecialRequestPayload } from '../navigation/types';
 
@@ -115,17 +112,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16, paddingTop: 12, paddingBottom: 18,
   },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-<<<<<<< HEAD
-  title: { color: '#111', fontWeight: '800', fontSize: 16 },
-  close: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center' },
-
-  sub: { color: '#666', marginTop: 6, marginBottom: 10 },
-  checkboxRow: { flexDirection: 'row', gap: 18, marginBottom: 10 },
-  checkWrap: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  checkLabel: { color: '#111', fontWeight: '600' },
-
-  label: { color: '#111', fontWeight: '700', marginTop: 6, marginBottom: 6 },
-=======
   title: { color: '#111', fontSize: 16, fontFamily: FONTS.bold },
   close: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#F2F2F2', alignItems: 'center', justifyContent: 'center' },
 
@@ -135,7 +121,6 @@ const styles = StyleSheet.create({
   checkLabel: { color: '#111', fontFamily: FONTS.semibold },
 
   label: { color: '#111', marginTop: 6, marginBottom: 6, fontFamily: FONTS.bold },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   note: {
     minHeight: 90, borderWidth: 1, borderColor: '#EFEFEF', borderRadius: 12,
     padding: 10, color: '#111', backgroundColor: '#fff',
@@ -145,16 +130,9 @@ const styles = StyleSheet.create({
     marginTop: 14, height: 48, borderRadius: 28, backgroundColor: '#111',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
-<<<<<<< HEAD
-  ctaText: { color: '#fff', fontWeight: '700' },
-  ctaIcon: {
-    width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
-=======
   ctaText: { color: '#fff', fontFamily: FONTS.bold },
   ctaIcon: {
     width: 30, height: 30, borderRadius: 15, backgroundColor: MINT,
     alignItems: 'center', justifyContent: 'center',position: 'absolute', right: 10,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   },
 });

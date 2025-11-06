@@ -6,11 +6,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
-<<<<<<< HEAD
-=======
 import assets from '../../assets';
 import { FONTS } from '../../src/theme/fonts';
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MyRides'>;
 
@@ -97,11 +94,7 @@ function RideCard({ ride }: { ride: Ride }) {
 
       {/* Map thumbnail (placeholder box; drop your image if you have one) */}
       <View style={styles.mapThumb}>
-<<<<<<< HEAD
-        {/* <Image source={ride.mapThumb} style={{width:'100%',height:'100%'}} resizeMode="cover" /> */}
-=======
         <Image source={assets.images.rideMap} style={{width:'100%',height:'100%', borderRadius: 8}} resizeMode="cover" />
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       </View>
 
       {/* From / To */}
@@ -140,19 +133,11 @@ const styles = StyleSheet.create({
     width: 34, height: 34, borderRadius: 17, backgroundColor: '#fff',
     borderWidth: 1, borderColor: '#EEE', alignItems: 'center', justifyContent: 'center',
   },
-<<<<<<< HEAD
-  headerTitle: { fontSize: 18, fontWeight: '800', color: '#111' },
-
-  segmentWrap: {
-    marginHorizontal: 16, marginTop: 10, marginBottom: 6,
-    borderRadius: 20, backgroundColor: '#F4F5F6', padding: 4,
-=======
   headerTitle: { fontSize: 18, color: '#111', fontFamily: FONTS.bold },
 
   segmentWrap: {
     marginHorizontal: 16, marginTop: 10, marginBottom: 6, borderColor: '#EFEFEF', borderWidth: 1,
     borderRadius: 20, backgroundColor: '#Fff', padding: 4,
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     flexDirection: 'row', gap: 6,
   },
   segment: {
@@ -160,17 +145,6 @@ const styles = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   segmentActive: { backgroundColor: '#111' },
-<<<<<<< HEAD
-  segmentText: { color: '#111', fontWeight: '700' },
-  segmentTextActive: { color: '#fff' },
-
-  card: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
-    borderWidth: 1, borderColor: '#EFEFEF',
-    padding: 12,
-    marginBottom: 12,
-=======
   segmentText: { color: '#111', fontFamily: FONTS.bold },
   segmentTextActive: { color: '#fff' },
 
@@ -181,24 +155,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 0,
     marginBottom: 12,
     position: 'relative',
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     // shadow for iOS
     shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 },
     // elevation for Android
     elevation: 1,
   },
-<<<<<<< HEAD
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
-  when: { fontWeight: '700', color: '#111' },
-  fare: { color: '#6C7075', fontWeight: '600' },
-  fareStrong: { color: '#111', fontWeight: '800' },
-
-  mapThumb: {
-    height: 96, borderRadius: 12, backgroundColor: '#EDEFF1', marginBottom: 10,
-  },
-
-  row: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingVertical: 6 },
-=======
   cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingHorizontal: 15, paddingVertical: 10,
      position: 'absolute', top: 5, left: 4, right: 0, backgroundColor: '#fff', zIndex: 10, width: '97%',
       marginLeft: 'auto', marginRight : 'auto', borderRadius: 10, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 1, },
@@ -215,7 +176,6 @@ const styles = StyleSheet.create({
 
 
   row: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 10,   },
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
   place: { color: '#111', flex: 1 },
   divider: { height: 1, backgroundColor: '#EFEFEF' },
 });

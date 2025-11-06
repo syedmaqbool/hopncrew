@@ -5,11 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-<<<<<<< HEAD
-	<string>MyApp</string>
-=======
 	<string>hop’n</string>
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -26,11 +22,8 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-<<<<<<< HEAD
-=======
 	<key>GMSApiKey</key>
 	<string>AIzaSyCQ_g14OfzLkLOD6MGp4iJPuau2mbnjwvw</string>
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -40,10 +33,6 @@
 		<key>NSAllowsLocalNetworking</key>
 		<true/>
 	</dict>
-<<<<<<< HEAD
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
-=======
 	<key>NSFaceIDUsageDescription</key>
 	<string>Use Face ID to log in securely.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
@@ -71,7 +60,6 @@
 	<array>
 		<string>remote-notification</string>
 	</array>
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 	<key>UILaunchStoryboardName</key>
 	<string>BootSplash</string>
 	<key>UIRequiredDeviceCapabilities</key>
@@ -81,17 +69,12 @@
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
-<<<<<<< HEAD
-		<string>UIInterfaceOrientationLandscapeLeft</string>
-		<string>UIInterfaceOrientationLandscapeRight</string>
-=======
 	</array>
 	<key>UISupportedInterfaceOrientations~ipad</key>
 	<array>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 		<string>UIInterfaceOrientationPortrait</string>
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
