@@ -6,17 +6,6 @@
 	<array>
 		<dict>
 			<key>NSPrivacyAccessedAPIType</key>
-<<<<<<< HEAD
-			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
-			<key>NSPrivacyAccessedAPITypeReasons</key>
-			<array>
-				<string>C617.1</string>
-			</array>
-		</dict>
-		<dict>
-			<key>NSPrivacyAccessedAPIType</key>
-=======
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
@@ -25,8 +14,6 @@
 		</dict>
 		<dict>
 			<key>NSPrivacyAccessedAPIType</key>
-<<<<<<< HEAD
-=======
 			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
@@ -36,7 +23,6 @@
 		</dict>
 		<dict>
 			<key>NSPrivacyAccessedAPIType</key>
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 			<string>NSPrivacyAccessedAPICategorySystemBootTime</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
