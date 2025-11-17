@@ -2,11 +2,7 @@ import UIKit
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
-<<<<<<< HEAD
-
-=======
 import GoogleMaps
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
   var window: UIWindow?
@@ -18,8 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
   ) -> Bool {
-<<<<<<< HEAD
-=======
 
     if let apiKey = Bundle.main.object(forInfoDictionaryKey: "GMSApiKey") as? String,
      !apiKey.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
@@ -27,7 +21,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
   } else {
     fatalError("GMSApiKey missing/empty in Info.plist")
   }
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     let delegate = ReactNativeDelegate()
     let factory = RCTReactNativeFactory(delegate: delegate)
     delegate.dependencyProvider = RCTAppDependencyProvider()
@@ -42,11 +35,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
       in: window,
       launchOptions: launchOptions
     )
-<<<<<<< HEAD
-
-=======
   
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
     return true
   }
 }
