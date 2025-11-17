@@ -4,12 +4,9 @@ buildscript {
         minSdkVersion = 24
         compileSdkVersion = 36
         targetSdkVersion = 36
-        RNMapboxMapsImpl = "mapbox"
         ndkVersion = "27.1.12297006"
         kotlinVersion = "2.1.20"
         agp_version = '8.9.2'
-        agp_version1 = '8.9.2'
-        agp_version2 = '8.9.2'
     }
     repositories {
         google()
@@ -27,21 +24,22 @@ allprojects{
     repositories {
         google()
         mavenCentral()
+        configurations.all {
+            resolutionStrategy {
+                force "com.google.android.gms:play-services-location:21.0.1"
+            }
+        }
         maven {
             url 'https://api.mapbox.com/downloads/v2/releases/maven'
             authentication {
                 basic(BasicAuthentication)
             }
             credentials {
-                // Always 'mapbox'
+                // Do not change the username below.
+                // This should always be `mapbox` (not your username).
                 username = 'mapbox'
-                // Reads from gradle.properties
+                // Use the secret token you stored in gradle.properties as the password
                 password = project.properties['MAPBOX_DOWNLOADS_TOKEN'] ?: ""
-            }
-        }
-        configurations.all {
-            resolutionStrategy {
-                force "com.google.android.gms:play-services-location:21.0.1"
             }
         }
     }

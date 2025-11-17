@@ -1,3 +1,4 @@
+/* eslint-disable react-native/no-inline-styles */
 import { Picker } from '@react-native-picker/picker';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
@@ -137,10 +138,10 @@ export default function SignupScreen({ navigation }: Props) {
           </Pressable>
         </View>
 
-          {/* Title */}
-          <View style={styles.titleWrap}>
-            <Text style={styles.title}>Create Your hop’n{'\n'}Account</Text>
-          </View>
+        {/* Title */}
+        <View style={styles.titleWrap}>
+          <Text style={styles.title}>Create Your hop’n{'\n'}Account</Text>
+        </View>
         {/* Keyboard-safe area */}
         <KeyboardAwareScrollView
           style={{ flex: 1 }}
@@ -157,7 +158,6 @@ export default function SignupScreen({ navigation }: Props) {
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.hero} />
-
 
           {/* Card */}
           <View style={styles.card}>
@@ -212,7 +212,7 @@ export default function SignupScreen({ navigation }: Props) {
             />
 
             {/* Phone row */}
-            <View style={styles.inputRow}>
+            <View style={styles.phoneInputRow}>
               <Pressable
                 style={styles.ccButton}
                 onPress={() => setPickerOpen(true)}
@@ -223,7 +223,7 @@ export default function SignupScreen({ navigation }: Props) {
                 <Ionicons name="chevron-down" size={16} color="#777" />
               </Pressable>
               <TextInput
-                style={[styles.input, { flex: 1 }]}
+                style={styles.phoneInput}
                 placeholder="Mobile Number"
                 placeholderTextColor="#9AA0A6"
                 keyboardType="phone-pad"
@@ -369,9 +369,9 @@ const styles = StyleSheet.create({
   bg: { flex: 1 },
   safe: { flex: 1 },
   container: { paddingBottom: 20 },
-  header: { paddingHorizontal: 16, paddingTop: 54 },
+  header: { paddingHorizontal: 16, paddingTop: 74 },
 
-  hero: { height: 66 },
+  hero: { flex: 1 },
 
   card: {
     // flex: 1,
@@ -382,7 +382,12 @@ const styles = StyleSheet.create({
   },
 
   titleWrap: { paddingHorizontal: 16, marginTop: 20 },
-  title: { fontSize: 24, lineHeight: 30, color: '#111', fontFamily: FONTS.bold },
+  title: {
+    fontSize: 24,
+    lineHeight: 30,
+    color: '#111',
+    fontFamily: FONTS.bold,
+  },
 
   avatarWrap: { alignItems: 'center', marginTop: 4, marginBottom: 10 },
   avatarCircle: {
@@ -428,27 +433,34 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     color: '#111',
     marginTop: 10,
-    fontFamily: FONTS.regular
+    fontFamily: FONTS.regular,
   },
-  inputRow: {
+  phoneInputRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
     marginTop: 10,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: '#E6E6E6',
+    // paddingVertical: 6,
+    paddingHorizontal: 18,
+    backgroundColor: '#fff',
   },
 
   ccButton: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    borderWidth: 1,
-    borderColor: '#E6E6E6',
-    backgroundColor: '#fff',
-    borderRadius: 24,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
+    paddingVertical: 0,
   },
-  ccText: { fontSize: 14, color: '#111' },
+  ccText: { fontSize: 14, color: '#111', fontFamily: FONTS.semibold },
+  phoneInput: {
+    flex: 1,
+    fontFamily: FONTS.regular,
+    fontSize: 16,
+    paddingVertical: 0,
+  },
 
   loadingOverlay: {
     ...StyleSheet.absoluteFillObject,
@@ -474,10 +486,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   checkboxChecked: { backgroundColor: '#111', borderColor: '#111' },
-  checkboxText: { color: '#111',fontFamily:FONTS.regular },
+  checkboxText: { color: '#111', fontFamily: FONTS.regular },
 
-  termsText: { color: '#666', marginTop: 10, lineHeight: 18,fontFamily:FONTS.regular },
-  link: { color: '#111', textDecorationLine: 'underline',fontFamily:FONTS.regular },
+  termsText: {
+    color: '#666',
+    marginTop: 10,
+    lineHeight: 18,
+    fontFamily: FONTS.regular,
+  },
+  link: {
+    color: '#111',
+    textDecorationLine: 'underline',
+    fontFamily: FONTS.regular,
+  },
 
   signUpBtn: {
     marginTop: 14,
@@ -501,7 +522,12 @@ const styles = StyleSheet.create({
   },
 
   divider: { height: 1, backgroundColor: '#EFEFEF', marginVertical: 16 },
-  or: { textAlign: 'center', color: '#666', marginBottom: 12,fontFamily:FONTS.regular },
+  or: {
+    textAlign: 'center',
+    color: '#666',
+    marginBottom: 12,
+    fontFamily: FONTS.regular,
+  },
 
   socialRow: { flexDirection: 'row', justifyContent: 'center', gap: 14 },
   social: {

@@ -1,6 +1,8 @@
 export type RootStackParamList = {
 <<<<<<< HEAD
   Login: undefined;
+  SetUpFace: undefined;
+  FaceScanning: undefined;
   App : undefined
   Home: { dest?: Destination } | undefined;   // ← Home can receive { dest }
   Details: { id?: string } | undefined;
@@ -66,6 +68,8 @@ Policies:
 =======
   RideSelection: undefined;
   Login: undefined;
+  SetUpFace: undefined;
+  FaceScanning: undefined;
   App: undefined;
   Home: { dest?: Destination } | undefined; // ← Home can receive { dest }
   Details: { id?: string } | undefined;

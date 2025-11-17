@@ -15,11 +15,8 @@ import {
 import { Picker } from '@react-native-picker/picker';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Alert } from 'react-native';
-import ReactNativeBiometrics from 'react-native-biometrics';
-import * as Keychain from 'react-native-keychain';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import assets from '../../assets';
 import { useAuth } from '../context/AuthContext';
 import type { RootStackParamList } from '../navigation/types';
@@ -45,41 +42,9 @@ export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const [canBiometricLogin, setCanBiometricLogin] = useState(false);
-  const [bioLabel, setBioLabel] = useState('Biometric');
   const [loading, setLoading] = useState(false);
 
   const canSubmit = /\S+@\S+\.\S+/.test(email) && password.length >= 8;
-
-  // useEffect(() => {
-  //   (async () => {
-  //     const [hasToken, available] = await Promise.all([
-  //       hasStoredToken(),
-  //       isBiometricsAvailable(),
-  //     ]);
-
-  //     // Optional: log to verify gating
-  //     console.log('hasToken', hasToken, 'bioAvailable', available);
-
-  //     // Label from Keychain biometry type
-  //     const type = await getBiometryType();
-  //     setBioLabel(type === 'FaceID' ? 'Face ID' : type === 'TouchID' ? 'Touch ID' : 'Biometric');
-
-  //     setCanBiometricLogin(hasToken && available);
-  //   })();
-  // }, []);
-
-  const rnBiometrics = React.useMemo(
-    () => new ReactNativeBiometrics({ allowDeviceCredentials: true }), // fallback to device PIN if no biometrics enrolled
-    [],
-  );
-
-  const readStoredToken = async (): Promise<string | null> => {
-    const r = await Keychain.getGenericPassword({
-      service: 'com.hopnground.refresh-token',
-    });
-    return r === false ? null : r.password;
-  };
 
   const isValid = useMemo(() => phone.trim().length >= 7, [phone]);
 
@@ -139,45 +104,8 @@ export default function LoginScreen({ navigation }: Props) {
     }
   };
 
-  const onFaceIdPress = async () => {
-    try {
-      console.log('FaceID pressed');
-
-      const { available, biometryType } =
-        await rnBiometrics.isSensorAvailable();
-      console.log('isSensorAvailable ->', available, biometryType);
-      if (!available) {
-        Alert.alert(
-          'Biometrics not available',
-          'Enroll Face/Touch ID or screen lock in device settings.',
-        );
-        return;
-      }
-
-      // Show prompt (Android needs this; iOS can also use it for a consistent UX)
-      const { success } = await rnBiometrics.simplePrompt({
-        promptMessage: 'Login with biometrics',
-      });
-      console.log('simplePrompt success ->', success);
-      if (!success) return; // user cancelled
-
-      // After success, read token from Keychain
-      const token = await readStoredToken();
-      console.log('readStoredToken ->', token);
-      if (!token) {
-        Alert.alert(
-          'No saved session',
-          'Sign in once with OTP to enable biometric login.',
-        );
-        return;
-      }
-
-      // TODO: optionally exchange refresh token for access token here
-      navigation.replace('App');
-    } catch (e: any) {
-      console.log('biometric error', e);
-      Alert.alert('Biometric error', String(e?.message ?? e));
-    }
+  const onFaceIdPress = () => {
+    navigation.navigate('SetUpFace');
   };
 
   const onLinkedInPress = async () => {
@@ -252,7 +180,7 @@ export default function LoginScreen({ navigation }: Props) {
           <View style={[styles.inputRow]}>
             <TextInput
               style={styles.input}
-              placeholder="Password (min 8)"
+              placeholder="Password min 8"
               placeholderTextColor="#9AA0A6"
               value={password}
               onChangeText={setPassword}
@@ -322,10 +250,14 @@ export default function LoginScreen({ navigation }: Props) {
 
           {/* Face ID */}
           <Pressable style={styles.faceId} onPress={onFaceIdPress} hitSlop={10}>
-            <MaterialCommunityIcons
+            {/* <MaterialCommunityIcons
               name="face-recognition"
               size={28}
               color="#111"
+            /> */}
+            <Image
+              source={require('../../assets/icons/face-icon.png')}
+              alt="face-icon"
             />
             <Text style={styles.faceIdText}>Login with Face ID</Text>
           </Pressable>
@@ -399,7 +331,12 @@ const styles = StyleSheet.create({
     // backgroundColor: '#CFFCED', // faint “map” block
   },
   titleWrap: { paddingHorizontal: 16, marginTop: 12 },
-  title: { fontSize: 24, lineHeight: 30, color: '#111', fontFamily: FONTS.semibold },
+  title: {
+    fontSize: 24,
+    lineHeight: 30,
+    color: '#111',
+    fontFamily: FONTS.semibold,
+  },
   btnTxt: { color: '#fff', fontFamily: FONTS.bold },
   card: {
     flex: 1,
@@ -410,7 +347,12 @@ const styles = StyleSheet.create({
     padding: 16,
   },
 
-  label: { color: '#111', fontSize: 14, marginBottom: 8, fontFamily: FONTS.semibold },
+  label: {
+    color: '#111',
+    fontSize: 14,
+    marginBottom: 8,
+    fontFamily: FONTS.semibold,
+  },
 
   inputRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   ccButton: {
@@ -435,6 +377,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     backgroundColor: '#fff',
     color: '#111',
+    fontFamily: FONTS.regular,
   },
 
   signInBtn: {
@@ -460,7 +403,12 @@ const styles = StyleSheet.create({
   },
 
   divider: { height: 1, backgroundColor: '#EFEFEF', marginVertical: 16 },
-  or: { textAlign: 'center', color: '#666', marginBottom: 12, fontFamily: FONTS.regular },
+  or: {
+    textAlign: 'center',
+    color: '#666',
+    marginBottom: 12,
+    fontFamily: FONTS.regular,
+  },
 
   socialRow: { flexDirection: 'row', justifyContent: 'center', gap: 14 },
   social: {
@@ -475,7 +423,7 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
 
-  faceId: { alignItems: 'center', marginTop: 18 },
+  faceId: { alignItems: 'center', marginTop: 28 },
   faceIdText: { marginTop: 8, color: '#111', fontFamily: FONTS.medium },
 
   modalBg: {

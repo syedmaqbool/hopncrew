@@ -31,8 +31,10 @@ export default function AirportDetailsScreen({ navigation, route }: Props) {
     <Pressable
       style={styles.row}
       onPress={() => {
-        // route.params?.onPick?.(item);
-        // navigation.goBack();
+        if (route.params?.onPick) {
+          route.params.onPick(item);
+          return;
+        }
         navigation.navigate('Trip');
       }}
     >

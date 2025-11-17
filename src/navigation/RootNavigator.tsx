@@ -4,6 +4,8 @@ import type { RootStackParamList } from './types';
 import HomeScreen from '../screens/HomeScreen';
 import DetailsScreen from '../screens/DetailsScreen';
 import LoginScreen from '../screens/LoginScreen';
+import SetUpFace from '../screens/SetUpFace';
+import FaceScanning from '../screens/FaceScanning';
 import OtpScreen from '../screens/OtpScreen';
 import SignupScreen from '../screens/SignupScreen';
 import LocationScreen from '../screens/LocationScreen';
@@ -82,6 +84,8 @@ export default function RootNavigator({
       <Stack.Screen name="RideSelection" component={RideSelectionScreen} />
       {/* Auth */}
       <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="SetUpFace" component={SetUpFace} />
+      <Stack.Screen name="FaceScanning" component={FaceScanning} />
       <Stack.Screen name="Signup" component={SignupScreen} />
       <Stack.Screen name="Otp" component={OtpScreen} />
 

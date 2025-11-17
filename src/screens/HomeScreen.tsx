@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   Image,
   Pressable,
   ScrollView,
@@ -29,6 +30,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import assets from '../../assets';
 import type { AppDrawerParamList } from '../navigation/AppDrawer';
 import { useAuth } from '../context/AuthContext';
+import { getAirports } from '../services/app';
 
 import MapboxGL from '@rnmapbox/maps';
 import { FONTS } from '../../src/theme/fonts';
@@ -125,54 +127,53 @@ export default function HomeScreen({ navigation, route }: Props) {
     }
   }, [location, getCurrent]);
 
-  const openPlaces = () => {
-    navigation.navigate('AirportDetails', {
-      title: 'Services near Gate B12',
-      items: [
-        { id: '1', title: 'Coffee Way', subtitle: 'Terminal 1, Gate B10' },
-        { id: '2', title: 'ATM – Bank Privat 01', subtitle: 'Near Security A' },
-        { id: '3', title: 'ATM – Bank Privat 02', subtitle: 'Near Security B' },
-        { id: '4', title: 'ATM – Bank Privat 03', subtitle: 'Near Security C' },
-        { id: '5', title: 'ATM – Bank Privat 04', subtitle: 'Near Security D' },
-        { id: '6', title: 'ATM – Bank Privat 05', subtitle: 'Near Security E' },
-        { id: '7', title: 'ATM – Bank Privat 06', subtitle: 'Near Security F' },
-        { id: '8', title: 'ATM – Bank Privat 07', subtitle: 'Near Security G' },
-        { id: '9', title: 'ATM – Bank Privat 08', subtitle: 'Near Security H' },
-        {
-          id: '10',
-          title: 'ATM – Bank Privat 09',
-          subtitle: 'Near Security I',
+  const openPlaces = async () => {
+    try {
+      const airports = await getAirports();
+      const items = airports
+        .map(airport => {
+          const subtitleParts = [
+            airport.code,
+            airport.city,
+            airport.province,
+            airport.country,
+          ].filter(Boolean);
+          return {
+            id: String(airport.id ?? airport.code ?? airport.name),
+            title: airport.name,
+            subtitle: subtitleParts.join(' - '),
+            lat: airport.latitude,
+            lon: airport.longitude,
+          };
+        })
+        .filter(
+          item => Boolean(item.title) && item.lat != null && item.lon != null,
+        );
+
+      if (!items.length) {
+        Alert.alert(
+          'No airports found',
+          'We could not load any airports right now.',
+        );
+        return;
+      }
+
+      navigation.navigate('AirportDetails', {
+        title: 'Select a destination airport',
+        items,
+        onPick: poi => {
+          navigation.navigate('Trip', {
+            dest: {
+              latitude: poi.lat ?? 0,
+              longitude: poi.lon ?? 0,
+              description: poi.title,
+            },
+          });
         },
-        {
-          id: '11',
-          title: 'ATM – Bank Privat 10',
-          subtitle: 'Near Security J',
-        },
-        {
-          id: '12',
-          title: 'ATM – Bank Privat 11',
-          subtitle: 'Near Security K',
-        },
-        {
-          id: '13',
-          title: 'ATM – Bank Privat 12',
-          subtitle: 'Near Security L',
-        },
-        {
-          id: '14',
-          title: 'ATM – Bank Privat 13',
-          subtitle: 'Near Security M',
-        },
-        {
-          id: '15',
-          title: 'ATM – Bank Privat 14',
-          subtitle: 'Near Security N',
-        },
-      ],
-      onPick: (poi: any) => {
-        console.log('Selected POI:', poi);
-      },
-    });
+      });
+    } catch (e: any) {
+      Alert.alert('Unable to load airports', String(e?.message ?? e));
+    }
   };
 
   const name = auth?.user
@@ -367,7 +368,11 @@ export default function HomeScreen({ navigation, route }: Props) {
             style={styles.quickItem}
             onPress={() => navigation.navigate('RideSelection')}
           >
-            <Ionicons name="home-outline" size={18} color="#111" />
+            {/* <Ionicons name="home-outline" size={18} color="#111" /> */}
+            <Image
+              source={require('../../assets/icons/home.png')}
+              style={{ width: 18, height: 18 }}
+            />
             <Text style={styles.quickText}>Home</Text>
           </Pressable>
           <Pressable
@@ -378,7 +383,11 @@ export default function HomeScreen({ navigation, route }: Props) {
               })
             }
           >
-            <Ionicons name="briefcase-outline" size={18} color="#111" />
+            {/* <Ionicons name="briefcase-outline" size={18} color="#111" /> */}
+            <Image
+              source={require('../../assets/icons/work.png')}
+              style={{ width: 18, height: 18 }}
+            />
             <Text style={styles.quickText}>Work</Text>
           </Pressable>
         </View>
@@ -477,7 +486,7 @@ const styles = StyleSheet.create({
   cardBody: { marginTop: 10, color: '#444', fontFamily: FONTS.regular },
   starsRow: { flexDirection: 'row', gap: 4, marginTop: 20 },
 
-  quickList: { marginTop: 0, gap: 10 },
+  quickList: { marginTop: 0, gap: 6 },
   quickItem: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -489,7 +498,7 @@ const styles = StyleSheet.create({
     borderWidth: 0,
     borderColor: '#EFEFEF',
   },
-  quickText: { color: '#111', fontFamily: FONTS.medium },
+  quickText: { color: '#111', fontFamily: FONTS.semibold, marginLeft: 4 },
 
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 
