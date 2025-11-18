@@ -155,20 +155,30 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
           {/* Payment label */}
           <View style={styles.rowHead}>
             <Text style={styles.section}>Payment</Text>
-            <Ionicons name="information-circle-outline" size={16} color={MUTED} />
+            <Ionicons
+              name="information-circle-outline"
+              size={16}
+              color={MUTED}
+            />
           </View>
 
           {/* Car tile + price slab (reference look) */}
           <View
             style={[
               styles.carRowWrap,
-              carRowStacks ? { flexDirection: 'column' } : { flexDirection: 'row' },
+              carRowStacks
+                ? { flexDirection: 'column' }
+                : { flexDirection: 'row' },
             ]}
           >
             {/* Car card with soft shadow */}
             <View style={styles.cardShadow}>
               <View style={[styles.carCardBox, { width: carCardWidth }]}>
-                <Image source={carSrc} style={styles.carImage} resizeMode="contain" />
+                <Image
+                  source={carSrc}
+                  style={styles.carImage}
+                  resizeMode="contain"
+                />
               </View>
             </View>
 
@@ -178,13 +188,16 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
                 styles.priceSlabShadow,
                 carRowStacks
                   ? { marginLeft: 0, marginTop: 12, width: '50%' }
-                  : { marginLeft: -60, width: priceSlabWidth as number },
+                  : { marginLeft: -70, width: priceSlabWidth as number },
               ]}
             >
               <View style={styles.priceSlab}>
                 {!!q.tax && <Text style={styles.taxTxt}>Tax: ${q.tax}</Text>}
                 <Text
-                  style={[styles.priceNow, { fontSize: priceFont, lineHeight: priceFont + 2 }]}
+                  style={[
+                    styles.priceNow,
+                    { fontSize: priceFont, lineHeight: priceFont + 2 },
+                  ]}
                   numberOfLines={1}
                 >
                   ${q.price}
@@ -196,7 +209,10 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
 
           {/* Policy pill */}
           <Pressable
-            style={[styles.policyRow, { alignSelf: 'center', width: '88%', maxWidth: 520 }]}
+            style={[
+              styles.policyRow,
+              { alignSelf: 'center', width: '88%', maxWidth: 520 },
+            ]}
             onPress={() =>
               navigation.navigate('Policies', {
                 onSelect: id => console.log('open policy:', id),
@@ -204,20 +220,32 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
             }
             accessibilityRole="button"
           >
-            <Text style={styles.policyTxt}>Late Arrival • Waiting Time • No Show</Text>
-            <AntDesign name="arrowright" style={{ marginTop: 2 }} size={16} color={TEXT} />
+            <Text style={styles.policyTxt}>
+              Late Arrival • Waiting Time • No Show
+            </Text>
+            <AntDesign
+              name="arrowright"
+              style={{ marginTop: 2 }}
+              size={16}
+              color={TEXT}
+            />
           </Pressable>
 
           {/* Policy sub info */}
           <View style={styles.centerRow}>
             <Text style={styles.policySub}>
-              Fare/km {q?.fare_per_km ?? '-'} • Max Luggage {q?.max_luggage ?? '-'} • Max Passengers{' '}
+              Fare/km {q?.fare_per_km ?? '-'} • Max Luggage{' '}
+              {q?.max_luggage ?? '-'} • Max Passengers{' '}
               {q?.max_passengers ?? '-'}
             </Text>
           </View>
 
           {/* Special request toggle */}
-          <Pressable style={styles.specialWrap} onPress={openSpecial} accessibilityRole="button">
+          <Pressable
+            style={styles.specialWrap}
+            onPress={openSpecial}
+            accessibilityRole="button"
+          >
             <View style={styles.specialInner}>
               <Image
                 source={require('../../assets/icons/specreq-icon.png')}
@@ -236,11 +264,16 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
           <View
             style={[
               styles.bottomRow,
-              width < 360 ? { flexDirection: 'column' } : { flexDirection: 'row' },
+              width < 360
+                ? { flexDirection: 'column' }
+                : { flexDirection: 'row' },
             ]}
           >
             <Pressable
-              style={[styles.payChip, width < 360 ? { width: '100%' } : { flex: 1 }]}
+              style={[
+                styles.payChip,
+                width < 360 ? { width: '100%' } : { flex: 1 },
+              ]}
               onPress={openBreakdown}
               accessibilityRole="button"
             >
@@ -249,7 +282,10 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
             </Pressable>
 
             <View
-              style={[styles.couponChip, width < 360 ? { width: '100%' } : { flex: 1.1 }]}
+              style={[
+                styles.couponChip,
+                width < 360 ? { width: '100%' } : { flex: 1.1 },
+              ]}
             >
               <Ionicons name="pricetag-outline" size={18} color={TEXT} />
               <TextInput
@@ -275,7 +311,11 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
             },
           ]}
         >
-          <Pressable style={styles.cta} onPress={confirm} accessibilityRole="button">
+          <Pressable
+            style={styles.cta}
+            onPress={confirm}
+            accessibilityRole="button"
+          >
             <Text style={styles.ctaText}>Confirm and Request</Text>
             <View style={styles.ctaIcon}>
               <AntDesign name="arrowright" size={18} color={TEXT} />
@@ -295,7 +335,7 @@ const styles = StyleSheet.create({
     left: 14,
     width: 36,
     height: 36,
-    top:8,
+    top: 8,
     borderRadius: 18,
     backgroundColor: '#F2F2F2',
     alignItems: 'center',
@@ -308,8 +348,13 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
 
-  h1: { color: TEXT, fontSize: 20, marginTop: 8, fontFamily: FONTS.bold },
-  light: { color: MUTED, marginTop: 2, fontFamily: FONTS.regular },
+  h1: { color: TEXT, fontSize: 20, marginTop: 8, fontFamily: FONTS.semibold },
+  light: {
+    color: '#201E20',
+    marginTop: 10,
+    fontFamily: FONTS.medium,
+    width: '90%',
+  },
 
   rowHead: {
     flexDirection: 'row',
@@ -317,7 +362,7 @@ const styles = StyleSheet.create({
     gap: 6,
     marginTop: 16,
   },
-  section: { color: TEXT, fontFamily: FONTS.bold },
+  section: { color: TEXT, fontFamily: FONTS.semibold, fontSize: 20 },
 
   /* ---------- Car row + price slab ---------- */
   carRowWrap: {
@@ -334,7 +379,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 10 },
     elevation: 8,
     backgroundColor: 'transparent',
-    zIndex:4,
+    zIndex: 4,
   },
   carCardBox: {
     height: 160,
@@ -409,7 +454,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   policySub: {
-    color: MUTED,
+    color: '#201E20',
     marginVertical: 10,
     textAlign: 'center',
     fontFamily: FONTS.regular,
@@ -417,17 +462,18 @@ const styles = StyleSheet.create({
 
   /* ---------- Special request ---------- */
   specialWrap: {
-    alignItems: 'center',
+    alignItems: 'flex-start',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: 16,
   },
   specialInner: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'flex-start',
     gap: 12,
     backgroundColor: '#fff',
     paddingHorizontal: 10,
-    paddingVertical: 6,
+    paddingVertical: 10,
   },
   specialTxt: { color: TEXT, fontFamily: FONTS.bold },
 

@@ -12,11 +12,17 @@ import {
   StyleSheet as RNStyleSheet,
 } from 'react-native';
 import MapboxGL from '@rnmapbox/maps';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList, SpecialRequestPayload } from '../navigation/types';
+import type {
+  RootStackParamList,
+  SpecialRequestPayload,
+} from '../navigation/types';
 import assets from '../../assets';
 
 import { FONTS } from '../../src/theme/fonts';
@@ -41,7 +47,9 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const cameraRef = useRef<MapboxGL.Camera>(null);
 
-  const [etaMinutes, setEtaMinutes] = useState<number>(route.params?.etaMinutes ?? 0);
+  const [etaMinutes, setEtaMinutes] = useState<number>(
+    route.params?.etaMinutes ?? 0,
+  );
 
   const [quotes, setQuotes] = useState<
     Array<{
@@ -101,7 +109,12 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
       if (lat > maxLat) maxLat = lat;
     });
 
-    if (!isFinite(minLon) || !isFinite(maxLon) || !isFinite(minLat) || !isFinite(maxLat)) {
+    if (
+      !isFinite(minLon) ||
+      !isFinite(maxLon) ||
+      !isFinite(minLat) ||
+      !isFinite(maxLat)
+    ) {
       return undefined;
     }
 
@@ -183,14 +196,19 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
         console.error('calculateRideCost failed:', e?.message || e);
         setQuotes([]);
         setEtaMinutes(0);
-        Alert.alert('Error', 'Unable to calculate ride cost. Please try again.');
+        Alert.alert(
+          'Error',
+          'Unable to calculate ride cost. Please try again.',
+        );
       } finally {
         setLoading(false);
       }
     })();
   }, [start?.latitude, start?.longitude, dest?.latitude, dest?.longitude]);
 
-  const [payMethod, setPayMethod] = useState(route.params?.payMethod ?? 'Payment Breakdown');
+  const [payMethod, setPayMethod] = useState(
+    route.params?.payMethod ?? 'Payment Breakdown',
+  );
   const [hasNote, setHasNote] = useState(false);
   const [special, setSpecial] = useState<SpecialRequestPayload>({
     caringPet: false,
@@ -198,7 +216,10 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
     note: '',
   });
 
-  const selected = useMemo(() => quotes.find((q) => q.id === selectedId), [quotes, selectedId]);
+  const selected = useMemo(
+    () => quotes.find(q => q.id === selectedId),
+    [quotes, selectedId],
+  );
 
   const confirm = () => {
     if (!selectedId || !selected) {
@@ -267,7 +288,11 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
 
           {/* Start pin */}
           {startLL && (
-            <MapboxGL.MarkerView coordinate={startLL} anchor={{ x: 0.5, y: 1 }} allowOverlap>
+            <MapboxGL.MarkerView
+              coordinate={startLL}
+              anchor={{ x: 0.5, y: 1 }}
+              allowOverlap
+            >
               <Image
                 source={assets.images.locationPin}
                 style={{ width: 18, height: 18, resizeMode: 'contain' }}
@@ -277,7 +302,11 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
 
           {/* End pin */}
           {endLL && (
-            <MapboxGL.MarkerView coordinate={endLL} anchor={{ x: 0.5, y: 1 }} allowOverlap>
+            <MapboxGL.MarkerView
+              coordinate={endLL}
+              anchor={{ x: 0.5, y: 1 }}
+              allowOverlap
+            >
               <Image
                 source={assets.images.locationPin}
                 style={{ width: 18, height: 18, resizeMode: 'contain' }}
@@ -287,7 +316,11 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
 
           {/* Car icon at the start of the route */}
           {carCoord && (
-            <MapboxGL.MarkerView coordinate={carCoord} anchor={{ x: 0.5, y: 0.5 }} allowOverlap>
+            <MapboxGL.MarkerView
+              coordinate={carCoord}
+              anchor={{ x: 0.5, y: 0.5 }}
+              allowOverlap
+            >
               <Image
                 source={require('../../assets/icons/car-icon.png')}
                 style={{ width: 28, height: 28, resizeMode: 'contain' }}
@@ -297,8 +330,16 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
         </MapboxGL.MapView>
 
         {/* nav + ETA row overlay */}
-        <View style={[styles.headerRow, { paddingHorizontal: 20, top: insets.top + 12 }]}>
-          <Pressable style={styles.backCircle} onPress={() => navigation.goBack()}>
+        <View
+          style={[
+            styles.headerRow,
+            { paddingHorizontal: 20, top: insets.top + 12 },
+          ]}
+        >
+          <Pressable
+            style={styles.backCircle}
+            onPress={() => navigation.goBack()}
+          >
             <Ionicons name="chevron-back" size={18} color={TEXT} />
           </Pressable>
 
@@ -316,8 +357,8 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
         {/* Static top area */}
         <View style={styles.sheetTopPadding}>
           <Text style={styles.blurb}>
-            “All ride options are powered by verified, insured professionals trained to limousine
-            standards.”
+            “All ride options are powered by verified, insured professionals
+            trained to limousine standards.”
           </Text>
         </View>
 
@@ -334,18 +375,23 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
           ) : (
             <FlatList
               data={quotes}
-              keyExtractor={(q) => q.id}
+              keyExtractor={q => q.id}
               renderItem={({ item, index }) => (
                 <FareRow
                   quote={item}
                   selected={item.id === selectedId}
-                  onPress={() => setSelectedId(item.id === selectedId ? undefined : item.id)}
+                  onPress={() =>
+                    setSelectedId(item.id === selectedId ? undefined : item.id)
+                  }
                   variant={index % 3}
                 />
               )}
               ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
               showsVerticalScrollIndicator
-              contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 12 }}
+              contentContainerStyle={{
+                paddingHorizontal: 16,
+                paddingBottom: 12,
+              }}
               keyboardShouldPersistTaps="handled"
             />
           )}
@@ -358,12 +404,19 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             style={styles.policyRow}
             onPress={() =>
               navigation.navigate('Policies', {
-                onSelect: (id) => console.log('open policy:', id),
+                onSelect: id => console.log('open policy:', id),
               })
             }
           >
-            <Text style={styles.policyTxt}>Late Arrival . Waiting Time . No Show</Text>
-            <AntDesign name="arrowright" style={{ marginTop: 4 }} size={16} color={TEXT} />
+            <Text style={styles.policyTxt}>
+              Late Arrival . Waiting Time . No Show
+            </Text>
+            <AntDesign
+              name="arrowright"
+              style={{ marginTop: 4 }}
+              size={16}
+              color={TEXT}
+            />
           </Pressable>
 
           {/* Payment row */}
@@ -394,7 +447,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
                 setHasNote(true);
                 navigation.navigate('SpecialRequest', {
                   initial: special,
-                  onDone: (p) => {
+                  onDone: p => {
                     setSpecial(p);
                     setHasNote(true);
                   },
@@ -412,16 +465,29 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
                 style={{ width: 24, height: 24, resizeMode: 'contain' }}
               />
               <Text>I have special request</Text>
-              <View style={[styles.squareCheck, hasNote && styles.squareCheckOn]}>
-                {hasNote ? <Ionicons name="checkmark" size={14} color="#fff" /> : null}
+              <View
+                style={[styles.squareCheck, hasNote && styles.squareCheckOn]}
+              >
+                {hasNote ? (
+                  <Ionicons name="checkmark" size={14} color="#fff" />
+                ) : null}
               </View>
             </View>
           </Pressable>
         </View>
 
         {/* CTA (fixed) */}
-        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 12) }]}>
-          <Pressable style={styles.cta} onPress={confirm} disabled={!selectedId}>
+        <View
+          style={[
+            styles.footer,
+            { paddingBottom: Math.max(insets.bottom, 12) },
+          ]}
+        >
+          <Pressable
+            style={styles.cta}
+            onPress={confirm}
+            disabled={!selectedId}
+          >
             <Text style={styles.ctaText}>Confirm and Request</Text>
             <View style={styles.ctaIcon}>
               <AntDesign name="arrowright" size={18} color={TEXT} />
@@ -458,16 +524,25 @@ function FareRow({
   const carSrc = quote.image ? { uri: quote.image } : undefined;
 
   return (
-    <Pressable onPress={onPress} style={[styles.rowWrap, selected && styles.rowWrapActive]}>
+    <Pressable
+      onPress={onPress}
+      style={[styles.rowWrap, selected && styles.rowWrapActive]}
+    >
       <View style={[styles.leftSlab, selected && styles.leftSlabActive]}>
-        <Text style={selected ? styles.priceBigActive : styles.priceBig}>$ {quote.price}</Text>
+        <Text style={selected ? styles.priceBigActive : styles.priceBig}>
+          $ {quote.price}
+        </Text>
       </View>
 
       <View style={[styles.rightBubble, selected && styles.rightBubbleActive]}>
         <Text style={styles.tierTitle}>{quote.tier}</Text>
 
         {carSrc ? (
-          <Image source={carSrc} style={{ width: 140, height: 52 }} resizeMode="contain" />
+          <Image
+            source={carSrc}
+            style={{ width: 140, height: 52 }}
+            resizeMode="contain"
+          />
         ) : (
           <Image
             source={require('../../assets/icons/no-car-icon.jpg')}
@@ -588,15 +663,15 @@ const styles = StyleSheet.create({
 
   priceBig: {
     color: '#000',
-    fontSize: 34,
+    fontSize: 54,
     lineHeight: 40,
-    fontFamily: FONTS.bold,
+    fontFamily: FONTS.medium,
   },
   priceBigActive: {
     color: '#fff',
-    fontSize: 34,
+    fontSize: 54,
     lineHeight: 40,
-    fontFamily: FONTS.bold,
+    fontFamily: FONTS.medium,
   },
 
   rightBubble: {
