@@ -65,6 +65,14 @@ export type LuggageType = {
   label: string;
   category: string;
   image_url: string | null;
+  icon_url?: string | null;
+  dimensions?: {
+    height?: number;
+    width?: number;
+    length?: number;
+    legnth?: number;
+    weight?: number;
+  } | null;
   description: string;
   is_active: boolean;
   created_at?: string;
@@ -96,6 +104,8 @@ export async function getLuggageTypes(): Promise<LuggageType[]> {
         label: it.label,
         category: it.category,
         image_url: it.image_url ?? null,
+        icon_url: it.icon_url ?? it.icon ?? null,
+        dimensions: it.dimensions ?? it.dimension ?? null,
         description: it.description,
         is_active: !!it.is_active,
         created_at: it.created_at,

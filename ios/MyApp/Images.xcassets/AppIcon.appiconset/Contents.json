@@ -1,82 +1,55 @@
 {
   "images" : [
     {
-<<<<<<< HEAD
-=======
       "filename" : "40.png",
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "20x20"
     },
     {
-<<<<<<< HEAD
-=======
       "filename" : "60.png",
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "20x20"
     },
     {
-<<<<<<< HEAD
-=======
       "filename" : "58.png",
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "29x29"
     },
     {
-<<<<<<< HEAD
-=======
       "filename" : "87.png",
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "29x29"
     },
     {
-<<<<<<< HEAD
-=======
       "filename" : "80.png",
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "40x40"
     },
     {
-<<<<<<< HEAD
-=======
       "filename" : "120.png",
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "40x40"
     },
     {
-<<<<<<< HEAD
-=======
       "filename" : "120 1.png",
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       "idiom" : "iphone",
       "scale" : "2x",
       "size" : "60x60"
     },
     {
-<<<<<<< HEAD
-=======
       "filename" : "180.png",
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       "idiom" : "iphone",
       "scale" : "3x",
       "size" : "60x60"
     },
     {
-<<<<<<< HEAD
-=======
       "filename" : "1024.png",
->>>>>>> a0722e0 (feat: Implement API service with authentication and data fetching)
       "idiom" : "ios-marketing",
       "scale" : "1x",
       "size" : "1024x1024"

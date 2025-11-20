@@ -69,7 +69,41 @@ export default function OversizedLuggageModal({ navigation, route }: Props) {
           <View style={styles.sheet}>
             {/* top bar */}
             <View style={styles.topBar}>
-              <View style={styles.scanHeader}>
+               {/* Scan row */}
+                      <View style={{width:30}} />
+                        <View style={styles.scanSection}>
+                          <Pressable
+                            style={styles.camBtn}
+                          >
+                            <Image
+                              source={require('../../assets/icons/camera-bg-icon.png')}
+                              style={{ width: 56, height: 56 }}
+                              resizeMode="contain"
+                            />
+                          </Pressable>
+              
+                          <View style={styles.scanLabelRow}>
+                            <Text style={styles.scanText}>Scan Bag size</Text>
+                            {/* <Ionicons
+                              name="information-circle-outline"
+                              size={16}
+                              color="#111"
+                              onPress={() =>
+                                navigation.navigate('LuggageScanInfo', {
+                                  onStartScan: () => {},
+                                })
+                              }
+                            /> */}
+                            <Pressable onPress={() =>
+                                navigation.navigate('LuggageScanInfo', {
+                                  onStartScan: () => {},
+                                })
+                              }>
+                            <Image source={require('../../assets/icons/info-icon.png')} alt='info' style={{width:19.5,height:19.5}} />
+                            </Pressable>
+                          </View>
+                        </View>
+              {/* <View style={styles.scanHeader}>
                 <View style={styles.camMint}>
                   <Ionicons name="camera-outline" size={18} color="#111" />
                 </View>
@@ -80,9 +114,9 @@ export default function OversizedLuggageModal({ navigation, route }: Props) {
                   color="#9AA0A6"
                   onPress={() => navigation.navigate('LuggageScanInfo')}
                 />
-              </View>
+              </View> */}
               <Pressable style={styles.close} onPress={() => exit(true)}>
-                <Ionicons name="close" size={18} color="#111" />
+                <Ionicons name="close" size={28} color="#8D8E8F" />
               </Pressable>
             </View>
 
@@ -91,19 +125,19 @@ export default function OversizedLuggageModal({ navigation, route }: Props) {
               data={CATALOG}
               keyExtractor={it => it.id}
               numColumns={2}
-              columnWrapperStyle={{ gap: 10 }}
-              contentContainerStyle={{ paddingVertical: 8 }}
+              columnWrapperStyle={{ gap: 12, marginBottom: 4 }}
+              contentContainerStyle={{ paddingVertical: 6 }}
               renderItem={({ item }) => {
                 const val = counts[item.id] ?? 0;
                 return (
                   <View style={styles.card}>
                     <View style={styles.cardTop}>
-                      <Text style={styles.cardTitle} numberOfLines={1}>
+                      <Text style={styles.cardTitle} numberOfLines={2}>
                         {item.title}
                       </Text>
                       <Image
                         source={item.icon}
-                        style={{ width: 24, height: 24, resizeMode: 'contain' }}
+                        style={{ width: 40, height: 40, resizeMode: 'contain' }}
                       />
                     </View>
                     <View style={styles.stepper}>
@@ -111,14 +145,16 @@ export default function OversizedLuggageModal({ navigation, route }: Props) {
                         style={styles.stepBtn}
                         onPress={() => dec(item.id)}
                       >
-                        <AntDesign name="minus" size={14} color="#111" />
+                        <Image source={require('../../assets/icons/minus-icon.png')} alt='minus' style={{width:40,height:40}} />
+                        {/* <AntDesign name="minus" size={14} color="#111" /> */}
                       </Pressable>
                       <Text style={styles.stepVal}>{val}</Text>
                       <Pressable
                         style={[styles.stepBtn, styles.stepBtnDark]}
                         onPress={() => inc(item.id)}
                       >
-                        <AntDesign name="plus" size={14} color="#fff" />
+                         <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:40,height:40}} />
+                        {/* <AntDesign name="plus" size={14} color="#fff" /> */}
                       </Pressable>
                     </View>
                   </View>
@@ -129,9 +165,13 @@ export default function OversizedLuggageModal({ navigation, route }: Props) {
 
             {/* bottom CTA */}
             <Pressable style={styles.cta} onPress={() => exit(true)}>
-              <Text style={styles.ctaText}>+ Date &amp; Time</Text>
+              <Text style={styles.ctaText}>`
+                +Date&Time
+                 </Text>
+                 <AntDesign style={{paddingTop:-4}} name="arrowright" size={20} color="#fff" />
               <View style={styles.ctaIcon}>
-                <Ionicons name="calendar-outline" size={18} color="#111" />
+                <Image source={require('../../assets/icons/date-time-icon.png')} alt='calendar' style={{width:44,height:44}} />
+                {/* <Ionicons name="calendar-outline" size={18} color="#111" /> */}
               </View>
             </Pressable>
           </View>
@@ -146,7 +186,7 @@ const styles = StyleSheet.create({
   // DIMMED
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: 'rgba(0,0,0,0.55)',
   },
 
   sheetWrap: { flex: 1, justifyContent: 'flex-end' },
@@ -174,7 +214,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F2F2F2',
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -188,30 +228,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scanText: { color: '#111', fontFamily: FONTS.bold },
+  scanText: { color: '#111', fontFamily: FONTS.semibold, fontSize: 16,marginRight:4 },
 
   card: {
     flex: 1,
     borderWidth: 1,
-    borderColor: '#EFEFEF',
-    borderRadius: 12,
+    borderColor: '#CFCDCD',
+    borderRadius: 24,
     padding: 12,
     marginBottom: 10,
     backgroundColor: '#fff',
+    height: 128,
+    width: 183,
   },
   cardTop: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    marginHorizontal: 6,
     marginBottom: 10,
   },
-  cardTitle: { color: '#111', maxWidth: 90, fontFamily: FONTS.regular },
+  cardTitle: { color: '#201E20', maxWidth: 90, fontFamily: FONTS.regular,fontSize:16 },
 
   stepper: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    justifyContent: 'space-between',
+    gap: 24,
+    justifyContent: 'center',
   },
   stepBtn: {
     width: 30,
@@ -223,27 +266,38 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stepBtnDark: { backgroundColor: '#111' },
-  stepVal: { width: 24, textAlign: 'center', color: '#111', fontFamily: FONTS.bold },
+  stepVal: { width: 24, textAlign: 'center', color: '#111', fontFamily: FONTS.regular, fontSize:32 },
 
   cta: {
-    marginTop: 6,
-    height: 48,
+    marginVertical: 14,
+     height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
+    gap: 12,
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#FCFCFC', fontFamily: FONTS.semibold, fontSize: 17 },
   ctaIcon: {
-    width: 30,
-    height: 30,
+   width: 44,
+    height: 44,
     borderRadius: 15,
-    backgroundColor: MINT,
+    // backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    margin: 3,
+    right: 8,
+  },
+  scanLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  scanSection: { alignItems: 'center', justifyContent: 'center', marginVertical: 2 },
+  camBtn: {
+    // width: 36,
+    // height: 36,
+    // borderRadius: 18,
+    // backgroundColor: MINT,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

@@ -104,7 +104,8 @@ export default function ScanBagSizeScreen({ navigation, route }: Props) {
       {/* Header */}
       <View style={styles.header}>
         <Pressable style={styles.hBtn} onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={18} color={TEXT} />
+          {/* <Ionicons name="chevron-back" size={18} color={TEXT} /> */}
+          <Image source={require('../../assets/icons/left-line-arrow-icon.png')} alt='left-arrow' style={{height:88,width:98}} />
         </Pressable>
         <Text style={styles.hTitle}>Size Your Bag</Text>
       </View>
@@ -152,14 +153,14 @@ export default function ScanBagSizeScreen({ navigation, route }: Props) {
           onPress={() => navigation.navigate('Policies')}
         >
           <Text style={styles.policyTxt}>Check our cabin bag policy</Text>
-          <Ionicons name="chevron-forward" size={16} color={TEXT} />
+          <Ionicons name="chevron-forward" size={24} color={'#8D8E8F'} />
         </Pressable>
 
         {/* Camera preview placeholder with scan frame */}
         <View style={styles.cameraBox}>
           <Image
             source={require('../../assets/icons/bg-bag-image.png')}
-            style={{ width: '100%', height: '100%' }}
+            style={{ width: '100%', height: '100%',borderRadius:32 }}
             resizeMode="cover"
           />
           {/* Corners */}
@@ -184,23 +185,30 @@ export default function ScanBagSizeScreen({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
   header: {
-    height: 56,
+    height: 76,
     paddingHorizontal: 16,
-    gap: 12,
+    gap: 8,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    paddingTop: 10,
   },
   hBtn: {
-    width: 36,
-    height: 36,
+    width: 48,
+    height: 48,
     borderRadius: 18,
-    backgroundColor: '#F2F2F2',
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.04,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 1,
+    padding: 6,
   },
-  hTitle: { color: TEXT, fontSize: 16, fontFamily: FONTS.bold },
-  body: { flex: 1, paddingHorizontal: 16, paddingTop: 8 },
+  hTitle: { color: '#201E20', fontSize: 20, fontFamily: FONTS.regular },
+  body: { flex: 1, paddingHorizontal: 16, paddingTop: 0 },
 
   toggleRow: { flexDirection: 'row', marginTop: 10 },
   toggleBtn: {
@@ -211,9 +219,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  toggleActive: { backgroundColor: '#111' },
-  toggleTxt: { color: '#111', fontFamily: FONTS.bold },
-  toggleTxtActive: { color: '#fff' },
+  toggleActive: { backgroundColor: '#201E20' },
+  toggleTxt: { color: '#201E20', fontFamily: FONTS.semibold, fontSize: 17 },
+  toggleTxtActive: { color: '#FCFCFC' },
 
   policyRow: {
     flexDirection: 'row',
@@ -221,7 +229,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingVertical: 18,
   },
-  policyTxt: { color: TEXT, fontFamily: FONTS.bold },
+  policyTxt: { color: '#201E20', fontFamily: FONTS.semibold, fontSize: 16 },
 
   cameraBox: {
     flex: 1,
@@ -237,28 +245,28 @@ const styles = StyleSheet.create({
   },
   corner: { position: 'absolute', width: 64, height: 64, borderColor: '#fff' },
   cornerTL: {
-    top: 156,
+    top: 56,
     left: 36,
     borderTopWidth: 4,
     borderLeftWidth: 4,
     borderTopLeftRadius: 35,
   },
   cornerTR: {
-    top: 156,
+    top: 56,
     right: 36,
     borderTopWidth: 4,
     borderRightWidth: 4,
     borderTopRightRadius: 35,
   },
   cornerBL: {
-    bottom: 100,
+    bottom: 80,
     left: 36,
     borderBottomWidth: 4,
     borderLeftWidth: 4,
     borderBottomLeftRadius: 35,
   },
   cornerBR: {
-    bottom: 100,
+    bottom: 80,
     right: 36,
     borderBottomWidth: 4,
     borderRightWidth: 4,
@@ -270,7 +278,7 @@ const styles = StyleSheet.create({
     bottom: 46,
     alignSelf: 'center',
     alignItems: 'center',
-    gap: 8,
+    gap: 2,
   },
-  scanTxt: { color: '#A9FFE3', textAlign: 'center', fontFamily: FONTS.bold },
+  scanTxt: { color: '#A9FFE3', textAlign: 'center', fontFamily: FONTS.medium,fontSize:16 },
 });

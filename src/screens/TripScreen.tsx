@@ -21,9 +21,9 @@ import { FONTS } from '../../src/theme/fonts';
 type Props = NativeStackScreenProps<RootStackParamList, 'Trip'>;
 
 const MINT = '#B9FBE7';
-const BG = '#F6F7F8';
+const BG = '#EFEFEF';
 const BORDER = '#ECEDEE';
-const TEXT = '#111';
+const TEXT = '#201E20';
 const MUTED = '#9AA0A6';
 
 const DEFAULT_PAX: PassengerCounts = {
@@ -137,10 +137,11 @@ export default function TripScreen({ navigation, route }: Props) {
           {/* Start */}
           <Pressable style={styles.row} onPress={() => openPlaces('start')}>
             <View style={styles.rowIconWrap}>
-              <Ionicons name="radio-button-on-outline" size={16} color={TEXT} />
+              {/* <Ionicons name="radio-button-on-outline" size={16} color={TEXT} /> */}
+              <Image source={require('../../assets/icons/start-icon.png')} alt='start' style={{width:24, height:24}} />
+              <Text style={styles.rowLabel}>Start</Text>
             </View>
             <View style={styles.rowTextWrap}>
-              <Text style={styles.rowLabel}>Start</Text>
               <Text style={styles.rowValue} numberOfLines={2}>
                 {start?.description ?? 'Choose start point'}
               </Text>
@@ -152,20 +153,18 @@ export default function TripScreen({ navigation, route }: Props) {
             style={[styles.row, { marginTop: 12 }]}
             onPress={() => openPlaces('dest')}
           >
-            <View style={[styles.rowIconWrap, { backgroundColor: '#EAEAEA' }]}>
-              <MaterialIcons name="flag" size={16} color={TEXT} />
+            <View style={styles.rowIconWrap}>
+              <Image source={require('../../assets/icons/dest-icon.png')} alt='dest' style={{width:22, height:26}} />
+              <Text style={styles.rowLabeltwo}>Destination</Text>
+              {/* <MaterialIcons name="flag" size={16} color={TEXT} /> */}
             </View>
             <View style={styles.rowTextWrap}>
-              <Text style={styles.rowLabel}>Destination</Text>
               <Text
                 style={[styles.rowValue, !dest && { color: MUTED }]}
                 numberOfLines={1}
               >
                 {dest?.description ?? 'Where are you going?'}
               </Text>
-            </View>
-            <View style={styles.plusBadge}>
-              <AntDesign name="plus" size={14} color={TEXT} />
             </View>
           </Pressable>
 
@@ -181,15 +180,16 @@ export default function TripScreen({ navigation, route }: Props) {
                   onPick: () => {},
                 });
               }}
-              style={styles.helperPlus}
+              // style={styles.helperPlus}
             >
-              <AntDesign name="plus" size={14} color={TEXT} />
+              <Image source={require('../../assets/icons/plus-bg-icon.png')} alt='plus' style={{height:31,width:32}} />
+              {/* <AntDesign name="plus" size={22} color={TEXT} /> */}
             </Pressable>
           </View>
         </View>
 
         {/* Set on pin */}
-        <Pressable style={styles.pinRow} onPress={() => setSetOnPin(!setOnPin)}>
+        {/* <Pressable style={styles.pinRow} onPress={() => setSetOnPin(!setOnPin)}>
           <Image
             source={assets.images.locationPin}
             style={{ width: 20, height: 20, resizeMode: 'contain' }}
@@ -197,10 +197,10 @@ export default function TripScreen({ navigation, route }: Props) {
           <Text style={styles.pinText}>Set location on pin</Text>
           <View style={{ flex: 1 }} />
           <Switch value={setOnPin} onValueChange={setSetOnPin} />
-        </Pressable>
+        </Pressable> */}
 
         {/* Passenger summary chip (tap to edit) */}
-        {(totalPassengers > 0 || totalSeats > 0) && (
+        {/* {(totalPassengers > 0 || totalSeats > 0) && (
           <Pressable style={styles.summaryChip} onPress={openAddPassenger}>
             <Ionicons name="people-outline" size={16} color={TEXT} />
             <Text style={styles.summaryText} numberOfLines={1}>
@@ -208,10 +208,10 @@ export default function TripScreen({ navigation, route }: Props) {
             </Text>
             <Text style={styles.summaryEdit}>Edit</Text>
           </Pressable>
-        )}
+        )} */}
 
         {/* tiny meta / readouts */}
-        <Text
+        {/* <Text
           style={styles.inlineMeta}
           numberOfLines={1}
         >{`Adults ${passengers.adults} · Children ${passengers.children} · Infants ${passengers.infants}`}</Text>
@@ -222,17 +222,17 @@ export default function TripScreen({ navigation, route }: Props) {
           <Text style={[styles.inlineMeta, { marginTop: 4 }]} numberOfLines={1}>
             {'Selected Date and Time: ' + whenText}
           </Text>
-        )}
+        )} */}
 
         {/* Spacer pushes bullets near bottom, keeping room for CTA */}
-        <View style={{ flex: 1 }} />
+        {/* <View style={{ flex: 1 }} /> */}
 
         {/* Info bullets */}
-        <View style={{ gap: 16 }}>
+        <View style={{ gap: 18, height:355, flexDirection:'column', justifyContent:'flex-end',alignItems:'flex-end' }}>
           <View style={styles.bullet}>
             <Image
               source={assets.images.traffic}
-              style={{ width: 20, height: 20, resizeMode: 'contain' }}
+              style={{ width: 24, height: 24, resizeMode: 'contain' }}
             />
             <View style={{ flex: 1 }}>
               <Text style={styles.bTitle}>
@@ -248,7 +248,7 @@ export default function TripScreen({ navigation, route }: Props) {
           <View style={styles.bullet}>
             <Image
               source={assets.images.securityIcon}
-              style={{ width: 20, height: 20, resizeMode: 'contain' }}
+              style={{ width: 24, height: 24, resizeMode: 'contain' }}
             />
             <View style={{ flex: 1 }}>
               <Text style={styles.bTitle}>Guaranteed</Text>
@@ -264,9 +264,10 @@ export default function TripScreen({ navigation, route }: Props) {
       {/* Bottom CTA */}
       <View style={styles.bottom}>
         <Pressable style={styles.cta} onPress={openAddPassenger}>
-          <Text style={styles.ctaText}>Add Passenger</Text>
+          <Text style={styles.ctaText}>+ Add Passenger</Text>
           <View style={styles.ctaArrow}>
-            <AntDesign name="arrowright" size={18} color={TEXT} />
+            <Image source={require('../../assets/icons/right-line-arrow-icon.png')} alt='right-arrow' style={{width:22,height:12}} />
+            {/* <AntDesign name="arrowright" size={24} color={TEXT} /> */}
           </View>
         </Pressable>
       </View>
@@ -289,13 +290,18 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#201E20',
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0.10,
+  shadowRadius: 12,
+  elevation: 4,
   },
-  hTitle: { fontSize: 16, color: TEXT, fontFamily: FONTS.bold },
+  hTitle: { fontFamily: FONTS.regular, fontSize: 18},
   doneBtn: { paddingHorizontal: 8, paddingVertical: 4 },
-  doneText: { color: TEXT, fontFamily: FONTS.bold },
+  doneText: { color: TEXT, fontFamily: FONTS.regular, fontSize: 18 },
 
   // non-scroll container
   content: {
@@ -313,12 +319,12 @@ const styles = StyleSheet.create({
 
   row: {
     minHeight: 84,
-    flexDirection: 'row',
-    alignItems: 'center',
+    // flexDirection: 'row',
+    // alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: 16,
+    paddingVertical:12,
     borderWidth: 1,
     borderColor: BORDER,
     shadowColor: '#000',
@@ -328,21 +334,24 @@ const styles = StyleSheet.create({
     elevation: 1,
   },
   rowIconWrap: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: MINT,
+    width: 150,
+    height: 25,
+    borderRadius: 16,
+    // backgroundColor: MINT,
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 10,
+    justifyContent: 'flex-start',
+    // marginRight: 16,
+    gap: 10,
   },
   rowTextWrap: { flex: 1 },
-  rowLabel: { fontSize: 12, color: '#6F7378', fontFamily: FONTS.semibold },
-  rowValue: { fontSize: 14.5, color: TEXT, fontFamily: FONTS.bold, marginTop: 2 },
+  rowLabel: { fontSize: 18, color: '#524E4E', fontFamily: FONTS.semibold, marginLeft: 4 },
+  rowLabeltwo: { fontSize: 18, color: '#377EDB', fontFamily: FONTS.semibold, marginLeft: 4 },
+  rowValue: { fontSize: 18, color: '#201E20', fontFamily: FONTS.semibold, marginTop: 4 ,marginLeft: 37 },
   plusBadge: {
     width: 28,
     height: 28,
-    borderRadius: 14,
+    borderRadius: 16,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
@@ -357,12 +366,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     marginTop: 16,
   },
-  helperText: { color: TEXT, paddingVertical: 3, fontFamily: FONTS.medium },
+  helperText: { color: "#201E20", paddingVertical: 3, fontFamily: FONTS.regular,fontSize: 16 },
   helperPlus: {
-    width: 28,
-    height: 28,
+    width: 32,
+    height: 31,
     borderRadius: 14,
-    backgroundColor: MINT,
+    backgroundColor: "#B1FBE3",
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -395,18 +404,18 @@ const styles = StyleSheet.create({
   inlineMeta: { color: '#50545A', marginTop: 10, fontFamily: FONTS.regular },
 
   bullet: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
-  bTitle: { color: TEXT, fontFamily: FONTS.bold },
-  bBody: { color: '#666', marginTop: 2, lineHeight: 18, fontFamily: FONTS.regular },
+  bTitle: { color: TEXT, fontFamily: FONTS.semibold, fontSize: 16 },
+  bBody: { color: '#8D8E8F', marginTop: 4, lineHeight: 18, fontFamily: FONTS.regular,fontSize: 14 },
 
   bottom: {
     position: 'absolute',
     left: 0,
     right: 0,
-    bottom: 24,
+    bottom: 36,
     paddingHorizontal: 16,
   },
   cta: {
-    height: 52,
+    height: 56,
     borderRadius: 28,
     backgroundColor: TEXT,
     flexDirection: 'row',
@@ -414,15 +423,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#FCFCFC', fontFamily: FONTS.semibold, fontSize: 17 },
   ctaArrow: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: MINT,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
+    backgroundColor: "#B1FBE3",
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 });
