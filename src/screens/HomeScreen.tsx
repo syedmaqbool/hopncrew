@@ -279,9 +279,10 @@ export default function HomeScreen({ navigation, route }: Props) {
 
         {/* Search pill */}
         <View style={styles.searchRow}>
-          <Ionicons name="search" size={18} color="#9AA0A6" />
+          <Image source={require('../../assets/icons/search-icon.png')} alt='search-icon' style={{width:24,height:24}} />
+          {/* <Ionicons name="search" size={24} color="#201E20" /> */}
           <Pressable style={{ flex: 1 }} onPress={openPlaces}>
-            <Text style={{ color: '#000000', fontFamily: FONTS.medium }}>
+            <Text style={{ color: '#201E20000', fontFamily: FONTS.regular, fontSize: 16, marginLeft: 2 }}>
               Where are you going?
             </Text>
           </Pressable>
@@ -295,7 +296,8 @@ export default function HomeScreen({ navigation, route }: Props) {
               });
             }}
           >
-            <Ionicons name="heart-outline" size={18} color="#9AA0A6" />
+            <Image source={require('../../assets/icons/heart-icon.png')} alt='heart' style={{width:24,height:24}} />
+            {/* <Ionicons name="heart-outline" size={18} color="#9AA0A6" /> */}
           </Pressable>
         </View>
 
@@ -304,6 +306,14 @@ export default function HomeScreen({ navigation, route }: Props) {
           horizontal
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingVertical: 12 }}
+          style={{
+  marginTop: 8,
+  shadowColor: '#201E20',
+  shadowOffset: { width: 0, height: 0 },
+  shadowOpacity: 0.08,
+  shadowRadius: 12,
+  elevation: 4,
+}}
         >
           {MOCK_POSTS.map(p => (
             <View key={p.id} style={styles.card}>
@@ -312,13 +322,13 @@ export default function HomeScreen({ navigation, route }: Props) {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   alignItems: 'center',
-                  gap: 8,
+                  gap: 10,
                 }}
               >
                 <View>
                   <Image
                     source={assets.images.avatarMan}
-                    style={{ width: 40, height: 40, borderRadius: 20 }}
+                    style={{ width: 48, height: 48, borderRadius: 20 }}
                   />
                 </View>
                 <View>
@@ -342,21 +352,24 @@ export default function HomeScreen({ navigation, route }: Props) {
                   flexDirection: 'row',
                   justifyContent: 'space-between',
                   alignItems: 'flex-end',
+                  paddingHorizontal: 2,
+                  marginTop: 10,
                   gap: 8,
                 }}
               >
                 <View style={styles.starsRow}>
                   {Array.from({ length: 5 }).map((_, i) => (
-                    <Ionicons
-                      key={i}
-                      name={i < p.stars ? 'star' : 'star-outline'}
-                      size={14}
-                      color="#FFC107"
-                    />
+                    <Image source={require('../../assets/icons/star-icon.png')} alt='star-icon' style={{width:20,height:20}} />
+                    // <Ionicons
+                    //   key={i}
+                    //   name={i < p.stars ? 'star' : 'star-outline'}
+                    //   size={14}
+                    //   color="#FFC107"
+                    // />
                   ))}
                 </View>
 
-                <Text style={styles.cardSub}>15 November</Text>
+                <Text style={styles.cardSubTwo}>15 November</Text>
               </View>
             </View>
           ))}
@@ -439,20 +452,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: -26,
     paddingTop: 14,
-    borderTopLeftRadius: 35,
-    borderTopRightRadius: 35,
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
   },
 
   greeting: {
-    fontSize: 18,
-    color: '#111',
-    marginTop: 12,
+    fontSize: 20,
+    color: '#201E20',
+    marginTop: 18,
     marginBottom: 20,
     fontFamily: FONTS.semibold,
   },
   googleText: {
     color: '#1976D2',
     fontFamily: FONTS.regular,
+    fontSize: 12,
   },
   searchRow: {
     flexDirection: 'row',
@@ -464,26 +478,32 @@ const styles = StyleSheet.create({
     height: 44,
     borderWidth: 0,
     borderColor: '#EEE',
-    elevation: 2,
+    elevation: 4,
+    shadowColor: '#201E20',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     width: '94%',
     alignSelf: 'center',
   },
 
   card: {
     marginTop: 20,
-    width: 230,
-    padding: 12,
+    width: 270,
+    height: 196,
+    padding: 18,
     marginRight: 12,
-    borderRadius: 16,
+    borderRadius: 32,
     backgroundColor: '#fff',
     borderWidth: 0,
     borderColor: '#EFEFEF',
     elevation: 1,
     marginBottom: 16,
   },
-  cardTitle: { color: '#111', fontFamily: FONTS.medium },
-  cardSub: { color: '#888', fontSize: 12, fontFamily: FONTS.regular },
-  cardBody: { marginTop: 10, color: '#444', fontFamily: FONTS.regular },
+  cardTitle: { color: '#201E20', fontFamily: FONTS.regular, fontSize: 16 },
+  cardSub: { color: '#201E20', fontSize: 12, fontFamily: FONTS.regular },
+  cardSubTwo: { color: '#8D8E8F', fontSize: 13, fontFamily: FONTS.regular },
+  cardBody: { marginTop: 16, color: '#444', fontFamily: FONTS.regular, fontSize: 14 },
   starsRow: { flexDirection: 'row', gap: 4, marginTop: 20 },
 
   quickList: { marginTop: 0, gap: 6 },

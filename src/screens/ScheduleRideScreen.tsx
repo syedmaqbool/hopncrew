@@ -1,11 +1,11 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useMemo, useRef, useState } from 'react';
 import {
+  Animated,
   FlatList,
   Image,
   ImageBackground,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -22,16 +22,18 @@ import type { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ScheduleRide'>;
 
-const ITEM_H = 40;
+const ITEM_H = 35;
 const VISIBLE_ROWS = 5;
-const MINT = '#B9FBE7';
+const MINT = '#B1FBE3';
 
-const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`);
+const pad2 = (n: number) => (n < 10 ? `0${n}` : `${n}`);
 
 export default function ScheduleRideScreen({ navigation, route }: Props | any) {
   const insets = useSafeAreaInsets();
-
-  const now: any = route.params?.initial ?? new Date();
+  const nowRef = useRef<Date>(
+    route.params?.initial ? new Date(route.params.initial) : new Date(),
+  );
+  const now = nowRef.current;
   const start = route.params?.start ?? null;
   const dest = route.params?.dest ?? null;
   const passengers = route.params?.passengers ?? 0;
@@ -59,7 +61,7 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
     [],
   );
   const minutes = useMemo(
-    () => Array.from({ length: 12 }, (_, i) => pad(i * 5)),
+    () => Array.from({ length: 12 }, (_, i) => pad2(i * 5)),
     [],
   );
   const ampm = ['AM', 'PM'];
@@ -119,7 +121,7 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
           price: 43,
           oldPrice: 67,
           seatText: 'SUV X2',
-      },
+        },
       ],
       payMethod: 'Payment Breakdown',
       onConfirm: (q, opts) => {
@@ -127,17 +129,17 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
       },
       start,
       dest,
-      when: selectedDate, // optional: pass scheduled time along
+      when: selectedDate,
       passengers: passengers > 0 ? passengers : 0,
       luggage: luggage && luggage.length > 0 ? luggage : [],
     });
   };
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#F2F3F4' }}>
-      {/* Top map/header w/ rounded bottom */}
+    <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+      {/* Top header */}
       <ImageBackground
-        source={assets.images.Sbg /* <- provide your header image */}
+        source={assets.images.Sbg}
         style={[styles.headerImg, { paddingTop: insets.top + 8 }]}
         imageStyle={styles.headerImgRadius}
         resizeMode="cover"
@@ -147,34 +149,21 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
             style={styles.backCircle}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="chevron-back" size={18} color="#111" />
+            <Image
+              source={require('../../assets/icons/left-line-arrow-icon.png')}
+              alt="left-arrow"
+              style={{ height: 88, width: 98 }}
+            />
           </Pressable>
 
           <Text style={styles.headerTitle}>Schedule a Ride</Text>
 
-          {/* spacer to balance layout */}
           <View style={{ width: 36, height: 36 }} />
         </View>
       </ImageBackground>
 
       {/* White sheet content */}
       <SafeAreaView edges={['bottom']} style={styles.sheet}>
-        {/* big centered title */}
-        {false && (
-          <Text style={styles.bigTitle}>
-            {new Intl.DateTimeFormat('en-US', {
-              weekday: 'short',
-              month: 'short',
-              day: 'numeric',
-            }).format(selectedDate)}
-            {`  •  `}
-            {new Intl.DateTimeFormat('en-US', {
-              hour: 'numeric',
-              minute: '2-digit',
-            }).format(selectedDate)}
-          </Text>
-        )}
-
         <Text style={styles.bigTitle}>
           {new Intl.DateTimeFormat('en-US', {
             weekday: 'short',
@@ -189,13 +178,15 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
         </Text>
 
         {/* Wheels */}
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 16 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {/* Wheels */}
+        <View style={styles.wheelsOuter}>
           <View style={styles.wheelsWrap}>
+            {/* top/bottom fades */}
+            <View pointerEvents="none" style={styles.wheelsFadeTop} />
+            <View pointerEvents="none" style={styles.wheelsFadeBottom} />
+
+            {/* center highlight bar */}
             <View pointerEvents="none" style={styles.wheelsHighlight} />
+
             <Wheel
               data={dates.map(d => d.label)}
               index={idxDate}
@@ -221,11 +212,9 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
               width="16%"
             />
           </View>
+        </View>
 
-          {/* Info bullets with extra vertical padding */}
-        </ScrollView>
-
-        {/* CTA */}
+        {/* Bottom info + CTA */}
         <View
           style={[
             styles.footer,
@@ -259,7 +248,7 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
               </View>
             </View>
           </View>
-          {/* Toggle pill */}
+
           <View style={styles.toggleCard}>
             <View style={styles.toggleIconWrap}>
               <Image
@@ -271,13 +260,16 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
               Square hold funds and charge after drop-off
             </Text>
             <View style={styles.infoCircle}>
-              <Ionicons name="information" size={12} color="#111" />
+              <Image source={require('../../assets/icons/info-icon.png')} alt='info' style={{height:13,width:13}} />
+              {/* <Ionicons name="information" size={12} color="#111" /> */}
             </View>
           </View>
+
           <Pressable style={styles.cta} onPress={confirm}>
             <Text style={styles.ctaText}>Check Fare</Text>
             <View style={styles.ctaIcon}>
-              <AntDesign name="arrowright" size={18} color="#111" />
+              <Image source={require('../../assets/icons/right-line-arrow-icon.png')} alt='right-arrow' style={{width:22,height:12}} />
+              {/* <AntDesign name="arrowright" size={18} color="#111" /> */}
             </View>
           </Pressable>
         </View>
@@ -286,7 +278,7 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
   );
 }
 
-/* ---------- Wheel column ---------- */
+/* ---------- Animated Wheel column ---------- */
 
 function Wheel({
   data,
@@ -299,40 +291,88 @@ function Wheel({
   onIndexChange: (i: number) => void;
   width: number | `${number}%` | string;
 }) {
-  const listRef = useRef<FlatList<string>>(null);
-  const pad = (ITEM_H * (VISIBLE_ROWS - 1)) / 2;
+  const spacer = Math.floor((VISIBLE_ROWS - 1) / 2); // 2 for 5 rows
+  const extendedData = useMemo(
+    () => [
+      ...Array(spacer).fill('__spacer__'),
+      ...data,
+      ...Array(spacer).fill('__spacer__'),
+    ],
+    [data],
+  );
+
+  const scrollY = useRef(new Animated.Value(index * ITEM_H)).current;
 
   const onMomentumEnd = (e: any) => {
     const y = e.nativeEvent.contentOffset.y as number;
-    const idx = Math.round(y / ITEM_H);
-    if (idx !== index)
-      onIndexChange(Math.max(0, Math.min(data.length - 1, idx)));
+    // y / ITEM_H directly maps to original index (0..data.length-1)
+    const raw = Math.round(y / ITEM_H);
+    const clamped = Math.max(0, Math.min(data.length - 1, raw));
+    if (clamped !== index) onIndexChange(clamped);
   };
+
+  const AnimatedFlatList = Animated.createAnimatedComponent(
+    FlatList as any,
+  ) as React.ComponentType<any>;
 
   return (
     <View style={[styles.wheelCol, { width }]}>
-      <FlatList
-        ref={listRef}
-        data={data}
-        keyExtractor={(s, i) => `${s}-${i}`}
+      <AnimatedFlatList
+        data={extendedData}
+        keyExtractor={(_s: string, i: number) => `${i}`}
         showsVerticalScrollIndicator={false}
         snapToInterval={ITEM_H}
+        snapToAlignment="start"
         decelerationRate="fast"
         onMomentumScrollEnd={onMomentumEnd}
-        contentContainerStyle={{ paddingVertical: pad }}
-        getItemLayout={(_, i) => ({
+        scrollEventThrottle={16}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true },
+        )}
+        getItemLayout={(_: any, i: number) => ({
           length: ITEM_H,
           offset: ITEM_H * i,
           index: i,
         })}
-        initialScrollIndex={index}
-        renderItem={({ item, index: i }) => (
-          <View style={styles.item}>
-            <Text style={[styles.itemTxt, i === index && styles.itemActive]}>
-              {item}
-            </Text>
-          </View>
-        )}
+        initialScrollIndex={index} // 0 -> Today, 1 -> next day, etc.
+        renderItem={({ item, index: i }: { item: string; index: number }) => {
+          if (item === '__spacer__') {
+            return <View style={{ height: ITEM_H }} />;
+          }
+
+          const origIndex = i - spacer; // index in original data
+          const base = origIndex * ITEM_H;
+
+          const inputRange = [base - ITEM_H, base, base + ITEM_H];
+
+          const scale = scrollY.interpolate({
+            inputRange,
+            outputRange: [0.9, 1, 0.9],
+            extrapolate: 'clamp',
+          });
+
+          const opacity = scrollY.interpolate({
+            inputRange,
+            outputRange: [0.9, 1, 0.9],
+            extrapolate: 'clamp',
+          });
+
+          return (
+            <Animated.View
+              style={[styles.item, { transform: [{ scale }], opacity }]}
+            >
+              <Text
+                style={[
+                  styles.itemTxt,
+                  origIndex === index && styles.itemActive,
+                ]}
+              >
+                {item}
+              </Text>
+            </Animated.View>
+          );
+        }}
       />
     </View>
   );
@@ -345,6 +385,7 @@ const styles = StyleSheet.create({
     height: 160,
     justifyContent: 'flex-start',
     paddingHorizontal: 26,
+    backgroundColor: '#FFFFFF',
   },
   headerImgRadius: {
     borderBottomLeftRadius: 24,
@@ -354,7 +395,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
-    gap: 12,
+    gap: 14,
   },
   backCircle: {
     width: 36,
@@ -369,85 +410,118 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     elevation: 3,
   },
-  headerTitle: { color: '#111', fontSize: 18, fontFamily: FONTS.regular },
+  headerTitle: { color: '#201E20', fontSize: 18, fontFamily: FONTS.regular },
 
   sheet: {
     flex: 1,
-    backgroundColor: '#fff',
-    marginTop: -16, // slight overlap with curved header
+    backgroundColor: '#FFFFFF',
+    marginTop: -16,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 12,
   },
 
   bigTitle: {
-    fontSize: 22,
-    color: '#111',
+    fontSize: 26,
+    color: '#1C1B1F',
     textAlign: 'center',
-    marginTop: 8,
-    marginBottom: 8,
+    marginTop: 18,
+    marginBottom: 18,
     paddingHorizontal: 16,
-    fontFamily: FONTS.bold,
+    fontFamily: FONTS.semibold,
+    lineHeight: 30,
   },
 
+  wheelsOuter: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 50,
+  },
   wheelsWrap: {
     flexDirection: 'row',
     alignItems: 'stretch',
-    gap: 8,
-    paddingHorizontal: 16,
-    marginBottom: 18,
     position: 'relative',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 30,
+    // paddingVertical: 13,
   },
   wheelsHighlight: {
     position: 'absolute',
-    left: 16,
-    right: 16,
-    top: (ITEM_H * (VISIBLE_ROWS - 1)) / 2,
-    height: ITEM_H,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#E7E7E7',
-    backgroundColor: 'rgba(0,0,0,0.03)', // subtle band like the mock
+    left: 0,
+    right: 0,
+    top: (ITEM_H * (VISIBLE_ROWS - 1)) / 1.87,
+    height: 28,
+    backgroundColor: '#EFEFEF',
     borderRadius: 8,
+  },
+  wheelsFadeTop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: ITEM_H * 2,
+    backgroundColor: '#FFFFFF',
+    opacity: 0.46,
+  },
+  wheelsFadeBottom: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: ITEM_H * 2,
+    backgroundColor: '#FFFFFF',
+    opacity: 0.46,
   },
   wheelCol: {
     height: ITEM_H * VISIBLE_ROWS,
     overflow: 'hidden',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#EFEFEF',
-    backgroundColor: '#FAFAFA',
+    backgroundColor: 'transparent',
+    marginHorizontal: -2,
   },
-  infoPadded: { paddingVertical: 8 },
+
   item: {
     height: ITEM_H,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 8,
+    marginHorizontal: 4,
+    paddingVertical: 4,
   },
-  itemTxt: { color: '#9AA0A6' },
-  itemActive: { color: '#111', fontFamily: FONTS.bold },
+  itemTxt: {
+    color: '#C5C6CB',
+    fontFamily: FONTS.bold,
+    fontSize: 20,
+    paddingVertical: 0,
+  },
+  itemActive: {
+    color: '#1C1B1F',
+    fontFamily: FONTS.bold,
+    fontSize: 20,
+  },
 
   infoRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 10,
+    gap: 14,
   },
-  infoIcon: { width: 20, height: 20, resizeMode: 'contain' },
-  infoTitle: { color: '#111', fontFamily: FONTS.bold },
-  infoSub: { color: '#666', marginTop: 2, fontFamily: FONTS.regular },
-  footer: { paddingHorizontal: 16, paddingTop: 8 },
+  infoPadded: { paddingVertical: 0 },
+  infoIcon: { width: 24, height: 24, resizeMode: 'contain' },
+  infoTitle: { color: '#201E20', fontFamily: FONTS.semibold,fontSize: 16 },
+  infoSub: { color: '#8D8E8F', marginTop: 0, fontFamily: FONTS.regular,fontSize: 14,lineHeight:20 },
+
+  footer: { paddingHorizontal: 10,paddingTop:40, backgroundColor: '#FFFFFF' },
   toggleCard: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     gap: 10,
-    marginHorizontal: 16,
-    marginBottom: 12,
-    padding: 12,
+    marginHorizontal: 8,
+    marginVertical: 24,
+    // marginBottom: 18,
+    padding: 6,
     borderRadius: 20,
     borderWidth: 1,
     borderColor: '#D6F8EA',
-    backgroundColor: '#EAFDF5',
+    backgroundColor: '#DAF8EE',
   },
   toggleIconWrap: {
     width: 28,
@@ -457,7 +531,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  toggleTxt: { color: '#111', fontSize: 12, flexShrink: 1, fontFamily: FONTS.medium },
+  toggleTxt: {
+    color: '#201E20',
+    fontSize: 12,
+    flexShrink: 1,
+    fontFamily: FONTS.regular,
+  },
   infoCircle: {
     width: 20,
     height: 20,
@@ -468,24 +547,24 @@ const styles = StyleSheet.create({
   },
 
   cta: {
-    marginTop: 16,
-    marginHorizontal: 16,
-    height: 48,
+    marginHorizontal: 12,
+    marginVertical: 10,
+    height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.semibold, fontSize: 16 },
+  ctaText: { color: '#FCFCFC', fontFamily: FONTS.semibold, fontSize: 17 },
   ctaIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: MINT,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
+    backgroundColor: "#B1FBE3",
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 });
