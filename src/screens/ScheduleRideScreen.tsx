@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
   wheelsOuter: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 60,
+    marginVertical: 50,
   },
   wheelsWrap: {
     flexDirection: 'row',
@@ -501,14 +501,14 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    gap: 10,
+    gap: 14,
   },
-  infoPadded: { paddingVertical: 2 },
+  infoPadded: { paddingVertical: 0 },
   infoIcon: { width: 24, height: 24, resizeMode: 'contain' },
   infoTitle: { color: '#201E20', fontFamily: FONTS.semibold,fontSize: 16 },
-  infoSub: { color: '#8D8E8F', marginTop: 2, fontFamily: FONTS.regular,fontSize: 14,lineHeight:20 },
+  infoSub: { color: '#8D8E8F', marginTop: 0, fontFamily: FONTS.regular,fontSize: 14,lineHeight:20 },
 
-  footer: { paddingHorizontal: 16, backgroundColor: '#FFFFFF' },
+  footer: { paddingHorizontal: 10,paddingTop:40, backgroundColor: '#FFFFFF' },
   toggleCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -547,8 +547,8 @@ const styles = StyleSheet.create({
   },
 
   cta: {
-    marginHorizontal: 16,
-    marginVertical: 20,
+    marginHorizontal: 12,
+    marginVertical: 10,
     height: 56,
     borderRadius: 28,
     backgroundColor: '#111',

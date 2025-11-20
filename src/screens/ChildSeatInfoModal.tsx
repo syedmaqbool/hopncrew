@@ -70,9 +70,9 @@ export default function ChildSeatInfoModal({ navigation }: Props) {
       <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
         <View style={styles.sheet}>
           <View style={styles.header}>
-            <Text style={styles.title}>Child Seat Guide</Text>
+            {/* <Text style={styles.title}>Child Seat Guide</Text> */}
             <Pressable style={styles.close} onPress={() => navigation.goBack()}>
-              <Ionicons name="close" size={18} color="#111" />
+              <Ionicons name="close" size={24} color="#8D8E8F" />
             </Pressable>
           </View>
 
@@ -150,15 +150,15 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
     marginBottom: 8,
   },
   title: { color: '#111', fontSize: 16, fontFamily: FONTS.bold },
   close: {
     width: 32,
     height: 32,
-    borderRadius: 16,
-    backgroundColor: '#F2F2F2',
+    // borderRadius: 16,
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
   },
