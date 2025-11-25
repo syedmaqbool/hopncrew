@@ -340,7 +340,11 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             style={styles.backCircle}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="chevron-back" size={18} color={TEXT} />
+             <Image
+                          source={require('../../assets/icons/left-line-arrow-icon.png')}
+                          alt="left-arrow"
+                          style={{ height: 88, width: 98 }}
+                        />
           </Pressable>
 
           <View style={styles.etaPill}>
@@ -562,7 +566,7 @@ function FareRow({
 /* ====== styles ====== */
 const styles = StyleSheet.create({
   mapWrap: {
-    height: Math.round(Dimensions.get('window').height * 0.3),
+    height: Math.round(Dimensions.get('window').height * 0.25),
     overflow: 'hidden',
     justifyContent: 'flex-start',
   },
@@ -614,11 +618,12 @@ const styles = StyleSheet.create({
 
   blurb: {
     color: TEXT,
-    fontSize: 12,
-    backgroundColor: '#F6F7F8',
+    fontSize: 16,
+    // backgroundColor: '#F6F7F8',
     borderRadius: 12,
-    padding: 8,
+    padding: 4,
     lineHeight: 18,
+    paddingVertical: 18,
     fontFamily: FONTS.regular,
   },
 
@@ -631,12 +636,13 @@ const styles = StyleSheet.create({
   rowWrap: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 16,
+    borderRadius: 24,
     borderWidth: 1,
     borderColor: BORDER,
     backgroundColor: '#EEEEEF',
     overflow: 'visible',
     color: '#000',
+    height: 96,
   },
   rowWrapActive: {
     borderColor: '#EEEEEF',
@@ -646,6 +652,7 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },
     elevation: 6,
+    height: 96,
   },
 
   leftSlab: {

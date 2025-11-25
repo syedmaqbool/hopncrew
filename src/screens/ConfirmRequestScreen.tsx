@@ -48,6 +48,7 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
   const { width } = useWindowDimensions();
 
   const q: FareQuote = route.params?.quote!;
+  const vehicleDetails: FareQuote = route.params?.vehicleOption!;
   const [payMethod] = useState(route.params?.payMethod ?? 'Credit or Debit');
   const [coupon, setCoupon] = useState<string>('');
   const [special, setSpecial] = useState<SpecialRequestPayload | null>(
@@ -114,7 +115,7 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
     : require('../../assets/icons/no-car-icon.jpg');
 
   // Responsive widths
-  const carCardWidth = Math.min(320, width * 0.62);
+  // const carCardWidth = Math.min(320, width * 0.62);
   const priceSlabWidth = carRowStacks ? '100%' : Math.min(240, width * 0.46);
   const priceFont = width < 360 ? 32 : width < 420 ? 38 : 44;
 
@@ -128,7 +129,7 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
         accessibilityRole="button"
         accessibilityLabel="Close"
       >
-        <Ionicons name="close" size={18} color={TEXT} />
+        <Ionicons name="close" size={24} color={TEXT} />
       </Pressable>
 
       <KeyboardAvoidingView
@@ -138,7 +139,7 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
       >
         <ScrollView
           contentContainerStyle={{
-            padding: 16,
+            padding: 20,
             paddingTop: 50,
             // ensure nothing is hidden behind CTA
             paddingBottom: CTA_HEIGHT + 24 + insets.bottom,
@@ -147,19 +148,20 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
           keyboardShouldPersistTaps="handled"
         >
           {/* Title + subtitle */}
-          <Text style={[styles.h1, { fontSize: width < 360 ? 18 : 20 }]}>
+          <Text style={styles.h1}>
             {q?.tier}
           </Text>
-          {!!q?.details && <Text style={styles.light}>{q.details}</Text>}
+          {!!vehicleDetails?.vehicle_details && <Text style={styles.light}>{vehicleDetails?.vehicle_details}</Text>}
 
           {/* Payment label */}
           <View style={styles.rowHead}>
             <Text style={styles.section}>Payment</Text>
-            <Ionicons
+            {/* <Ionicons
               name="information-circle-outline"
               size={16}
               color={MUTED}
-            />
+            /> */}
+            <Image source={require('../../assets/icons/info-icon.png')} alt='info' style={{height:20,width:20}} />
           </View>
 
           {/* Car tile + price slab (reference look) */}
@@ -173,7 +175,7 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
           >
             {/* Car card with soft shadow */}
             <View style={styles.cardShadow}>
-              <View style={[styles.carCardBox, { width: carCardWidth }]}>
+              <View style={styles.carCardBox}>
                 <Image
                   source={carSrc}
                   style={styles.carImage}
@@ -192,12 +194,10 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
               ]}
             >
               <View style={styles.priceSlab}>
-                {!!q.tax && <Text style={styles.taxTxt}>Tax: ${q.tax}</Text>}
+                <Text style={styles.taxTxt}>Tax: ${q.tax}</Text>
+                {/* {!!q.tax && <Text style={styles.taxTxt}>Tax: ${q.tax}</Text>} */}
                 <Text
-                  style={[
-                    styles.priceNow,
-                    { fontSize: priceFont, lineHeight: priceFont + 2 },
-                  ]}
+                  style={styles.priceNow}
                   numberOfLines={1}
                 >
                   ${q.price}
@@ -234,9 +234,7 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
           {/* Policy sub info */}
           <View style={styles.centerRow}>
             <Text style={styles.policySub}>
-              Fare/km {q?.fare_per_km ?? '-'} • Max Luggage{' '}
-              {q?.max_luggage ?? '-'} • Max Passengers{' '}
-              {q?.max_passengers ?? '-'}
+              Flat Rate - No Surge, No Per-KM, No Per-MIN Charges
             </Text>
           </View>
 
@@ -333,11 +331,11 @@ const styles = StyleSheet.create({
   closeBtn: {
     position: 'absolute',
     left: 14,
-    width: 36,
-    height: 36,
-    top: 8,
+    width: 44,
+    height: 44,
+    top: 12,
     borderRadius: 18,
-    backgroundColor: '#F2F2F2',
+    backgroundColor: '#FCFCFC',
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 10,
@@ -348,41 +346,47 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
 
-  h1: { color: TEXT, fontSize: 20, marginTop: 8, fontFamily: FONTS.semibold },
+  h1: { color: TEXT, fontSize: 20, marginTop: 24, fontFamily: FONTS.semibold },
   light: {
     color: '#201E20',
-    marginTop: 10,
-    fontFamily: FONTS.medium,
+    marginTop: 12,
+    fontFamily: FONTS.regular,
+    fontSize: 16,
     width: '90%',
+    lineHeight: 24,
   },
 
   rowHead: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
-    marginTop: 16,
+    gap: 8,
+    marginTop: 26,
   },
-  section: { color: TEXT, fontFamily: FONTS.semibold, fontSize: 20 },
+  section: { color: "#201E20", fontFamily: FONTS.semibold, fontSize: 20 },
 
   /* ---------- Car row + price slab ---------- */
   carRowWrap: {
     marginTop: 16,
     alignItems: 'center',
     justifyContent: 'flex-start',
+    height: 164,
+    width: 220,
   },
 
   cardShadow: {
     borderRadius: 24,
+    width: 240,
     shadowColor: '#000',
-    shadowOpacity: 0.15,
-    shadowRadius: 18,
-    shadowOffset: { width: 0, height: 10 },
-    elevation: 8,
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 2,
     backgroundColor: 'transparent',
     zIndex: 4,
   },
   carCardBox: {
     height: 160,
+    width: 200,
     backgroundColor: CARD,
     borderRadius: 24,
     paddingHorizontal: 14,
@@ -396,75 +400,78 @@ const styles = StyleSheet.create({
 
   priceSlabShadow: {
     borderRadius: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 8 },
-    elevation: 6,
+    // shadowColor: '#000',
+    // shadowOpacity: 0.1,
+    // shadowRadius: 16,
+    // shadowOffset: { width: 0, height: 8 },
+    // elevation: 6,
     backgroundColor: 'transparent',
   },
   priceSlab: {
     height: 160,
     backgroundColor: '#EFEFEF',
-    shadowColor: '#000',
-    elevation: 6,
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
+    // shadowColor: '#000',
+    // elevation: 6,
+    // shadowOpacity: 0.1,
+    // shadowRadius: 12,
+    flexDirection: 'column',
     borderRadius: 24,
-    paddingHorizontal: 22,
-    paddingVertical: 16,
+    paddingHorizontal: 18,
+    // padding: 16,
+    // paddingVertical: 13,
     alignItems: 'flex-end',
     justifyContent: 'center',
   },
   taxTxt: {
-    color: '#6B7280',
-    fontSize: 13,
-    marginBottom: 6,
+    color: '#201E20',
+    fontSize: 16,
+    // marginBottom: 6,
     fontFamily: FONTS.regular,
   },
   priceNow: {
-    color: TEXT,
-    fontFamily: FONTS.bold,
+    color: "#201E20",
+    fontFamily: FONTS.semibold,
+    fontSize: 64,
   },
   tipTxt: {
-    color: '#6B7280',
-    marginTop: 6,
-    fontSize: 15,
+    color: '#201E20',
+    // marginTop: 6,
+    fontSize: 16,
     fontFamily: FONTS.regular,
   },
 
   /* ---------- Policy ---------- */
   policyRow: {
-    marginTop: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderRadius: 999,
-    backgroundColor: BG_SOFT,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    borderWidth: 1,
-    borderColor: BORDER,
+      marginTop: 26,
+      paddingHorizontal: 16,
+      paddingVertical: 6,
+      marginHorizontal: 40,
+      borderRadius: 999,
+      backgroundColor: '#ECECEC5E',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 12,
   },
-  policyTxt: { color: TEXT, fontFamily: FONTS.bold },
+  policyTxt: { color: TEXT, fontFamily: FONTS.semibold, fontSize: 14,padding:2 },
   centerRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
   policySub: {
-    color: '#201E20',
+    color: '#737373',
     marginVertical: 10,
     textAlign: 'center',
-    fontFamily: FONTS.regular,
+    fontFamily: FONTS.semibold,
+    fontSize: 14,
   },
 
   /* ---------- Special request ---------- */
   specialWrap: {
     alignItems: 'flex-start',
     justifyContent: 'center',
-    marginTop: 16,
+    marginTop: 30,
   },
   specialInner: {
     flexDirection: 'row',
@@ -475,7 +482,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 10,
   },
-  specialTxt: { color: TEXT, fontFamily: FONTS.bold },
+  specialTxt: { color: "#201E20", fontFamily: FONTS.semibold, fontSize: 14 },
 
   /* ---------- Payment & coupon ---------- */
   bottomRow: { gap: 10, marginTop: 14 },
