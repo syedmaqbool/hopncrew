@@ -337,8 +337,9 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
               ))}
             </View>
             <View style={styles.identityRow}>
-              <Ionicons name="shield-checkmark" size={16} color="#111" />
+              {/* <Ionicons name="shield-checkmark" size={16} color="#111" /> */}
               <Text style={styles.identityTxt}>Identity verified</Text>
+              <Image source={require('../../assets/icons/identify-icon.png')} alt='identify-icon' style={{width:14,height:15}} />
             </View>
           </View>
         </View>
@@ -351,7 +352,7 @@ const styles = StyleSheet.create({
   screen: { flex: 1, backgroundColor: '#fff' },
 
   // Top 50%
-  mapHalf: { flex: 0.5, backgroundColor: '#E8ECEF' },
+  mapHalf: { flex: 0.4, backgroundColor: '#E8ECEF' },
   headerRow: {
     position: 'absolute',
     top: 10,
@@ -387,7 +388,7 @@ const styles = StyleSheet.create({
 
   // Bottom 50%
   sheetHalf: {
-    flex: 0.5,
+    flex: 0.6,
     justifyContent: 'flex-end',
     backgroundColor: 'transparent',
     alignItems: 'center',
@@ -413,9 +414,10 @@ const styles = StyleSheet.create({
     width: 108,
     height: 108,
     borderRadius: 54,
-    backgroundColor: '#F1F2F4',
+    // backgroundColor: '#F1F2F4',
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical:6
   },
   dot: {
     position: 'absolute',
@@ -428,11 +430,11 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    marginTop: 14,
+    marginTop: 24,
     textAlign: 'center',
-    color: '#111',
-    fontSize: 14,
-    fontFamily: FONTS.semibold,
+    color: '#201E20',
+    fontSize: 16,
+    fontFamily: FONTS.regular,
   },
   progressTrack: {
     height: 6,
@@ -446,21 +448,22 @@ const styles = StyleSheet.create({
   subhead: {
     color: '#111',
     textAlign: 'center',
-    marginTop: 8,
-    fontFamily: FONTS.bold,
+    marginVertical: 18,
+    fontSize:16,
+    fontFamily: FONTS.semibold,
   },
   stars: {
     flexDirection: 'row',
     gap: 4,
-    marginTop: 8,
+    marginTop: 0,
     justifyContent: 'center',
   },
   identityRow: {
     flexDirection: 'row',
     gap: 6,
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 48,
   },
-  identityTxt: { color: '#111', fontFamily: FONTS.semibold },
+  identityTxt: { color: '#201E20', fontFamily: FONTS.regular,fontSize:16 },
   avatarImg: { width: 24, height: 24, borderRadius: 12, resizeMode: 'cover' },
 });

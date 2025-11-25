@@ -123,7 +123,7 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
           seatText: 'SUV X2',
         },
       ],
-      payMethod: 'Payment Breakdown',
+      payMethod: 'Card',
       onConfirm: (q, opts) => {
         console.log('Chosen quote:', q, opts);
       },

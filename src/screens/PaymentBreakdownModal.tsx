@@ -1,6 +1,6 @@
 // src/screens/PaymentBreakdownModal.tsx
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Pressable, ScrollView, Image } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FONTS } from '../../src/theme/fonts';
@@ -8,8 +8,6 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList, PaymentRow } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PaymentBreakdown'>;
-
-const MINT = '#B9FBE7';
 
 export default function PaymentBreakdownModal({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
@@ -27,88 +25,149 @@ export default function PaymentBreakdownModal({ navigation, route }: Props) {
   const renderValue = (row: PaymentRow) => {
     if (typeof row.value === 'number') {
       const money = row.money ?? true;
-      return <Text style={[styles.val, row.bold && styles.valBold]}>{money ? fmtMoney(row.value) : String(row.value)}</Text>;
+      return (
+        <Text style={[styles.val, row.bold && styles.valBold]}>
+          {money ? fmtMoney(row.value) : String(row.value)}
+        </Text>
+      );
     }
-    return <Text style={[styles.val, row.bold && styles.valBold]}>{row.value}</Text>;
+    return (
+      <Text style={[styles.val, row.bold && styles.valBold]}>
+        {row.value}
+      </Text>
+    );
   };
 
   return (
     <View style={{ flex: 1 }}>
-      {/* dim but keep map visible */}
-      <Pressable style={[StyleSheet.absoluteFillObject, { backgroundColor: 'rgba(0,0,0,0.1)' }]} onPress={() => navigation.goBack()} />
+      {/* --- Dim Background (tap to close) --- */}
+      <Pressable
+        style={[StyleSheet.absoluteFillObject, { backgroundColor: 'rgba(0,0,0,0.25)' }]}
+        onPress={() => navigation.goBack()}
+      />
 
+      {/* --- Bottom Sheet --- */}
       <SafeAreaView edges={['bottom']} style={styles.wrap}>
-        <View style={[styles.sheet, { paddingTop: insets.top + 6 }]}>
-          {/* header */}
+        <View style={[styles.sheet, { paddingTop: 10 }]}>
+          
+          {/* Header */}
           <View style={styles.header}>
             <Text style={styles.h1}>{title}</Text>
             <Pressable onPress={() => navigation.goBack()} hitSlop={10}>
-              <Ionicons name="close" size={18} color="#111" />
+              <Ionicons name="close" size={26} color="#8D8E8F" />
             </Pressable>
           </View>
 
-          <ScrollView contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}>
-            <View style={styles.table}>
-              {rows.map((r, idx) => (
-                <View key={idx} style={styles.row}>
-                  <Text style={styles.label}>{r.label}</Text>
-                  {renderValue(r)}
+          {/* Rows */}
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: 24, paddingBottom: 26 }}
+          >
+            {rows.map((row, index) => {
+              const isLast = index === rows.length - 1;
+              return (
+                <View
+                  key={index}
+                  style={[styles.row, !isLast && styles.rowDivider]}
+                >
+                  <Text style={styles.label}>{row.label}</Text>
+                  {renderValue(row)}
                 </View>
-              ))}
-            </View>
+              );
+            })}
 
+            {/* Footnote */}
             <View style={styles.noteRow}>
-              <Ionicons name="information-circle-outline" size={14} color="#9AA0A6" />
+              {/* <Ionicons
+                name="information-circle-outline"
+                size={13}
+                color="#8F9398"
+              /> */}
               <Text style={styles.noteTxt}>{footnote}</Text>
+              <View style={{position:'absolute', right:100,top:-15}}>
+              <Image source={require('../../assets/icons/info-icon.png')} alt='info' style={{height:18, width:18}} />
+              </View>
             </View>
           </ScrollView>
+
         </View>
       </SafeAreaView>
     </View>
   );
 }
 
+/* ========================= STYLES ========================= */
+
 const styles = StyleSheet.create({
-  wrap: { flex: 1, justifyContent: 'flex-end' },
-  sheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
-    maxHeight: '85%',
+  wrap: {
+    flex: 1,
+    justifyContent: 'flex-end',
   },
+
+  sheet: {
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    maxHeight: '85%',
+    paddingBottom: 12,
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: -4 },
+    elevation: 10,
+  },
+
+  /* Header */
   header: {
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 24,
+    paddingVertical: 24,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  h1: { color: '#111', fontSize: 18, fontFamily: FONTS.bold },
-
-  table: {
-    borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#EEE',
+  h1: {
+    fontSize: 24,
+    color: '#000000',
+    fontFamily: FONTS.semibold,
   },
+
+  /* Row List */
   row: {
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    paddingVertical: 14,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: '#EEE',
+    alignItems: 'center',
   },
-  label: { color: '#111', fontFamily: FONTS.regular },
-  val: { color: '#111', fontFamily: FONTS.bold },
-  valBold: { fontFamily: FONTS.bold },
+  rowDivider: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#CFCDCD',
+  },
 
-  noteRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12 },
-  noteTxt: { color: '#9AA0A6', fontFamily: FONTS.regular },
+  label: {
+    fontSize: 16,
+    color: '#201E20',
+    fontFamily: FONTS.regular,
+  },
+  val: {
+    fontSize: 18,
+    color: '#201E20',
+    fontFamily: FONTS.semibold,
+  },
+  valBold: {
+    fontFamily: FONTS.bold,
+  },
 
-  chip: {
-    alignSelf: 'flex-start',
-    backgroundColor: MINT, paddingHorizontal: 10, paddingVertical: 6, borderRadius: 14,
+  /* Footnote */
+  noteRow: {
+    position:'relative',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 30,
+  },
+  noteTxt: {
+    fontSize: 14,
+    color: '#201E20',
+    fontFamily: FONTS.regular,
   },
 });

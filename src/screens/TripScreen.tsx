@@ -121,7 +121,7 @@ export default function TripScreen({ navigation, route }: Props) {
             style={styles.hBtn}
             onPress={() => navigation.replace('App')}
           >
-            <Ionicons name="close" size={18} color={TEXT} />
+            <Ionicons name="close" size={24} color={TEXT} />
           </Pressable>
           <Text style={styles.hTitle}>Trip</Text>
         </View>
@@ -287,14 +287,14 @@ const styles = StyleSheet.create({
   },
   headerLeft: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   hBtn: {
-    width: 36,
-    height: 36,
+    width: 44,
+    height: 44,
     borderRadius: 18,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#201E20',
-  shadowOffset: { width: 0, height: 0 },
+  shadowOffset: { width: 0, height: 2 },
   shadowOpacity: 0.10,
   shadowRadius: 12,
   elevation: 4,

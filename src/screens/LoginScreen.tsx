@@ -206,10 +206,11 @@ export default function LoginScreen({ navigation }: Props) {
             onPress={() => navigation.navigate('Signup')}
             style={{
               textAlign: 'center',
-              marginTop: 10,
+              marginTop: 20,
               textDecorationLine: 'underline',
               fontFamily: FONTS.regular,
-              color: '#111',
+              color: '#201E20',
+              fontSize:16
             }}
           >
             Create an account
@@ -222,7 +223,8 @@ export default function LoginScreen({ navigation }: Props) {
               marginTop: 10,
               textDecorationLine: 'underline',
               fontFamily: FONTS.regular,
-              color: '#111',
+              color: '#201E20',
+              fontSize:16
             }}
           >
             Forget password
@@ -235,16 +237,16 @@ export default function LoginScreen({ navigation }: Props) {
           {/* Social logins (hooks to add later) */}
           <View style={styles.socialRow}>
             <Pressable onPress={() => onLinkedInPress()} style={styles.social}>
-              <FontAwesome name="linkedin" size={18} color="#0A66C2" />
+              <FontAwesome name="linkedin" size={28} color="#0A66C2" />
             </Pressable>
             <Pressable style={styles.social}>
-              <FontAwesome name="facebook" size={18} color="#1877F2" />
+              <FontAwesome name="facebook" size={28} color="#1877F2" />
             </Pressable>
             <Pressable style={styles.social}>
-              <AntDesign name="google" size={18} color="#DB4437" />
+              <AntDesign name="google" size={28} color="#DB4437" />
             </Pressable>
             <Pressable style={styles.social}>
-              <AntDesign name="apple1" size={18} color="#000" />
+              <AntDesign name="apple1" size={28} color="#000" />
             </Pressable>
           </View>
 
@@ -330,14 +332,14 @@ const styles = StyleSheet.create({
     // borderRadius: 20,
     // backgroundColor: '#CFFCED', // faint “map” block
   },
-  titleWrap: { paddingHorizontal: 16, marginTop: 12 },
+  titleWrap: { paddingHorizontal: 16, marginTop: 8 },
   title: {
     fontSize: 24,
-    lineHeight: 30,
+    lineHeight: 32,
     color: '#111',
     fontFamily: FONTS.semibold,
   },
-  btnTxt: { color: '#fff', fontFamily: FONTS.bold },
+  btnTxt: { color: '#fff', fontFamily: FONTS.semibold },
   card: {
     flex: 1,
     backgroundColor: CARD_BG,
@@ -382,7 +384,7 @@ const styles = StyleSheet.create({
 
   signInBtn: {
     marginTop: 16,
-    height: 48,
+    height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',
@@ -390,31 +392,32 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  signInText: { color: '#fff', fontFamily: FONTS.semibold, fontSize: 16 },
+  signInText: { color: '#fff', fontFamily: FONTS.semibold, fontSize: 17 },
   signInArrow: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    borderRadius: 24,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 
-  divider: { height: 1, backgroundColor: '#EFEFEF', marginVertical: 16 },
+  divider: { height: 1, backgroundColor: '#EFEFEF', marginVertical: 26 },
   or: {
     textAlign: 'center',
     color: '#666',
     marginBottom: 12,
     fontFamily: FONTS.regular,
+    fontSize:16
   },
 
   socialRow: { flexDirection: 'row', justifyContent: 'center', gap: 14 },
   social: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 56,
+    height: 56,
+    borderRadius: 32,
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#EEE',
@@ -443,7 +446,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 8,
     color: '#111',
-    fontFamily: FONTS.bold,
+    fontFamily: FONTS.semibold,
   },
   faceIdButton: {
     marginTop: 18,

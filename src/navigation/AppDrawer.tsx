@@ -106,8 +106,7 @@ function CustomDrawerContent(props: any) {
       <View
         style={{
           paddingHorizontal: 16,
-          paddingTop: insets.top + 8,
-          paddingBottom: 16,
+          paddingBottom: 2,
         }}
       >
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>

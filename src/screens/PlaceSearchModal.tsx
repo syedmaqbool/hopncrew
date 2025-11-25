@@ -1,6 +1,6 @@
 // src/screens/PlaceSearchModal.tsx
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   FlatList,
   Pressable,
@@ -11,10 +11,6 @@ import {
   View,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {
-  GooglePlacesAutocomplete,
-  type GooglePlacesAutocompleteRef,
-} from 'react-native-google-places-autocomplete';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { FONTS } from '../../src/theme/fonts';
 import type { RootStackParamList } from '../navigation/types';
@@ -22,7 +18,7 @@ import type { RootStackParamList } from '../navigation/types';
 type Props = NativeStackScreenProps<RootStackParamList, 'PlaceSearch'>;
 
 /** TODO: move to env/secure storage */
-const GOOGLE_PLACES_API_KEY = 'AIzaSyBp7k8-SYDkEkhcGbXQ9f_fAXPXmwmlvUQ';
+const MAPBOX_ACCESS_TOKEN = 'pk.eyJ1IjoicmFmYXlhc2FkMDEiLCJhIjoiY21oazdxanQwMDR5cTJrc2NiZGZiZ3phMyJ9.beHDnNh5y6l-9ThZ1TR64A';
 
 type Dest = {
   latitude: number;
@@ -31,25 +27,31 @@ type Dest = {
   placeId: string;
 };
 
+type SearchResult = Dest & {
+  subtitle?: string;
+};
+
 type Recent = Dest & { savedAt: number };
 
 const MAX_RECENTS = 8;
 const STORAGE_KEY_DEFAULT = '@place_search_recents';
 
 const SUGGESTION_CHIPS = [
+  // For Mapbox we'll use these as categories
   { key: 'airport', label: 'Airports', type: 'airport' },
-  { key: 'hotel', label: 'Hotels', type: 'lodging' },
+  { key: 'hotel', label: 'Hotels', type: 'hotel' },
   { key: 'restaurant', label: 'Restaurants', type: 'restaurant' },
-  { key: 'mall', label: 'Malls', type: 'shopping_mall' },
+  { key: 'mall', label: 'Malls', type: 'mall' },
   { key: 'hospital', label: 'Hospitals', type: 'hospital' },
 ];
 
 export default function PlaceSearchModal({ navigation, route }: Props) {
-  const ref = useRef<GooglePlacesAutocompleteRef>(null);
   const [recents, setRecents] = useState<Recent[]>([]);
   const [inputFocused, setInputFocused] = useState(false);
-  const [sessionToken, setSessionToken] = useState<string>('');
   const [searchType, setSearchType] = useState<string | undefined>(undefined);
+  const [query, setQuery] = useState('');
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [loading, setLoading] = useState(false);
 
   // Optional: bias nearby search results if provided by caller
   const origin = route.params?.origin;
@@ -64,10 +66,7 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
     autoCapitalize: 'none',
   };
 
-  useEffect(() => {
-    setSessionToken(Math.random().toString(36).slice(2));
-  }, []);
-
+  // Load recents
   useEffect(() => {
     (async () => {
       try {
@@ -93,7 +92,6 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
       if (!d || typeof d.placeId !== 'string') return;
       setRecents(prev => {
         const base: Recent[] = Array.isArray(prev) ? prev : [];
-        // dedupe without .filter to avoid any undefined traps
         const now = Date.now();
         const next: Recent[] = [{ ...d, savedAt: now }];
         for (let i = 0; i < base.length && next.length < MAX_RECENTS; i++) {
@@ -104,7 +102,7 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
         return next;
       });
     } catch {
-      // swallow
+      // ignore
     }
   };
 
@@ -137,12 +135,120 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
     </Pressable>
   );
 
-  console.log('recents', recents);
+  // Mapbox search effect (debounced)
+useEffect(() => {
+  if (!query || query.trim().length < 2) {
+    setResults([]);
+    return;
+  }
+
+  let cancelled = false;
+  const controller = new AbortController();
+
+  const run = async () => {
+    try {
+      setLoading(true);
+
+      const encodedQuery = encodeURIComponent(query.trim());
+      const url = new URL(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodedQuery}.json`,
+      );
+
+      url.searchParams.set('access_token', MAPBOX_ACCESS_TOKEN);
+      url.searchParams.set('autocomplete', 'true');
+      url.searchParams.set('limit', '10');
+      url.searchParams.set('language', 'en');
+      // include more fine-grained types to get better results
+      url.searchParams.set(
+        'types',
+        'country,region,place,locality,neighborhood,poi,address',
+      );
+
+      if (origin) {
+        // Mapbox wants proximity as lon,lat
+        url.searchParams.set(
+          'proximity',
+          `${origin.longitude},${origin.latitude}`,
+        );
+      }
+
+      if (searchType) {
+        // Use categories to push it towards airports/hotels etc
+        url.searchParams.set('categories', searchType);
+      }
+
+      const finalUrl = url.toString();
+      console.log('Mapbox request URL:', finalUrl);
+
+      const res = await fetch(finalUrl, {
+        signal: controller.signal,
+      });
+
+      console.log('Mapbox status:', res.status);
+
+      if (!res.ok) {
+        const errText = await res.text();
+        console.warn('Mapbox error body:', errText);
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      const json: any = await res.json();
+      if (cancelled) return;
+
+      console.log(
+        'Mapbox features length:',
+        Array.isArray(json.features) ? json.features.length : 'no features',
+      );
+
+      const feats: any[] = Array.isArray(json.features)
+        ? json.features
+        : [];
+
+      const mapped: SearchResult[] = feats.map(f => {
+        const [lon, lat] = f.center || [];
+        const description: string = f.place_name || f.text || '';
+        let subtitle: string | undefined;
+
+        if (Array.isArray(f.context) && f.context.length > 0) {
+          subtitle = f.context
+            .map((c: any) => c.text)
+            .filter(Boolean)
+            .join(', ');
+        }
+
+        return {
+          latitude: lat,
+          longitude: lon,
+          description,
+          placeId: f.id,
+          subtitle,
+        };
+      });
+
+      setResults(mapped);
+    } catch (err) {
+      if (!cancelled) {
+        console.warn('Mapbox search error:', err);
+        setResults([]);
+      }
+    } finally {
+      if (!cancelled) setLoading(false);
+    }
+  };
+
+  const timeout = setTimeout(run, 300); // debounce 300ms
+
+  return () => {
+    cancelled = true;
+    clearTimeout(timeout);
+    controller.abort();
+  };
+}, [query, origin, searchType]);
 
   const listHeader = useMemo(() => {
     return (
       <View style={{ paddingHorizontal: 12, paddingTop: 8 }}>
-        {/* Quick suggestions for Nearby (does not restrict global autocomplete) */}
+        {/* Quick suggestions / category chips */}
         <View style={styles.chipsWrap}>
           {SUGGESTION_CHIPS.map(chip => (
             <Pressable
@@ -191,6 +297,26 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
     );
   }, [recents, inputFocused, searchType]);
 
+  const renderResult = ({ item }: { item: SearchResult }) => (
+    <Pressable style={styles.row} onPress={() => handlePick(item)}>
+      <View style={styles.rowWrap}>
+        <View style={styles.rowIconWrap}>
+          <Ionicons name="location-outline" size={18} color="#111" />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Text numberOfLines={1} style={styles.rowTitle}>
+            {item.description}
+          </Text>
+          {!!item.subtitle && (
+            <Text numberOfLines={1} style={styles.rowSub}>
+              {item.subtitle}
+            </Text>
+          )}
+        </View>
+      </View>
+    </Pressable>
+  );
+
   return (
     <SafeAreaView style={styles.safe}>
       {/* Header */}
@@ -202,97 +328,65 @@ export default function PlaceSearchModal({ navigation, route }: Props) {
         <View style={{ width: 36 }} />
       </View>
 
-      {/* Search */}
-      <GooglePlacesAutocomplete
-        ref={ref}
-        placeholder="Search a country, region, city or landmark"
-        fetchDetails
-        /** keep these as arrays (lib sometimes calls .filter on them) */
-        predefinedPlaces={[]}
-        filterReverseGeocodingByTypes={[]}
-        /** must be an object */
-        textInputProps={inputProps}
-        /** RN networking bridge wants a number here */
-        timeout={20000}
-        onFail={e => console.warn('Autocomplete error:', e?.message || e)}
-        onNotFound={() => {}}
-        enablePoweredByContainer={false}
-        debounce={300}
-        minLength={2}
-        keyboardShouldPersistTaps="handled"
-        keepResultsAfterBlur={false}
-        nearbyPlacesAPI="GooglePlacesSearch"
-        /** GLOBAL search (no country components). `(regions)` returns countries, admin areas, localities, neighborhoods.
-         *  Remove `types` if you want ALL types (addresses, establishments, etc.) */
-        query={{
-          key: GOOGLE_PLACES_API_KEY,
-          language: 'en',
-          sessiontoken: sessionToken,
-          // types: '(regions)',
-        }}
-        /** Only affects the "Nearby" endpoint used by chips; does not limit global autocomplete */
-        GooglePlacesSearchQuery={{
-          rankby: origin ? 'distance' : 'prominence',
-          ...(origin
-            ? { location: `${origin.latitude},${origin.longitude}` }
-            : {}),
-          ...(origin ? { radius: 15000 } : {}),
-          ...(searchType ? { type: searchType } : {}),
-        }}
-        onPress={(data, details) => {
-          if (!details) return;
-          const { lat, lng } = details.geometry.location;
-          handlePick({
-            latitude: lat,
-            longitude: lng,
-            description: data.description,
-            placeId: data.place_id,
-          });
-        }}
-        /** Use styles to customize rows instead of custom renderRow (avoids onPress wiring issues) */
-        listEmptyComponent={
-          <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
-            <Text style={styles.emptyText}>Start typing to search places…</Text>
-          </View>
-        }
-        ListHeaderComponent={listHeader}
-        renderLeftButton={() => (
-          <View style={styles.inputLeft}>
-            <Ionicons name="search" size={18} color="#6B7280" />
-          </View>
-        )}
-        renderRightButton={() => (
+      {/* Search input */}
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          value={query}
+          onChangeText={setQuery}
+          placeholder="Search a country, region, city or landmark"
+          {...inputProps}
+        />
+        <View style={styles.inputLeft}>
+          <Ionicons name="search" size={18} color="#6B7280" />
+        </View>
+        {query.length > 0 && (
           <Pressable
             style={styles.inputRight}
             onPress={() => {
-              ref.current?.setAddressText('');
+              setQuery('');
               setSearchType(undefined);
             }}
           >
             <Ionicons name="close-circle" size={18} color="#9CA3AF" />
           </Pressable>
         )}
-        styles={{
-          container: styles.gContainer,
-          textInputContainer: styles.inputContainer,
-          textInput: styles.input,
-          listView: styles.listView,
-          row: styles.row,
-          separator: styles.separator,
-          description: styles.rowTitle, // main text
-        }}
+      </View>
+
+      {/* Results list (Mapbox) */}
+      <FlatList
+        data={results}
+        keyExtractor={it => it.placeId}
+        keyboardShouldPersistTaps="handled"
+        ListHeaderComponent={listHeader}
+        ListEmptyComponent={
+          !query || query.trim().length < 2 ? (
+            <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
+              <Text style={styles.emptyText}>
+                Start typing to search places…
+              </Text>
+            </View>
+          ) : !loading && results.length === 0 ? (
+            <View style={{ paddingHorizontal: 16, paddingVertical: 12 }}>
+              <Text style={styles.emptyText}>No results found.</Text>
+            </View>
+          ) : null
+        }
+        contentContainerStyle={{ paddingBottom: 16 }}
+        style={styles.listView}
+        renderItem={renderResult}
       />
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#fff' },
+  safe: { flex: 1, backgroundColor: '#fff',marginHorizontal:10 },
   header: {
     height: 56,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     justifyContent: 'space-between',
     marginTop: 50,
   },
@@ -304,10 +398,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
+  title: { fontSize: 20, color: '#111', fontFamily: FONTS.regular },
 
-  /** Google input + list */
-  gContainer: { flex: 1 },
+  /** Input */
   inputContainer: {
     paddingHorizontal: 12,
     paddingTop: 8,
@@ -334,8 +427,9 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
 
+  /** Results list */
   listView: { marginTop: 10 },
-  row: { paddingVertical: 10, paddingHorizontal: 12 },
+  row: { paddingVertical: 10, paddingHorizontal: 16 },
   rowWrap: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   rowIconWrap: {
     width: 34,
@@ -346,7 +440,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   rowTitle: { color: '#111', fontSize: 14, fontFamily: FONTS.semibold },
-  rowSub: { color: '#6B7280', fontSize: 12, marginTop: 2, fontFamily: FONTS.regular },
+  rowSub: {
+    color: '#6B7280',
+    fontSize: 12,
+    marginTop: 2,
+    fontFamily: FONTS.regular,
+  },
 
   separator: {
     height: StyleSheet.hairlineWidth,
@@ -359,7 +458,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAFAFA',
     borderRadius: 14,
     paddingVertical: 6,
-    paddingHorizontal: 8,
+    paddingHorizontal: 18,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: '#EEE',
     marginTop: 8,
@@ -372,10 +471,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  sectionTitle: { fontSize: 13, color: '#111', fontFamily: FONTS.bold },
-  clearAll: { fontSize: 12, color: '#EF4444', fontFamily: FONTS.semibold },
+  sectionTitle: { fontSize: 16, color: '#201E20', fontFamily: FONTS.semibold },
+  clearAll: { fontSize: 16, color: '#EF4444', fontFamily: FONTS.regular },
   recentRow: {
-    paddingVertical: 10,
+    paddingVertical: 14,
     paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
@@ -390,17 +489,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   recentTitle: { fontSize: 14, color: '#111', fontFamily: FONTS.semibold },
-  recentSub: { fontSize: 11, color: '#9CA3AF', marginTop: 1, fontFamily: FONTS.regular },
+  recentSub: {
+    fontSize: 11,
+    color: '#9CA3AF',
+    marginTop: 1,
+    fontFamily: FONTS.regular,
+  },
 
   /** Chips */
   chipsWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: {
-    paddingHorizontal: 12,
+    paddingHorizontal: 16,
     paddingVertical: 8,
     backgroundColor: '#F3F4F6',
     borderRadius: 999,
   },
-  chipText: { color: '#111', fontSize: 12, fontFamily: FONTS.semibold },
+  chipText: { color: '#111', fontSize: 16, fontFamily: FONTS.regular },
   chipActive: { backgroundColor: '#111' },
   chipTextActive: { color: '#fff' },
 

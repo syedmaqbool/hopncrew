@@ -1,6 +1,7 @@
 // src/screens/FlightDepartureScreen.tsx
 import React from 'react';
 import {
+  Image,
   ImageBackground,
   Pressable,
   StyleSheet,
@@ -20,8 +21,8 @@ import type { Destination, RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FlightDeparture'>;
 
-const MINT = '#B9FBE7';
-const TEXT = '#111';
+const MINT = '#B1FBE3';
+const TEXT = '#201E20';
 const BG = '#F6F7F8';
 const BORDER = '#ECEDEE';
 
@@ -41,6 +42,26 @@ export default function FlightDepartureScreen({ navigation, route }: Props) {
     });
   };
 
+  function Bullet({
+    icon,
+    title,
+    body,
+  }: {
+    icon: React.ReactNode;
+    title: string;
+    body: string;
+  }) {
+    return (
+      <View style={{ flexDirection: 'row', gap: 10,alignItems:'center',justifyContent:'center' }}>
+        <View style={styles.bulletIcon}>{icon}</View>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.bulletTitle}>{title}</Text>
+          <Text style={styles.bulletBody}>{body}</Text>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
       {/* Map-like header background (same as ScheduleRide) */}
@@ -55,7 +76,11 @@ export default function FlightDepartureScreen({ navigation, route }: Props) {
             style={styles.backCircle}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="chevron-back" size={18} color={TEXT} />
+            <Image
+                          source={require('../../assets/icons/left-line-arrow-icon.png')}
+                          alt="left-arrow"
+                          style={{ height: 88, width: 98 }}
+                        />
           </Pressable>
           <Text style={styles.headerTitle}>Schedule a Ride</Text>
           <View style={{ width: 36, height: 36 }} />
@@ -70,7 +95,8 @@ export default function FlightDepartureScreen({ navigation, route }: Props) {
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Departure airport</Text>
           <Pressable style={styles.pill} onPress={openOriginPicker}>
-            <Ionicons name="airplane-outline" size={18} color={TEXT} />
+            {/* <Ionicons name="airplane-outline" size={18} color={TEXT} /> */}
+                          <Image source={require('../../assets/icons/flight-plane.png')} alt='flight-date-time' style={{width:24,height:24}} />
             <Text style={styles.pillText}>Where are you flying from?</Text>
             <View style={styles.pillRight}>
               <Ionicons name="chevron-down" size={16} color={TEXT} />
@@ -79,7 +105,7 @@ export default function FlightDepartureScreen({ navigation, route }: Props) {
         </View>
 
         {/* Info bullets */}
-        <View style={{ gap: 16, marginTop: 22 }}>
+        {/* <View style={{ gap: 16, marginTop: 22 }}>
           <Row
             icon={<Ionicons name="location-outline" size={18} color={TEXT} />}
             title="Estimated drop-off time"
@@ -102,7 +128,43 @@ export default function FlightDepartureScreen({ navigation, route }: Props) {
         <Pressable style={styles.linkRow} onPress={() => navigation.navigate('AirportPickupPerks')}>
           <Text style={styles.linkText}>More airport pickup Perks</Text>
           <AntDesign name="arrowright" size={16} color={TEXT} />
-        </Pressable>
+        </Pressable> */}
+        <View style={styles.bulletsWrap}>
+                    <Bullet
+                      icon={
+                        <Image source={require('../../assets/icons/flight-loc-undot-icon.png')} alt='flight-loc' style={{height:24,width:24}} />
+                        // <Ionicons name="alert-circle-outline" size={18} color="#111" />
+                      }
+                      title="Estimated drop-off time"
+                      body="Arrive at destination at approx. 3:45AM."
+                    />
+                    <View style={styles.separator} />
+                    <Bullet
+                      icon={
+                        <Image source={require('../../assets/icons/timer-icon.png')} alt='flight-loc' style={{height:24,width:24}} />
+                      // <Ionicons name="time-outline" size={18} color="#111" />
+                    }
+                      title="Complimentary wait time"
+                      body="Chauffeur will wait 15 minutes free of charge"
+                    />
+                    <View style={styles.separator} />
+                    <Bullet
+                      icon={
+                        <Image source={require('../../assets/icons/flight-cancel-icon.png')} alt='flight-loc' style={{height:24,width:24}} />
+                      // <Ionicons name="card-outline" size={18} color="#111" />
+                    }
+                      title="Flexible cancellation"
+                      body="Free of charge cancellation up to 1 hour before pickup"
+                    />
+        
+                    <Pressable
+                      style={styles.linkRow}
+                      onPress={() => navigation.navigate('AirportPickupPerks')}
+                    >
+                      <Text style={styles.linkText}>More airport pickup Perks</Text>
+                      <AntDesign name="arrowright" size={16} color="#111" />
+                    </Pressable>
+                  </View>
       </SafeAreaView>
     </View>
   );
@@ -130,7 +192,7 @@ function Row({
 
 const styles = StyleSheet.create({
   headerImg: {
-    height: 360,
+    height: 280,
     justifyContent: 'flex-start',
     paddingHorizontal: 26,
   },
@@ -161,10 +223,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   bigTitle: {
-    fontSize: 22,
+    fontSize: 24,
     color: TEXT,
-    marginTop: 8,
-    fontFamily: FONTS.bold,
+    marginVertical: 14,
+    fontFamily: FONTS.semibold,
+    lineHeight:32
   },
 
   card: {
@@ -175,7 +238,7 @@ const styles = StyleSheet.create({
     padding: 14,
     marginTop: 26,
   },
-  cardTitle: { color: TEXT, marginBottom: 10, fontFamily: FONTS.bold },
+  cardTitle: { color: TEXT, marginBottom: 10, fontFamily: FONTS.semibold,fontSize:18 },
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -183,11 +246,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderRadius: 999,
     borderWidth: 1,
-    borderColor: BORDER,
-    paddingHorizontal: 12,
+    borderColor: "#CFCDCD",
+    paddingHorizontal: 14,
     paddingVertical: 12,
   },
-  pillText: { color: TEXT, flex: 1, fontFamily: FONTS.bold },
+  pillText: { color: TEXT, flex: 1, fontFamily: FONTS.semibold,fontSize:16 },
   pillRight: {
     width: 30,
     height: 30,
@@ -218,5 +281,24 @@ const styles = StyleSheet.create({
     gap: 8,
     marginTop: 26,
   },
-  linkText: { color: TEXT, textDecorationLine: 'underline', fontFamily: FONTS.regular },
+  linkText: { color: TEXT, textDecorationLine: 'underline', fontFamily: FONTS.regular,fontSize:16 },
+  bulletsWrap: {
+    gap: 14,
+    paddingHorizontal: 8,
+    marginVertical:44,
+    // paddingTop: 10,
+    // paddingBottom: 4,
+  },
+  separator: { height: 1, backgroundColor: '#EFEFEF', marginLeft: 42 },
+  bulletIcon: {
+    width: 28,
+    height: 28,
+    // borderRadius: 14,
+    // backgroundColor: '#F2F2F2',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 2,
+  },
+  bulletTitle: { color: '#201E20', fontFamily: FONTS.semibold,fontSize:16 },
+  bulletBody: { color: '#8D8E8F', marginTop: 2, fontFamily: FONTS.regular,fontSize:14,lineHeight:20 },
 });

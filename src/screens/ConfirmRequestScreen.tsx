@@ -71,7 +71,28 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
     });
   };
 
+  const openCoupon = () => {
+    navigation.navigate('CoupenPopup', {
+      initialCode: coupon,
+      onApply: (code: string) => setCoupon(code),
+    });
+  };
+
   const confirm = () => {
+    route.params?.onConfirm?.({
+      quote: q,
+      payMethod,
+      special: special ?? undefined,
+      coupon: coupon?.trim() || null,
+    });
+    rootNav.navigate('PaymentMethods', {
+      selected: 'card',
+      start: route.params?.start,
+      dest: route.params?.dest,
+    });
+  };
+
+  const confirmPayment = () => {
     route.params?.onConfirm?.({
       quote: q,
       payMethod,
@@ -89,24 +110,25 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
     navigation.navigate('PaymentBreakdown', {
       rows: [
         { label: 'Base Price', value: q?.price_breakdown?.base_fare },
-        { label: 'Distance Fare', value: q?.price_breakdown?.distance_fare },
-        {
-          label: 'Distance (km)',
-          value: `${q?.price_breakdown?.distance_km} km`,
-          money: false,
-        },
-        {
-          label: 'Fare per km',
-          value: `${q?.price_breakdown?.fare_per_km}`,
-          money: false,
-        },
         { label: 'Online Discount', value: 0 },
         { label: 'Coupon Code', value: 0 },
-        { label: 'Pickup time', value: `${q?.eta} mins`, money: false },
+        { label: 'Airport pickup fee', value: 0 },
         { label: 'Tax', value: q.tax ?? 0 },
         { label: 'Stopover', value: 0 },
+        // { label: 'Distance Fare', value: q?.price_breakdown?.distance_fare },
+        // {
+        //   label: 'Distance (km)',
+        //   value: `${q?.price_breakdown?.distance_km} km`,
+        //   money: false,
+        // },
+        // {
+        //   label: 'Fare per km',
+        //   value: `${q?.price_breakdown?.fare_per_km}`,
+        //   money: false,
+        // },
+        // { label: 'Pickup time', value: `${q?.eta} mins`, money: false },
       ],
-      footnote: 'Toll, highway and other costs may apply',
+      footnote: 'Toll hwy and other costs may apply',
     });
   };
 
@@ -161,7 +183,9 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
               size={16}
               color={MUTED}
             /> */}
+            <Pressable onPress={openBreakdown}>
             <Image source={require('../../assets/icons/info-icon.png')} alt='info' style={{height:20,width:20}} />
+            </Pressable>
           </View>
 
           {/* Car tile + price slab (reference look) */}
@@ -259,44 +283,40 @@ export default function ConfirmRequestScreen({ navigation, route }: Props) {
           </Pressable>
 
           {/* Payment + Coupon */}
-          <View
-            style={[
-              styles.bottomRow,
-              width < 360
-                ? { flexDirection: 'column' }
-                : { flexDirection: 'row' },
-            ]}
-          >
-            <Pressable
-              style={[
-                styles.payChip,
-                width < 360 ? { width: '100%' } : { flex: 1 },
-              ]}
-              onPress={openBreakdown}
-              accessibilityRole="button"
-            >
-              <Ionicons name="card-outline" size={18} color={TEXT} />
-              <Text style={styles.payTxt}>{payMethod}</Text>
-            </Pressable>
+          <View style={styles.bottomRow}>
+  {/* Payment method */}
+  <Pressable
+    style={styles.payRow}
+    onPress={confirmPayment}
+    accessibilityRole="button"
+  >
+    <View style={styles.payIconCircle}>
+      {/* <Ionicons name="card-outline" size={18} color={TEXT} /> */}
+    <Image source={require('../../assets/icons/card-bg-icon.png')} alt='coupen-icon' style={{height:32,width:32}} />
 
-            <View
-              style={[
-                styles.couponChip,
-                width < 360 ? { width: '100%' } : { flex: 1.1 },
-              ]}
-            >
-              <Ionicons name="pricetag-outline" size={18} color={TEXT} />
-              <TextInput
-                style={styles.couponInput}
-                placeholder="Apply Coupon"
-                placeholderTextColor={MUTED}
-                value={coupon}
-                onChangeText={setCoupon}
-                autoCapitalize="characters"
-                returnKeyType="done"
-              />
-            </View>
-          </View>
+    </View>
+
+    <Text style={styles.payTxt}>Credit or Debit</Text>
+
+    {/* <Ionicons
+      name="chevron-down"
+      size={16}
+      color={TEXT}
+      style={{ marginLeft: 6 }}
+    /> */}
+    <Image source={require('../../assets/icons/fat-arrow-down.png')} alt='down-arrow' style={{height:20,width:20,marginLeft:6}} />
+  </Pressable>
+
+  {/* Apply coupon */}
+  <Pressable
+    style={styles.couponRow}
+    onPress={openCoupon}
+  >
+    <Image source={require('../../assets/icons/coupen-icon.png')} alt='coupen-icon' style={{height:32,width:32}} />
+    {/* <Ionicons name="pricetag-outline" size={18} color={TEXT} /> */}
+    <Text style={styles.couponText}>Apply Coupon</Text>
+  </Pressable>
+</View>
         </ScrollView>
 
         {/* Sticky CTA */}
@@ -453,7 +473,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       gap: 12,
   },
-  policyTxt: { color: TEXT, fontFamily: FONTS.semibold, fontSize: 14,padding:2 },
+  policyTxt: { color: TEXT, fontFamily: FONTS.semibold, fontSize: 14,padding:1 },
   centerRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -485,31 +505,49 @@ const styles = StyleSheet.create({
   specialTxt: { color: "#201E20", fontFamily: FONTS.semibold, fontSize: 14 },
 
   /* ---------- Payment & coupon ---------- */
-  bottomRow: { gap: 10, marginTop: 14 },
-  payChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: MINT,
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: '#D6F5EA',
-  },
-  payTxt: { color: TEXT, flex: 1, fontFamily: FONTS.bold },
-  couponChip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    backgroundColor: BG_SOFT,
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: BORDER,
-  },
-  couponInput: { flex: 1, color: TEXT, padding: 0, fontFamily: FONTS.regular },
+  bottomRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  marginTop: 18,
+},
+
+// left side
+payRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: 30,
+},
+payIconCircle: {
+  width: 32,
+  height: 32,
+  borderRadius: 16,
+  backgroundColor: MINT,
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginRight: 6,
+},
+payTxt: {
+  color: TEXT,
+  fontFamily: FONTS.bold,
+  fontSize: 16,
+},
+
+// right side
+couponRow: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  justifyContent: 'center',
+  marginTop: 28,
+},
+couponText: {
+  marginLeft: 6,
+  color: "#737373",
+  fontFamily: FONTS.semibold,
+  fontSize: 18,
+},
+
 
   /* ---------- CTA ---------- */
   ctaWrap: {
@@ -524,23 +562,24 @@ const styles = StyleSheet.create({
   },
   cta: {
     marginHorizontal: 16,
-    height: CTA_HEIGHT,
-    borderRadius: CTA_HEIGHT / 2,
+    height: 56,
+    borderRadius: 32,
     backgroundColor: TEXT,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
+    marginTop: 10,
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#fff', fontFamily: FONTS.semibold, fontSize: 17 },
   ctaIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: MINT,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
+    backgroundColor: "#B1FBE3",
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 });

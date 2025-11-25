@@ -20,7 +20,7 @@ export default function SetUpFace({ navigation }: Props) {
         <Pressable style={styles.backButton} onPress={() => navigation.goBack()}>
           <AntDesign name="arrowleft" size={20} color="#111" />
         </Pressable>
-        <View style={{ height: 330 }}>
+        <View style={{ height: 230 }}>
           <Text style={styles.title}>Set up Face ID</Text>
           <Text style={styles.subtitle}>
             Unlock hop’n with your face ID, quick and secured
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
   },
   hero: {
     width: '100%',
-    height: 460,
+    height: 320,
     paddingTop: 64,
     justifyContent: 'space-between',
     backgroundColor: '#F8F5F0',
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
   },
   scanButton: {
     width: '100%',
-    height: 52,
+    height: 56,
     borderRadius: 26,
     backgroundColor: '#111',
     alignItems: 'center',

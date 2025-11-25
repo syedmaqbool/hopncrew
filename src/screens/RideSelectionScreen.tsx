@@ -17,9 +17,9 @@ import type { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RideSelection'>;
 
-const TEXT = '#0F172A'; // slate-900
-const MUTED = '#6B7280'; // gray-500
-const MINT = '#B9FBE7';
+const TEXT = '#201E20'; // slate-900
+const MUTED = '#8D8E8F'; // gray-500
+const MINT = '#B1FBE3';
 
 export default function RideSelectionScreen({ navigation }: Props) {
   // Entrance / exit animation
@@ -162,7 +162,7 @@ export default function RideSelectionScreen({ navigation }: Props) {
             <View style={styles.logoCircle}>
               <Ionicons name="car-sport-outline" size={22} color="#0B1220" />
             </View>
-            <Text style={styles.brand}>hopn</Text>
+            <Text style={styles.brand}>Hopn</Text>
           </View>
           <Text style={styles.title}>Choose your ride flow</Text>
           <Text style={styles.subtitle}>
@@ -301,8 +301,8 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   logoCircle: {
-    width: 40,
-    height: 40,
+    width: 44,
+    height: 44,
     borderRadius: 20,
     backgroundColor: MINT,
     alignItems: 'center',
@@ -310,15 +310,15 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.1)',
   },
-  brand: { fontSize: 18, color: TEXT, letterSpacing: 0.5, fontFamily: FONTS.bold },
-  title: { fontSize: 20, color: TEXT, marginTop: 6, fontFamily: FONTS.bold },
-  subtitle: { marginTop: 4, color: MUTED, textAlign: 'center', fontFamily: FONTS.regular },
+  brand: { fontSize: 22, color: TEXT, letterSpacing: 0.5, fontFamily: FONTS.semibold },
+  title: { fontSize: 20, color: TEXT, marginTop: 6, fontFamily: FONTS.semibold },
+  subtitle: { marginTop: 4, color: MUTED, textAlign: 'center', fontFamily: FONTS.regular,fontSize: 17 },
 
   cards: { marginTop: 18, gap: 14 },
 
   card: {
     borderRadius: 18,
-    padding: 16,
+    padding: 12,
     backgroundColor: '#FFFFFF',
     borderWidth: 1,
     borderColor: 'rgba(15,23,42,0.06)',
@@ -339,9 +339,9 @@ const styles = StyleSheet.create({
 
   cardTop: { flexDirection: 'row', alignItems: 'center', marginBottom: 10 },
   cardIconLeft: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    borderRadius: 24,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
@@ -349,7 +349,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.08)',
   },
-  heading: { flex: 1, fontSize: 16, color: TEXT, fontFamily: FONTS.bold },
+  heading: { flex: 1, fontSize: 16, color: TEXT, fontFamily: FONTS.semibold },
 
   badge: {
     flexDirection: 'row',
@@ -362,9 +362,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(0,0,0,0.08)',
   },
-  badgeText: { color: '#0B1220', fontSize: 12, fontFamily: FONTS.bold },
+  badgeText: { color: '#0B1220', fontSize: 14, fontFamily: FONTS.regular },
 
-  subcopy: { color: '#334155', marginBottom: 10, fontFamily: FONTS.regular },
+  subcopy: { color: '#334155', marginBottom: 10, fontFamily: FONTS.regular,fontSize:16 },
 
   cardFooter: { flexDirection: 'row', alignItems: 'center' },
   pill: {
@@ -379,13 +379,13 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.06)',
     marginRight: 8,
   },
-  pillText: { color: '#0B1220', fontSize: 12, fontFamily: FONTS.bold },
+  pillText: { color: '#201E20', fontSize: 14, fontFamily: FONTS.regular },
 
   arrowBadge: {
     marginLeft: 'auto',
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 44,
+    height: 44,
+    borderRadius: 24,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
@@ -401,5 +401,5 @@ const styles = StyleSheet.create({
     gap: 6,
     justifyContent: 'center',
   },
-  footerText: { color: MUTED, fontFamily: FONTS.regular },
+  footerText: { color: MUTED, fontFamily: FONTS.regular,fontSize:16 },
 });

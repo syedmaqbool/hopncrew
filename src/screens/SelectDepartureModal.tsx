@@ -6,6 +6,7 @@ import {
   Image,
   Keyboard,
   Modal,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -21,9 +22,9 @@ import { FONTS } from '../../src/theme/fonts';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SelectDeparture'>;
 
-const MINT = '#B9FBE7';
-const TEXT = '#111';
-const SUBTEXT = '#6B7280';
+const MINT = '#B1FBE3';
+const TEXT = '#201E20';
+const SUBTEXT = '#8D8E8F';
 const CARD = '#fff';
 const BORDER = '#ECEDEE';
 
@@ -59,7 +60,6 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
   const [airlineOpen, setAirlineOpen] = useState(false);
   const [airline, setAirline] = useState<Airline | null>(null);
 
-  // ✅ Load airlines from storage only (airport won't preload)
   useEffect(() => {
     (async () => {
       try {
@@ -69,7 +69,6 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
     })();
   }, []);
 
-  // ✅ Fetch airports from backend API
   useEffect(() => {
     (async () => {
       try {
@@ -128,84 +127,138 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
           <View style={styles.header}>
             <Text style={styles.title}>Select Departure</Text>
             <Pressable onPress={close} style={styles.closeBtn}>
-              <Ionicons name="close" size={18} color={TEXT} />
+              <Ionicons name="close" size={24} color={TEXT} />
             </Pressable>
           </View>
 
-          {/* ------- Airport Dropdown ------- */}
-          <View style={styles.fieldCard}>
-            <Pressable
-              style={styles.dropdown}
-              onPress={() => {
-                Keyboard.dismiss();
-                setAirlineOpen(false);
-                setAirportOpen(v => !v);
-              }}
-            >
-              <Image
-                source={require('../../assets/icons/airplan-icon.png')}
-                style={{
-                  width: 18,
-                  height: 18,
-                  marginRight: 10,
-                  resizeMode: 'contain',
+          {/* ===== Top Combo Card (Airport + Airline) ===== */}
+          <View style={styles.comboCard}>
+            {/* Left rail with icons + dashed line */}
+            <View style={styles.rail}>
+              <View style={styles.railIconTop}>
+                {/* <Ionicons name="airplane-outline" size={18} color={TEXT} /> */}
+                <Image source={require('../../assets/icons/flight-plane.png')} alt='flight-date-time' style={{width:24,height:24}} />
+              </View>
+              <View style={styles.railLine} />
+              <View style={styles.railIconBottom}>
+                {/* <Ionicons name="airplane-outline" size={18} color={TEXT} /> */}
+                <Image source={require('../../assets/icons/flight-plane.png')} alt='flight-date-time' style={{width:24,height:24}} />
+              </View>
+            </View>
+
+            {/* Right side: 2 rows */}
+            <View style={{ flex: 1 }}>
+              {/* Airport row */}
+              <Pressable
+                style={styles.comboRowTop}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setAirlineOpen(false);
+                  setAirportOpen(v => !v);
                 }}
-              />
-              <Text
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={[
-                  styles.dropdownText,
-                  styles.truncate,
-                  !selectedAirport && { color: SUBTEXT },
-                ]}
               >
-                {selectedAirport
-                  ? selectedAirport.description
-                  : 'Select an airport'}
-              </Text>
-              {loading ? (
-                <ActivityIndicator size="small" color={SUBTEXT} />
-              ) : (
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={[
+                    styles.comboRowText,
+                    !selectedAirport && { color: SUBTEXT },
+                  ]}
+                >
+                  {selectedAirport
+                    ? `${selectedAirport.description}`
+                    : 'Abbotsford Airport (YXX)'}
+                </Text>
+
+                {loading ? (
+                  <ActivityIndicator size="small" color={SUBTEXT} />
+                ) : (
+                  <Ionicons
+                    name={airportOpen ? 'chevron-up' : 'chevron-down'}
+                    size={18}
+                    color={SUBTEXT}
+                  />
+                )}
+              </Pressable>
+
+              <View style={styles.comboDivider} />
+
+              {/* Airline row */}
+              <Pressable
+                style={styles.comboRowBottom}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setAirportOpen(false);
+                  setAirlineOpen(v => !v);
+                }}
+              >
+                <Text
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                  style={[
+                    styles.comboRowText,
+                    !airline && { color: SUBTEXT },
+                  ]}
+                >
+                  {airline
+                    ? `${airline.name} (${airline.code})`
+                    : 'Select an airline'}
+                </Text>
                 <Ionicons
-                  name={airportOpen ? 'chevron-up' : 'chevron-down'}
+                  name={airlineOpen ? 'chevron-up' : 'chevron-down'}
                   size={18}
                   color={SUBTEXT}
                 />
-              )}
-            </Pressable>
+              </Pressable>
+            </View>
+          </View>
 
-            {airportOpen && (
-              <View style={styles.resultsCard}>
-                {loading ? (
-                  <View style={styles.loadingBox}>
-                    <ActivityIndicator size="small" color={TEXT} />
-                    <Text style={styles.loadingTxt}>Loading airports...</Text>
-                  </View>
-                ) : airports.length > 0 ? (
-                  <FlatList
-                    keyboardShouldPersistTaps="handled"
-                    data={airports}
-                    keyExtractor={it =>
-                      `${it.name}-${it.latitude}-${it.longitude}`
-                    }
-                    style={{ maxHeight: 260 }}
-                    ItemSeparatorComponent={() => (
-                      <View style={styles.separator} />
-                    )}
-                    renderItem={({ item }) => (
+          {/* ===== Airport Results Card (like screenshot) ===== */}
+          {airportOpen && (
+            <View style={styles.resultsCard}>
+              {loading ? (
+                <View style={styles.loadingBox}>
+                  <ActivityIndicator size="small" color={TEXT} />
+                  <Text style={styles.loadingTxt}>Loading airports...</Text>
+                </View>
+              ) : airports.length > 0 ? (
+                <FlatList
+                  keyboardShouldPersistTaps="handled"
+                  data={airports}
+                  keyExtractor={it =>
+                    `${it.name}-${it.latitude}-${it.longitude}`
+                  }
+                  style={{ maxHeight: 260 }}
+                  ItemSeparatorComponent={() => (
+                    <View style={styles.separator} />
+                  )}
+                  renderItem={({ item }) => {
+                    const isSelected =
+                      selectedAirport?.description === item.name;
+                    return (
                       <Pressable
                         style={styles.row}
                         onPress={() => pickAirport(item)}
                       >
                         <View
-                          style={[styles.iconCircle, { backgroundColor: MINT }]}
+                          style={[
+                            styles.iconCircle,
+                            {
+                              backgroundColor: isSelected ? MINT : '#E5E7EB',
+                              paddingTop:6,
+                            },
+                          ]}
                         >
-                          <Ionicons name="airplane" size={16} color={TEXT} />
+                          <Image source={require('../../assets/icons/flight-bg-icon.png')} alt='flight-bg-icon' style={{height:24,width:24}} />
+                          {/* <Ionicons
+                            name="airplane-outline"
+                            size={16}
+                            color={TEXT}
+                          /> */}
                         </View>
-                        <View style={[styles.rowTextWrap, styles.truncate]}>
+                        <View style={styles.rowTextWrap}>
                           <Text
-                            style={[styles.rowTitle]}
+                            style={styles.rowTitle}
                             numberOfLines={1}
                             ellipsizeMode="tail"
                           >
@@ -217,103 +270,66 @@ export default function SelectDepartureModal({ navigation, route }: Props) {
                               numberOfLines={1}
                               ellipsizeMode="tail"
                             >
-                              {item.code}
+                              Airport ({item.code})
                             </Text>
                           )}
                         </View>
                       </Pressable>
-                    )}
-                  />
-                ) : (
-                  <Text style={styles.emptyTxt}>No airports found</Text>
-                )}
-              </View>
-            )}
-          </View>
-
-          {/* ------- Airline Dropdown ------- */}
-          <View style={styles.fieldCard}>
-            <Pressable
-              style={styles.dropdown}
-              onPress={() => {
-                Keyboard.dismiss();
-                setAirportOpen(false);
-                setAirlineOpen(v => !v);
-              }}
-            >
-              <Image
-                source={require('../../assets/icons/airplan-icon.png')}
-                style={{
-                  width: 18,
-                  height: 18,
-                  marginRight: 10,
-                  resizeMode: 'contain',
-                }}
-              />
-              <Text
-                numberOfLines={1}
-                ellipsizeMode="tail"
-                style={[
-                  styles.dropdownText,
-                  styles.truncate,
-                  !airline && { color: SUBTEXT },
-                ]}
-              >
-                {airline
-                  ? `${airline.name} (${airline.code})`
-                  : 'Select an airline'}
-              </Text>
-              <Ionicons
-                name={airlineOpen ? 'chevron-up' : 'chevron-down'}
-                size={18}
-                color={SUBTEXT}
-              />
-            </Pressable>
-
-            {airlineOpen && (
-              <View style={styles.resultsCard}>
-                <FlatList
-                  data={AIRLINES}
-                  keyExtractor={a => a.code}
-                  style={{ maxHeight: 220 }}
-                  ItemSeparatorComponent={() => (
-                    <View style={styles.separator} />
-                  )}
-                  renderItem={({ item }) => (
-                    <Pressable
-                      style={styles.row}
-                      onPress={async () => {
-                        setAirline(item);
-                        setAirlineOpen(false);
-                        await AsyncStorage.setItem(
-                          STORAGE_KEY_AIRLINE,
-                          JSON.stringify(item),
-                        );
-                      }}
-                    >
-                      <View
-                        style={[
-                          styles.iconCircle,
-                          { backgroundColor: '#E5E7EB' },
-                        ]}
-                      >
-                        <Ionicons name="airplane" size={16} color={TEXT} />
-                      </View>
-                      <Text
-                        style={[styles.rowTitle, styles.truncate]}
-                        numberOfLines={1}
-                        ellipsizeMode="tail"
-                      >
-                        {item.name} ({item.code})
-                      </Text>
-                    </Pressable>
-                  )}
+                    );
+                  }}
                 />
-              </View>
-            )}
-          </View>
+              ) : (
+                <Text style={styles.emptyTxt}>No airports found</Text>
+              )}
+            </View>
+          )}
 
-          {/* ------- Confirm Button ------- */}
+          {/* ===== Airline Dropdown List (simple card under combo) ===== */}
+          {airlineOpen && (
+            <View style={[styles.resultsCard, { marginTop: 10 }]}>
+              <FlatList
+                data={AIRLINES}
+                keyExtractor={a => a.code}
+                style={{ maxHeight: 220 }}
+                ItemSeparatorComponent={() => <View style={styles.separator} />}
+                renderItem={({ item }) => (
+                  <Pressable
+                    style={styles.row}
+                    onPress={async () => {
+                      setAirline(item);
+                      setAirlineOpen(false);
+                      await AsyncStorage.setItem(
+                        STORAGE_KEY_AIRLINE,
+                        JSON.stringify(item),
+                      );
+                    }}
+                  >
+                    <View
+                      style={[
+                        styles.iconCircle,
+                        { backgroundColor: '#E5E7EB' },
+                      ]}
+                    >
+                      <Ionicons
+                        name="airplane-outline"
+                        size={16}
+                        color={TEXT}
+                      />
+                    </View>
+                    <Text
+                      style={styles.rowTitle}
+                      numberOfLines={1}
+                      ellipsizeMode="tail"
+                    >
+                      {item.name} ({item.code})
+                    </Text>
+                  </Pressable>
+                )}
+              />
+            </View>
+          )}
+
+          {/* Confirm Button */}
           <Pressable
             style={[styles.cta, !selectedAirport && { opacity: 0.6 }]}
             disabled={!selectedAirport}
@@ -343,7 +359,7 @@ const styles = StyleSheet.create({
     maxWidth: 520,
     maxHeight: '88%',
     backgroundColor: CARD,
-    borderRadius: 20,
+    borderRadius: 22,
     padding: 16,
     shadowColor: '#000',
     shadowOpacity: 0.18,
@@ -355,40 +371,110 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 10,
+    marginBottom: 14,
   },
-  title: { fontSize: 16, color: TEXT, fontFamily: FONTS.bold },
+  title: { fontSize: 18, color: TEXT, fontFamily: FONTS.semibold },
   closeBtn: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: '#F2F2F2',
+    width: 40,
+    height: 40,
+    borderRadius: 999,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 4 },
+      },
+      android: { elevation: 4 },
+    }),
+  },
+
+  /* ===== Combo card (top) ===== */
+  comboCard: {
+    flexDirection: 'row',
+    backgroundColor: CARD,
+    borderRadius: 24,
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    marginTop: 4,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.10,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 6 },
+      },
+      android: { elevation: 6 },
+    }),
+  },
+  rail: {
+    width: 32,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginRight: 12,
+  },
+  railIconTop: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  fieldCard: {
-    backgroundColor: CARD,
-    borderWidth: 1,
-    borderColor: BORDER,
-    borderRadius: 16,
-    padding: 10,
-    marginTop: 10,
+  railIconBottom: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  dropdown: {
-    height: 48,
+  railLine: {
+    flex: 1,
+    borderLeftWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: '#D1D5DB',
+    marginVertical: 4,
+  },
+  comboRowTop: {
+    minHeight: 40,
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 6,
   },
-  dropdownText: { flex: 1, color: TEXT, fontFamily: FONTS.bold },
-  truncate: { minWidth: 0 },
+  comboRowBottom: {
+    minHeight: 40,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  comboRowText: {
+    flex: 1,
+    fontSize: 16,
+    color: TEXT,
+    fontFamily: FONTS.regular,
+  },
+  comboDivider: {
+    height: 1,
+    backgroundColor: BORDER,
+    marginVertical: 6,
+  },
+
+  /* ===== Result cards (lists) ===== */
   resultsCard: {
-    marginTop: 8,
-    borderWidth: 1,
-    borderColor: BORDER,
-    borderRadius: 14,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
+    marginTop: 14,
+    backgroundColor: CARD,
+    borderRadius: 24,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.10,
+        shadowRadius: 18,
+        shadowOffset: { width: 0, height: 8 },
+      },
+      android: { elevation: 6 },
+    }),
   },
   row: {
     flexDirection: 'row',
@@ -397,17 +483,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: 4,
   },
   rowTextWrap: { flex: 1, minWidth: 0 },
-  rowTitle: { color: TEXT, fontFamily: FONTS.bold },
-  rowSub: { color: SUBTEXT, fontSize: 12, marginTop: 2, fontFamily: FONTS.regular },
+  rowTitle: {
+    color: TEXT,
+    fontFamily: FONTS.regular,
+    fontSize: 16,
+  },
+  rowSub: {
+    color: SUBTEXT,
+    fontSize: 12,
+    marginTop: 2,
+    fontFamily: FONTS.regular,
+  },
   iconCircle: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
-  separator: { height: 1, backgroundColor: BORDER, marginLeft: 48 },
+  separator: {
+    height: 1,
+    backgroundColor: BORDER,
+    marginLeft: 50, // starts where text starts (after icon)
+  },
+
   loadingBox: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -422,24 +522,26 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     fontFamily: FONTS.regular,
   },
+
+  /* ===== CTA ===== */
   cta: {
-    marginTop: 14,
-    height: 50,
+    marginTop: 18,
+    height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#fff', fontFamily: FONTS.semibold,fontSize:16 },
   ctaIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 });

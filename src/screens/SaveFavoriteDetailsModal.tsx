@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
+  Image,
   Keyboard,
   Platform,
   Pressable,
@@ -132,16 +133,16 @@ export default function SaveFavoriteDetailsModal({ navigation, route }: Props) {
       >
         <SafeAreaView
           edges={['bottom']}
-          style={[styles.sheet, { paddingBottom: insets.bottom || 16 }]}
+          style={[styles.sheet, { paddingBottom: 26 }]}
         >
           {/* header */}
           <View style={styles.header}>
-            <View style={styles.menuBtn}>
+            {/* <View style={styles.menuBtn}>
               <Ionicons name="menu" size={18} color="#111" />
-            </View>
+            </View> */}
             <Text style={styles.title}>Save as Favourite</Text>
             <Pressable style={styles.closeBtn} onPress={onClose}>
-              <Ionicons name="close" size={18} color="#111" />
+              <Ionicons name="close" size={24} color="#8D8E8F" />
             </Pressable>
           </View>
 
@@ -207,11 +208,10 @@ export default function SaveFavoriteDetailsModal({ navigation, route }: Props) {
             <Chip
               active={label === 'Home'}
               icon={
-                <Ionicons
-                  name="home-outline"
-                  size={18}
-                  color={label === 'Home' ? '#111' : '#666'}
-                />
+                <Image
+                             source={require('../../assets/icons/home.png')}
+                             style={{ width: 23, height: 23 }}
+                           />
               }
               text="Home"
               onPress={() => setLabel('Home')}
@@ -219,11 +219,10 @@ export default function SaveFavoriteDetailsModal({ navigation, route }: Props) {
             <Chip
               active={label === 'Other'}
               icon={
-                <MaterialIcons
-                  name="location-pin"
-                  size={18}
-                  color={label === 'Other' ? '#111' : '#666'}
-                />
+                <Image
+                             source={require('../../assets/icons/flight-loc-undot-icon.png')}
+                             style={{ width: 23, height: 23 }}
+                           />
               }
               text="Other"
               onPress={() => setLabel('Other')}
@@ -231,11 +230,10 @@ export default function SaveFavoriteDetailsModal({ navigation, route }: Props) {
             <Chip
               active={label === 'Work'}
               icon={
-                <Ionicons
-                  name="briefcase-outline"
-                  size={18}
-                  color={label === 'Work' ? '#111' : '#666'}
-                />
+               <Image
+                             source={require('../../assets/icons/work.png')}
+                             style={{ width: 23, height: 23 }}
+                           />
               }
               text="Work"
               onPress={() => setLabel('Work')}
@@ -331,7 +329,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 16,
-    paddingTop: 10,
+    paddingTop: 30,
     shadowColor: '#000',
     shadowOpacity: 0.1,
     shadowRadius: 12,
@@ -343,7 +341,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: 18,
   },
   menuBtn: {
     width: 36,
@@ -356,14 +354,14 @@ const styles = StyleSheet.create({
     borderColor: '#EFEFEF',
   },
   closeBtn: {
-    width: 36,
-    height: 36,
+    width: 44,
+    height: 44,
     borderRadius: 18,
-    backgroundColor: '#F2F2F2',
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { color: '#111', fontSize: 16, fontFamily: FONTS.bold },
+  title: { color: '#111', fontSize: 20, fontFamily: FONTS.semibold },
 
   inputRow: {
     flexDirection: 'row',
@@ -387,17 +385,20 @@ const styles = StyleSheet.create({
   chipsRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 14,
+    marginVertical: 16,
   },
   chip: {
-    width: '31%',
-    borderRadius: 14,
+    width: 113,
+    borderRadius: 24,
+    height:100,
     borderWidth: 1,
     borderColor: '#E6E6E6',
     paddingVertical: 10,
     alignItems: 'center',
+    justifyContent:'center',
+    marginTop:12
   },
-  chipText: { color: '#666', fontFamily: FONTS.regular },
+  chipText: { color: '#201E20', fontFamily: FONTS.regular,fontSize:16 },
 
   otherInput: {
     marginTop: 12,
@@ -410,8 +411,8 @@ const styles = StyleSheet.create({
   },
 
   saveBtn: {
-    marginTop: 16,
-    height: 48,
+    marginTop: 24,
+    height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',
@@ -420,15 +421,15 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 12, // spacing above bottom safe-area
   },
-  saveText: { color: '#fff', fontFamily: FONTS.bold },
+  saveText: { color: '#fff', fontFamily: FONTS.semibold,fontSize:17 },
   saveArrow: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    borderRadius: 24,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 });

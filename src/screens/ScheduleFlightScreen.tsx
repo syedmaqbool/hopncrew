@@ -3,9 +3,9 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import React, { useMemo, useRef, useState } from 'react';
 import {
   FlatList,
+  Image,
   ImageBackground,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
@@ -22,7 +22,7 @@ import type { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'ScheduleFlight'>;
 
-const ITEM_H = 40;
+const ITEM_H = 35;
 const VISIBLE_ROWS = 5;
 const MINT = '#B9FBE7';
 
@@ -100,7 +100,12 @@ export default function ScheduleFlightScreen({ navigation, route }: Props) {
             style={styles.backCircle}
             onPress={() => navigation.goBack()}
           >
-            <Ionicons name="chevron-back" size={18} color="#111" />
+            <Image
+              source={require('../../assets/icons/left-line-arrow-icon.png')}
+              alt="left-arrow"
+              style={{ height: 88, width: 98 }}
+            />
+            {/* <Ionicons name="chevron-back" size={18} color="#111" /> */}
           </Pressable>
           <Text style={styles.headerTitle}>Schedule a Ride</Text>
           <View style={{ width: 36, height: 36 }} />
@@ -112,7 +117,8 @@ export default function ScheduleFlightScreen({ navigation, route }: Props) {
         <Text
           style={{
             fontSize: 24,
-            fontWeight: 'bold',
+            fontFamily:FONTS.semibold,
+            lineHeight:32,
             textAlign: 'center',
             marginTop: 16,
           }}
@@ -121,67 +127,83 @@ export default function ScheduleFlightScreen({ navigation, route }: Props) {
         </Text>
         <Text style={styles.bigTitle}>Data and Time</Text>
 
-        {/* Wheels */}
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 16 }}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.wheelsWrap}>
-            <View pointerEvents="none" style={styles.wheelsHighlight} />
-            <Wheel
-              data={dates.map(d => d.label)}
-              index={idxDate}
-              onIndexChange={setIdxDate}
-              width="44%"
-            />
-            <Wheel
-              data={hours}
-              index={idxHour}
-              onIndexChange={setIdxHour}
-              width="12%"
-            />
-            <Wheel
-              data={minutes}
-              index={idxMin}
-              onIndexChange={setIdxMin}
-              width="16%"
-            />
-            <Wheel
-              data={ampm}
-              index={idxAP}
-              onIndexChange={setIdxAP}
-              width="16%"
-            />
+        {/* Main content - fixed (no page scroll) */}
+        <View style={styles.content}>
+          {/* Wheels */}
+          <View style={styles.wheelsOuter}>
+            <View style={styles.wheelsWrap}>
+              {/* top/bottom fades */}
+              <View pointerEvents="none" style={styles.wheelsFadeTop} />
+              <View pointerEvents="none" style={styles.wheelsFadeBottom} />
+
+              {/* center highlight bar */}
+              <View pointerEvents="none" style={styles.wheelsHighlight} />
+
+              <Wheel
+                data={dates.map(d => d.label)}
+                index={idxDate}
+                onIndexChange={setIdxDate}
+                width="44%"
+              />
+              <Wheel
+                data={hours}
+                index={idxHour}
+                onIndexChange={setIdxHour}
+                width="12%"
+              />
+              <Wheel
+                data={minutes}
+                index={idxMin}
+                onIndexChange={setIdxMin}
+                width="16%"
+              />
+              <Wheel
+                data={ampm}
+                index={idxAP}
+                onIndexChange={setIdxAP}
+                width="16%"
+              />
+            </View>
           </View>
 
           {/* Info bullets per mock */}
-          <View style={{ gap: 14, paddingHorizontal: 16, paddingTop: 6 }}>
+          <View style={styles.bulletsWrap}>
             <Bullet
               icon={
-                <Ionicons name="alert-circle-outline" size={18} color="#111" />
+                <Image source={require('../../assets/icons/flight-loc-icon.png')} alt='flight-loc' style={{height:24,width:24}} />
+                // <Ionicons name="alert-circle-outline" size={18} color="#111" />
               }
               title="Flight Delayed? No Problem:"
               body="Your captain will tracks your flight and adjust your pickup time automatically."
             />
             <View style={styles.separator} />
             <Bullet
-              icon={<Ionicons name="time-outline" size={18} color="#111" />}
+              icon={
+                <Image source={require('../../assets/icons/timer-icon.png')} alt='flight-loc' style={{height:24,width:24}} />
+              // <Ionicons name="time-outline" size={18} color="#111" />
+            }
               title="Enjoy Unlimited Wait Time:"
               body="Lost baggage? Customs or immigration delays? No worries—your driver will wait as long as needed"
             />
             <View style={styles.separator} />
             <Bullet
-              icon={<Ionicons name="card-outline" size={18} color="#111" />}
+              icon={
+                <Image source={require('../../assets/icons/flight-cancel-icon.png')} alt='flight-loc' style={{height:24,width:24}} />
+              // <Ionicons name="card-outline" size={18} color="#111" />
+            }
               title="Flexible cancellation"
               body="From the airport: Cancel up to 5 hours before pickup"
             />
 
-            <Pressable style={styles.linkRow} onPress={() => navigation.navigate('AirportPickupPerks')}>
+            <Pressable
+              style={styles.linkRow}
+              onPress={() => navigation.navigate('AirportPickupPerks')}
+            >
               <Text style={styles.linkText}>More airport pickup Perks</Text>
               <AntDesign name="arrowright" size={16} color="#111" />
             </Pressable>
           </View>
-        </ScrollView>
+        </View>
 
         {/* CTA */}
         <View
@@ -213,7 +235,7 @@ function Bullet({
   body: string;
 }) {
   return (
-    <View style={{ flexDirection: 'row', gap: 10 }}>
+    <View style={{ flexDirection: 'row', gap: 10,alignItems:'center',justifyContent:'center' }}>
       <View style={styles.bulletIcon}>{icon}</View>
       <View style={{ flex: 1 }}>
         <Text style={styles.bulletTitle}>{title}</Text>
@@ -283,10 +305,10 @@ const styles = StyleSheet.create({
   headerImgRadius: { borderBottomLeftRadius: 24, borderBottomRightRadius: 24 },
   headerRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   backCircle: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#FFFFFF',
+    width: 48,
+    height: 48,
+    borderRadius: 32,
+    // backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
     shadowColor: '#000',
@@ -300,88 +322,133 @@ const styles = StyleSheet.create({
   sheet: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: -16,
+    marginTop: -30,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    paddingTop: 12,
+    paddingTop: 20,
   },
   bigTitle: {
     fontSize: 18,
-    color: '#111',
+    color: '#201E20',
     textAlign: 'center',
     marginTop: 6,
-    marginBottom: 36,
+    marginBottom: 20,
     paddingHorizontal: 16,
     fontFamily: FONTS.regular,
+  },
+
+  // NEW: main content container (no page scroll)
+  content: {
+    flex: 1,
+    justifyContent: 'flex-start',
+  },
+
+  wheelsOuter: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 0,
   },
   wheelsWrap: {
     flexDirection: 'row',
     alignItems: 'stretch',
-    gap: 8,
-    paddingHorizontal: 16,
-    marginBottom: 18,
     position: 'relative',
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
   },
   wheelsHighlight: {
     position: 'absolute',
-    left: 16,
-    right: 16,
-    top: (ITEM_H * (VISIBLE_ROWS - 1)) / 2,
-    height: ITEM_H,
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#E7E7E7',
-    backgroundColor: 'rgba(0,0,0,0.03)',
+    left: 0,
+    right: 0,
+    top: (ITEM_H * (VISIBLE_ROWS - 1)) / 1.87,
+    height: 28,
+    backgroundColor: '#EFEFEF',
     borderRadius: 8,
+  },
+  wheelsFadeTop: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: ITEM_H * 2,
+    backgroundColor: '#FFFFFF',
+    opacity: 0.46,
+  },
+  wheelsFadeBottom: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: ITEM_H * 2,
+    backgroundColor: '#FFFFFF',
+    opacity: 0.46,
   },
   wheelCol: {
     height: ITEM_H * VISIBLE_ROWS,
     overflow: 'hidden',
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#EFEFEF',
-    backgroundColor: '#FAFAFA',
+    backgroundColor: 'transparent',
+    marginHorizontal: -2,
   },
   item: {
     height: ITEM_H,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 8,
+    marginHorizontal: 4,
+    paddingVertical: 4,
   },
-  itemTxt: { color: '#9AA0A6' },
-  itemActive: { color: '#111', fontFamily: FONTS.bold },
+  itemTxt: {
+    color: '#C5C6CB',
+    fontFamily: FONTS.bold,
+    fontSize: 20,
+    paddingVertical: 0,
+  },
+  itemActive: {
+    color: '#1C1B1F',
+    fontFamily: FONTS.bold,
+    fontSize: 20,
+  },
+
+  // NEW: bullets area (fixed inside screen)
+  bulletsWrap: {
+    gap: 14,
+    paddingHorizontal: 16,
+    marginVertical:34,
+    // paddingTop: 10,
+    // paddingBottom: 4,
+  },
 
   bulletIcon: {
     width: 28,
     height: 28,
-    borderRadius: 14,
-    backgroundColor: '#F2F2F2',
+    // borderRadius: 14,
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 2,
   },
-  bulletTitle: { color: '#111', fontFamily: FONTS.bold },
-  bulletBody: { color: '#666', marginTop: 2, fontFamily: FONTS.regular },
-  separator: { height: 1, backgroundColor: '#EFEFEF', marginLeft: 44 },
+  bulletTitle: { color: '#201E20', fontFamily: FONTS.semibold,fontSize:16 },
+  bulletBody: { color: '#8D8E8F', marginTop: 2, fontFamily: FONTS.regular,fontSize:14,lineHeight:20 },
+  separator: { height: 1, backgroundColor: '#EFEFEF', marginLeft: 42 },
 
   linkRow: {
     alignSelf: 'flex-end',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    marginTop: 10,
+    paddingVertical: 0,
   },
   linkText: {
-    color: '#111',
+    color: '#201E20',
     textDecorationLine: 'underline',
     fontFamily: FONTS.regular,
+    fontSize:16,
+    lineHeight:24
   },
 
   footer: { paddingHorizontal: 16, paddingTop: 8 },
   cta: {
-    marginTop: 16,
-    marginHorizontal: 16,
-    height: 48,
+    marginVertical: -15,
+    // marginHorizontal: 16,
+    height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',
@@ -390,13 +457,13 @@ const styles = StyleSheet.create({
   },
   ctaText: { color: '#fff', fontFamily: FONTS.semibold, fontSize: 16 },
   ctaIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 });

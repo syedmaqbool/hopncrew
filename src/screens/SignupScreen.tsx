@@ -133,14 +133,14 @@ export default function SignupScreen({ navigation }: Props) {
           <Pressable onPress={() => navigation.goBack()}>
             <Image
               source={assets.images.backArrow}
-              style={{ width: 40, height: 40, borderRadius: 20 }}
+              style={{ width: 44, height: 44, borderRadius: 20 }}
             />
           </Pressable>
         </View>
 
         {/* Title */}
         <View style={styles.titleWrap}>
-          <Text style={styles.title}>Create Your hop’n{'\n'}Account</Text>
+          <Text style={styles.title}>Create Your hop’n Account</Text>
         </View>
         {/* Keyboard-safe area */}
         <KeyboardAwareScrollView
@@ -167,15 +167,17 @@ export default function SignupScreen({ navigation }: Props) {
                 {avatarUri ? (
                   <Image source={{ uri: avatarUri }} style={styles.avatarImg} />
                 ) : (
-                  <MaterialCommunityIcons
-                    name="account"
-                    size={42}
-                    color="#7A7A7A"
-                  />
+                  // <MaterialCommunityIcons
+                  //   name="account"
+                  //   size={42}
+                  //   color="#7A7A7A"
+                  // />
+                  <Image source={require('../../assets/icons/person-avatar-icon.png')} alt='person-avatar' style={{height:30,width:24}} />
                 )}
               </View>
               <Pressable style={styles.pencil} onPress={pickImage} hitSlop={8}>
-                <MaterialCommunityIcons name="pencil" size={16} color="#111" />
+                {/* <MaterialCommunityIcons name="pencil" size={16} color="#111" /> */}
+                  <Image source={require('../../assets/icons/pencil-icon.png')} alt='pencil-avatar' style={{height:12,width:12}} />
               </Pressable>
             </View>
             <Text style={styles.avatarLabel}>Your Profile Picture</Text>
@@ -272,7 +274,7 @@ export default function SignupScreen({ navigation }: Props) {
 
             {/* Terms */}
             <Text style={styles.termsText}>
-              By signing up you accept the{' '}
+              By signing up you accept the{'\n'}
               <Text
                 style={styles.link}
                 onPress={() => Linking.openURL('https://example.com/terms')}
@@ -305,16 +307,16 @@ export default function SignupScreen({ navigation }: Props) {
             <Text style={styles.or}>Or continue with</Text>
             <View style={styles.socialRow}>
               <Pressable style={styles.social}>
-                <FontAwesome name="linkedin" size={18} color="#0A66C2" />
+                <FontAwesome name="linkedin" size={28} color="#0A66C2" />
               </Pressable>
               <Pressable style={styles.social}>
-                <FontAwesome name="facebook" size={18} color="#1877F2" />
+                <FontAwesome name="facebook" size={28} color="#1877F2" />
               </Pressable>
               <Pressable style={styles.social}>
-                <AntDesign name="google" size={18} color="#DB4437" />
+                <AntDesign name="google" size={28} color="#DB4437" />
               </Pressable>
               <Pressable style={styles.social}>
-                <AntDesign name="apple1" size={18} color="#000" />
+                <AntDesign name="apple1" size={28} color="#000" />
               </Pressable>
             </View>
           </View>
@@ -369,7 +371,7 @@ const styles = StyleSheet.create({
   bg: { flex: 1 },
   safe: { flex: 1 },
   container: { paddingBottom: 20 },
-  header: { paddingHorizontal: 16, paddingTop: 74 },
+  header: { paddingHorizontal: 16, paddingTop: 24 },
 
   hero: { flex: 1 },
 
@@ -381,12 +383,12 @@ const styles = StyleSheet.create({
     padding: 16,
   },
 
-  titleWrap: { paddingHorizontal: 16, marginTop: 20 },
+  titleWrap: { paddingHorizontal: 16, marginVertical: 20 },
   title: {
     fontSize: 24,
     lineHeight: 30,
     color: '#111',
-    fontFamily: FONTS.bold,
+    fontFamily: FONTS.semibold,
   },
 
   avatarWrap: { alignItems: 'center', marginTop: 4, marginBottom: 10 },
@@ -405,7 +407,7 @@ const styles = StyleSheet.create({
   },
   pencil: {
     position: 'absolute',
-    right: '36%',
+    right: '38%',
     bottom: 2, // relative so it doesn’t break on small screens
     width: 24,
     height: 24,
@@ -421,11 +423,11 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 20,
     marginBottom: 12,
-    fontFamily: FONTS.bold,
+    fontFamily: FONTS.semibold,
   },
 
   input: {
-    height: 48,
+    height: 50,
     borderRadius: 24,
     borderWidth: 1,
     borderColor: '#E6E6E6',
@@ -446,6 +448,7 @@ const styles = StyleSheet.create({
     // paddingVertical: 6,
     paddingHorizontal: 18,
     backgroundColor: '#fff',
+    height:50
   },
 
   ccButton: {
@@ -472,7 +475,8 @@ const styles = StyleSheet.create({
   checkboxRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 12,
+    marginVertical: 8,
+    marginHorizontal:8,
     gap: 8,
   },
   checkboxBox: {
@@ -485,24 +489,25 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: '#fff',
   },
-  checkboxChecked: { backgroundColor: '#111', borderColor: '#111' },
-  checkboxText: { color: '#111', fontFamily: FONTS.regular },
+  checkboxChecked: { backgroundColor: '#201E20', borderColor: '#111' },
+  checkboxText: { color: '#111', fontFamily: FONTS.regular,fontSize:16 },
 
   termsText: {
-    color: '#666',
+    color: '#3C393C',
+    marginHorizontal:8,
     marginTop: 10,
-    lineHeight: 18,
+    lineHeight: 20,
     fontFamily: FONTS.regular,
   },
   link: {
-    color: '#111',
+    color: '#201E20',
     textDecorationLine: 'underline',
     fontFamily: FONTS.regular,
   },
 
   signUpBtn: {
     marginTop: 14,
-    height: 48,
+    height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',
@@ -511,14 +516,14 @@ const styles = StyleSheet.create({
   },
   signUpText: { color: '#fff', fontFamily: FONTS.semibold, fontSize: 16 },
   signUpArrow: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 
   divider: { height: 1, backgroundColor: '#EFEFEF', marginVertical: 16 },
@@ -527,13 +532,14 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 12,
     fontFamily: FONTS.regular,
+    fontSize:16
   },
 
   socialRow: { flexDirection: 'row', justifyContent: 'center', gap: 14 },
   social: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+    width: 56,
+    height: 56,
+    borderRadius: 32,
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#EEE',

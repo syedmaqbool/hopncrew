@@ -68,6 +68,7 @@ import SelectDepartureModal from '../screens/SelectDepartureModal';
 import SelectedAirportScreen from '../screens/SelectedAirportScreen';
 import FlightManualModal from '../screens/FlightManualModal';
 import ScanBagSizeScreen from '../screens/ScanBagSizeScreen';
+import CoupenPopupModal from '../screens/CoupenPopupModal';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator({
@@ -226,6 +227,7 @@ export default function RootNavigator({
         <Stack.Screen name="PaymentMethods" component={PaymentMethodsModal} />
         <Stack.Screen name="AddCard" component={AddCardModal} />
         <Stack.Screen name="BookingReceived" component={BookingReceivedModal} />
+        <Stack.Screen name="CoupenPopup" component={CoupenPopupModal} />
         <Stack.Screen
           name="BookingReceivedTerms"
           component={BookingReceivedTerms}

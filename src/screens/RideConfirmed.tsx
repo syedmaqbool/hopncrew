@@ -30,7 +30,7 @@ export default function RideConfirmed({ navigation, route }: Props) {
             <Image
               source={require('../../assets/icons/noride-icon.png')}
               alt="ride-confirmed"
-              style={{ width: 24, height: 24, marginBottom: 10 }}
+              style={{ width: 48, height: 48, marginBottom: 10 }}
             />
           </View>
 
@@ -75,24 +75,26 @@ const styles = StyleSheet.create({
   },
   logoPill: {
     backgroundColor: MINT,
-    borderRadius: 16,
-    paddingHorizontal: 12,
+    borderRadius: 32,
+    paddingHorizontal: 16,
     paddingVertical: 6,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
   },
   tm: { marginLeft: 2, fontSize: 10, color: '#0B3D3B', marginTop: -6 },
-  h1: { marginTop: 12, fontSize: 20, color: '#111', fontFamily: FONTS.bold },
+  h1: { marginTop: 12, fontSize: 20, color: '#111', fontFamily: FONTS.semibold },
   body: {
     marginTop: 10,
     color: '#3C3C43',
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 24,
     fontFamily: FONTS.regular,
+    fontSize:15,
   },
   infoPill: {
-    backgroundColor: '#F4F5F6',
+    backgroundColor: '#EFEFEF',
+    marginVertical: 6,
     marginTop: 12,
     height: 48,
     borderRadius: 26,

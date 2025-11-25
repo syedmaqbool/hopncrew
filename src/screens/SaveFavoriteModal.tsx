@@ -12,6 +12,7 @@ import {
   TextInput,
   View,
   Platform,
+  Image,
 } from 'react-native';
 import {
   SafeAreaView,
@@ -154,7 +155,7 @@ export default function SaveFavoriteModal({ navigation, route }: Props) {
             <View style={styles.headerRow}>
               <Text style={styles.headerTitle}>Save as Favourite</Text>
               <Pressable style={styles.closeBtn} onPress={close}>
-                <Ionicons name="close" size={18} color="#111" />
+                <Ionicons name="close" size={24} color="#8D8E8F" />
               </Pressable>
             </View>
 
@@ -172,11 +173,16 @@ export default function SaveFavoriteModal({ navigation, route }: Props) {
                 style={styles.heartBtn}
                 onPress={() => setStar(s => !s)}
               >
-                <AntDesign
+                {star ?
+                <Image source={require('../../assets/icons/heart-icon.png')} alt='heart-icon' style={{width:24,height:24}} />
+                :
+                <Image source={require('../../assets/icons/heart-fill-icon.png')} alt='heart-icon' style={{width:24,height:24}} />
+                }
+                {/* <AntDesign
                   name={star ? 'heart' : 'hearto'}
-                  size={20}
+                  size={24}
                   color="#111"
-                />
+                /> */}
               </Pressable>
             </View>
 
@@ -280,12 +286,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 18,
   },
-  headerTitle: { color: '#111', fontSize: 22, fontFamily: FONTS.bold },
+  headerTitle: { color: '#111', fontSize: 20, fontFamily: FONTS.semibold,lineHeight:32 },
   closeBtn: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#F2F2F2',
+    width: 44,
+    height: 44,
+    // borderRadius: 16,
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -293,7 +299,7 @@ const styles = StyleSheet.create({
   inputRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    height: 56,
+    height: 50,
     borderRadius: 28,
     borderWidth: 1,
     borderColor: '#E5E5E5',
@@ -324,30 +330,30 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     gap: 10,
   },
-  resultMain: { color: '#111', fontFamily: FONTS.bold },
-  resultSub: { color: '#6F6F6F', fontSize: 12, fontFamily: FONTS.regular },
+  resultMain: { color: '#201E20', fontFamily: FONTS.semibold },
+  resultSub: { color: '#8D8E8F', fontSize: 14, fontFamily: FONTS.regular },
 
   saveBtn: {
     marginTop: 28,
-    height: 64,
+    height: 56,
     borderRadius: 40,
     backgroundColor: '#111',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  saveText: { color: '#fff', fontSize: 18, fontFamily: FONTS.bold },
+  saveText: { color: '#fff', fontSize: 17, fontFamily: FONTS.semibold },
   saveArrow: {
     position: 'absolute',
-    right: 6,
-    width: 56,
-    height: 56,
+    right: 8,
+    width: 44,
+    height: 44,
     borderRadius: 28,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
-    borderWidth: 1,
-    borderColor: '#111',
+    // borderWidth: 1,
+    // borderColor: '#111',
   },
   cancel: { alignItems: 'center', paddingVertical: 18 },
-  cancelText: { color: '#111', fontSize: 18, fontFamily: FONTS.bold },
+  cancelText: { color: '#111', fontSize: 17, fontFamily: FONTS.semibold },
 });

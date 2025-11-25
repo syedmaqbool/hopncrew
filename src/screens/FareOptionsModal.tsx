@@ -30,6 +30,7 @@ import {
   calculateRideCost,
   vehicleOptionsToQuotes,
   type RideCostResult,
+  type VehicleOption,
 } from '../services/app';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FareOptions'>;
@@ -58,6 +59,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
       seatText?: string;
       details?: string;
       price: number;
+      oldPrice?: number;
       image?: string | null;
       fare_per_km?: number;
       max_passengers?: number;
@@ -66,6 +68,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
       eta?: number;
     }>
   >([]);
+  const [vehicleOptions, setVehicleOptions] = useState<VehicleOption[]>([]);
 
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
@@ -189,7 +192,12 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
         const minutes = Number(result?.route_info?.duration_minutes ?? 0);
         setEtaMinutes(minutes > 0 ? minutes : 0);
 
-        const mapped = vehicleOptionsToQuotes(result?.vehicle_options ?? []);
+        const options = result?.vehicle_options ?? [];
+        setVehicleOptions(options);
+        const mapped = vehicleOptionsToQuotes(
+          options,
+          result?.related_vehicle_types ?? [],
+        );
         setQuotes(mapped);
         if (mapped.length > 0) setSelectedId(mapped[0].id);
       } catch (e: any) {
@@ -207,7 +215,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
   }, [start?.latitude, start?.longitude, dest?.latitude, dest?.longitude]);
 
   const [payMethod, setPayMethod] = useState(
-    route.params?.payMethod ?? 'Payment Breakdown',
+    route.params?.payMethod ?? 'Card',
   );
   const [hasNote, setHasNote] = useState(false);
   const [special, setSpecial] = useState<SpecialRequestPayload>({
@@ -228,13 +236,17 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
     }
 
     const payload = { payMethod, special: hasNote ? special : null };
+    const vehicleDetail = vehicleOptions.find(
+      opt => String(opt.vehicle_type_id) === selected.id,
+    );
 
     if (typeof route.params?.onConfirm === 'function') {
-      route.params.onConfirm(selected, payload);
+      route.params.onConfirm(selected, payload, vehicleDetail);
     }
 
     navigation.navigate('ConfirmRequest', {
       quote: { ...selected, eta: etaMinutes },
+      vehicleOption: vehicleDetail ?? null,
       payMethod,
       special: hasNote ? special : null,
       start: route.params?.start,
@@ -439,7 +451,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
             <Text style={styles.rowMain}>{payMethod}</Text>
 
             <View style={styles.mintMini}>
-              <AntDesign name="arrowright" size={16} color={TEXT} />
+              <AntDesign name="right" size={16} color={TEXT} />
             </View>
           </Pressable>
 
@@ -468,7 +480,7 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
                 source={require('../../assets/icons/specreq-icon.png')}
                 style={{ width: 24, height: 24, resizeMode: 'contain' }}
               />
-              <Text>I have special request</Text>
+              <Text style={{fontFamily:FONTS.regular, fontSize:16}}>I have special request</Text>
               <View
                 style={[styles.squareCheck, hasNote && styles.squareCheckOn]}
               >
@@ -508,7 +520,6 @@ function FareRow({
   quote,
   selected,
   onPress,
-  variant = 0,
 }: {
   quote: {
     id: string;
@@ -520,48 +531,86 @@ function FareRow({
     fare_per_km?: number;
     max_passengers?: number;
     max_luggage?: number;
+    original_price?: number;
+    originalPrice?: number;
+    oldPrice?: number;
   };
   selected?: boolean;
   onPress?: () => void;
-  variant?: number;
 }) {
   const carSrc = quote.image ? { uri: quote.image } : undefined;
+  const strike =
+    quote.oldPrice ??
+    quote.original_price ??
+    quote.originalPrice ??
+    undefined;
+  const seatText = quote.seatText || quote.details;
 
   return (
     <Pressable
       onPress={onPress}
-      style={[styles.rowWrap, selected && styles.rowWrapActive]}
+      style={[
+        styles.rowWrap,
+        selected ? styles.rowWrapActive : styles.rowWrapIdle,
+      ]}
     >
-      <View style={[styles.leftSlab, selected && styles.leftSlabActive]}>
-        <Text style={selected ? styles.priceBigActive : styles.priceBig}>
-          $ {quote.price}
-        </Text>
+      {/* LEFT: price slab */}
+      <View style={styles.leftSlab}>
+        <View style={styles.priceRow}>
+          <Text
+            style={selected ? styles.priceBigActive : styles.priceBig}
+            numberOfLines={1}
+          >
+            ${quote.price}
+          </Text>
+
+          {typeof strike === 'number' && (
+            <Text
+              style={
+                selected
+                  ? styles.priceStrikeActive
+                  : styles.priceStrike
+              }
+              numberOfLines={1}
+            >
+              ${strike}
+            </Text>
+          )}
+        </View>
       </View>
 
-      <View style={[styles.rightBubble, selected && styles.rightBubbleActive]}>
-        <Text style={styles.tierTitle}>{quote.tier}</Text>
+      {/* RIGHT: bubble with title + car image */}
+      <View
+        style={[
+          styles.rightBubble,
+          selected && styles.rightBubbleActive,
+        ]}
+      >
+        <View style={styles.titlesRow}>
+          <Text style={styles.tierTitle}>{quote.tier}</Text>
+          {/* {!!seatText && <Text style={styles.tierSub}> {seatText}</Text>} */}
+        </View>
 
-        {carSrc ? (
-          <Image
-            source={carSrc}
-            style={{ width: 140, height: 52 }}
-            resizeMode="contain"
-          />
-        ) : (
-          <Image
-            source={require('../../assets/icons/no-car-icon.jpg')}
-            style={{ width: 150, height: 80 }}
-            resizeMode="contain"
-          />
-        )}
-
-        {/* {!!(quote.seatText || quote.details) && (
-          <Text style={styles.tierSub}>{quote.seatText || quote.details}</Text>
-        )} */}
+        <View style={styles.carImageWrap}>
+          {carSrc ? (
+            <Image
+              source={carSrc}
+              style={styles.carImage}
+              resizeMode="contain"
+            />
+          ) : (
+            <Image
+              source={require('../../assets/icons/no-car-icon.jpg')}
+              style={styles.carImage}
+              resizeMode="contain"
+            />
+          )}
+        </View>
       </View>
     </Pressable>
   );
 }
+
 
 /* ====== styles ====== */
 const styles = StyleSheet.create({
@@ -607,13 +656,14 @@ const styles = StyleSheet.create({
   sheet: {
     flex: 1,
     backgroundColor: '#fff',
-    marginTop: -16,
+    marginTop: -12,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 12,
   },
   sheetTopPadding: {
     paddingHorizontal: 16,
+    marginVertical: 15,
   },
 
   blurb: {
@@ -623,108 +673,151 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 4,
     lineHeight: 18,
-    paddingVertical: 18,
+    paddingTop: 10,
     fontFamily: FONTS.regular,
   },
 
   /* List area gets the scroll */
   listContainer: {
     flex: 1,
-    marginTop: 12,
+    // marginTop: 6,
   },
 
   rowWrap: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'space-between',
     borderRadius: 24,
-    borderWidth: 1,
-    borderColor: BORDER,
-    backgroundColor: '#EEEEEF',
     overflow: 'visible',
-    color: '#000',
     height: 96,
+    marginTop: 2,
+  },
+  rowWrapIdle: {
+    backgroundColor: '#EEEEEF',
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 1 },
+    elevation: 8,
   },
   rowWrapActive: {
-    borderColor: '#EEEEEF',
-    backgroundColor: '#000',
+    backgroundColor: '#151417',
     shadowColor: '#000',
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
-    elevation: 6,
-    height: 96,
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 10,
   },
 
   leftSlab: {
-    backgroundColor: '#EEEEEF',
-    paddingLeft: 18,
-    paddingRight: 16,
-    paddingVertical: 12,
-    borderTopLeftRadius: 16,
-    borderBottomLeftRadius: 16,
-    minWidth: 200,
-    minHeight: 120,
+    width: 168,
+    height: 96,
+    paddingLeft: 20,
+    paddingRight: 10,
     justifyContent: 'center',
+    borderTopLeftRadius: 32,
+    borderBottomLeftRadius: 32,
   },
-  leftSlabActive: { backgroundColor: '#000' },
 
+  priceRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+  },
   priceBig: {
-    color: '#000',
-    fontSize: 54,
-    lineHeight: 40,
-    fontFamily: FONTS.medium,
+    color: '#201E20',
+    fontSize: 64,
+    // lineHeight: 52,
+    fontFamily: FONTS.regular,
   },
   priceBigActive: {
-    color: '#fff',
-    fontSize: 54,
-    lineHeight: 40,
-    fontFamily: FONTS.medium,
+    color: '#FCFCFC',
+    fontSize: 64,
+    // lineHeight: 52,
+    fontFamily: FONTS.regular,
+  },
+  priceStrike: {
+    marginLeft: 6,
+    marginTop: 6,
+    fontSize: 18,
+    color: '#B4B6BC',
+    textDecorationLine: 'line-through',
+    fontFamily: FONTS.regular,
+  },
+  priceStrikeActive: {
+    marginLeft: 6,
+    marginTop: 6,
+    fontSize: 18,
+    color: '#E2E3E8',
+    textDecorationLine: 'line-through',
+    fontFamily: FONTS.regular,
   },
 
   rightBubble: {
-    flex: 1,
-    marginLeft: -10,
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
+    // flex: 1,
+    backgroundColor: '#FCFCFC',
+    marginVertical: 0,
+    marginRight: 0,
+    borderRadius: 24,
+    paddingHorizontal: 18,
+    width: 168,
     paddingVertical: 10,
-    borderTopLeftRadius: 22,
-    borderBottomLeftRadius: 22,
-    borderTopRightRadius: 14,
-    borderBottomRightRadius: 14,
-    elevation: 3,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 3 },
-    alignItems: 'center',
+    height:96,
+    // shadowColor: '#000',
+    // shadowOpacity: 0.08,
+    // shadowRadius: 10,
+    // shadowOffset: { width: 0, height: 2 },
+    // elevation: 2,
+    justifyContent: 'space-between',
   },
   rightBubbleActive: {
-    elevation: 6,
-    shadowOpacity: 0.18,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: 6 },
+    // shadowOpacity: 0.1,
+    width: 168,
+    height:96,
+    // shadowRadius: 10,
+    // shadowOffset: { width: 0, height: 2 },
+    // elevation: 2,
   },
-  tierTitle: {
-    color: TEXT,
-    textAlign: 'center',
-    fontSize: 20,
-    fontFamily: FONTS.bold,
-  },
-  tierSub: { color: '#6C7075', fontFamily: FONTS.medium },
 
-  policyRow: {
-    marginTop: 12,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
-    marginHorizontal: 50,
-    borderRadius: 999,
-    backgroundColor: '#F6F7F8',
+  titlesRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
   },
-  policyTxt: { color: TEXT, fontFamily: FONTS.bold },
+  tierTitle: {
+    color: '#111',
+    fontSize: 14,
+    fontFamily: FONTS.regular,
+  },
+  tierSub: {
+    color: '#9A9BA1',
+    fontSize: 14,
+    fontFamily: FONTS.regular,
+  },
+
+  carImageWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: -3,
+  },
+  carImage: {
+    width: 120,
+    height: 64,
+  },
+
+  policyRow: {
+    marginTop: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    marginHorizontal: 40,
+    borderRadius: 999,
+    backgroundColor: '#ECECEC5E',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  policyTxt: { color: TEXT, fontFamily: FONTS.semibold, fontSize: 14,padding:2 },
 
   rowCard: {
     flexDirection: 'row',
@@ -741,7 +834,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  rowMain: { color: TEXT, flex: 1, fontFamily: FONTS.bold },
+  rowMain: { color: TEXT, flex: 1, fontFamily: FONTS.regular, fontSize: 16 },
 
   mintMini: {
     width: 30,
@@ -762,8 +855,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 12,
-    marginTop: 10,
+    gap: 14,
+    marginVertical: 10,
+    paddingBottom: 14,
   },
 
   squareCheck: {
@@ -780,25 +874,26 @@ const styles = StyleSheet.create({
     borderColor: '#111',
   },
 
-  footer: { paddingHorizontal: 16, paddingTop: 8 },
+  footer: { paddingHorizontal: 16, paddingTop: 6 },
 
   cta: {
-    height: 50,
-    borderRadius: 28,
+    height: 56,
+    borderRadius: 32,
     backgroundColor: '#111',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 15,
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#fff', fontFamily: FONTS.semibold, fontSize: 17 },
   ctaIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: MINT,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
+    backgroundColor: "#B1FBE3",
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 });

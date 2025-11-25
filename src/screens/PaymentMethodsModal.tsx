@@ -28,8 +28,8 @@ import { FONTS } from '../../src/theme/fonts';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'PaymentMethods'>;
 
-const MINT = '#B9FBE7';
-const TEXT = '#111';
+const MINT = '#B1FBE3';
+const TEXT = '#201E20';
 const MUTED = '#6F6F6F';
 const BORDER = '#EEE';
 const BG_SOFT = '#F6F7F8';
@@ -39,8 +39,9 @@ const brandIcon = (brand: SavedCard['brand']) => {
     case 'visa':
       return <MaterialCommunityIcons name="visa" size={28} color="#1A1F71" />;
     case 'mastercard':
-      // Use the dedicated icon if available; fallback to generic
-      return <MaterialCommunityIcons name="mastercard" size={28} color="#EB001B" />;
+      return (
+        <MaterialCommunityIcons name="mastercard" size={28} color="#EB001B" />
+      );
     case 'amex':
     case 'american_express':
       return (
@@ -63,7 +64,7 @@ const brandIcon = (brand: SavedCard['brand']) => {
 
 export default function PaymentMethodsModal({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const isSmall = width < 360;
 
   const initial = route.params?.selected ?? 'card';
@@ -116,163 +117,184 @@ export default function PaymentMethodsModal({ navigation, route }: Props) {
     return goProcessing();
   };
 
-  // Target ~70% modal height (Android a tad taller for visual balance)
-  const SHEET_HEIGHT = Math.round(
-    height * (Platform.OS === 'ios' ? 0.7 : 0.74),
-  );
-
   return (
-    <View style={{ flex: 1 }}>
-      {/* Dim background – tap to close */}
-      <Pressable
-        style={[
-          StyleSheet.absoluteFillObject,
-          { backgroundColor: 'rgba(0,0,0,0.12)' },
-        ]}
-        onPress={() => navigation.goBack()}
-      />
-
-      <SafeAreaView edges={['bottom']} style={styles.wrap}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          style={[styles.sheet, { height: SHEET_HEIGHT }]}
-        >
-          {/* Header */}
-          <View style={[styles.header, { paddingTop: insets.top > 0 ? 8 : 10 }]}>
-            <Text style={styles.h1}>Payment</Text>
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={insets.top + 24}
+        style={styles.screen}
+      >
+        <View style={styles.main}>
+          {/* Top close button */}
+          <View style={styles.topBar}>
             <Pressable
-              style={styles.close}
+              style={styles.closeCircle}
               onPress={() => navigation.goBack()}
               hitSlop={10}
               accessibilityRole="button"
               accessibilityLabel="Close"
             >
-              <Ionicons name="close" size={18} color={TEXT} />
+              <Ionicons name="close" size={24} color={TEXT} />
             </Pressable>
           </View>
-          <Text style={styles.sub}>Payment methods</Text>
 
-          {/* Scrollable content */}
-          <ScrollView
-            style={{ flex: 1 }}
-            contentContainerStyle={{
-              paddingHorizontal: 16,
-              paddingBottom: 16,
-            }}
-            showsVerticalScrollIndicator={false}
-            keyboardShouldPersistTaps="handled"
-          >
-            {/* Radio rows */}
-            <RadioRow
-              icon={
-                <MaterialCommunityIcons
-                  name="credit-card-outline"
-                  size={22}
-                  color={TEXT}
-                />
-              }
-              label="Credit or Debit Card"
-              checked={method === 'card'}
-              onPress={() => setMethod('card')}
-            />
-            <RadioRow
-              icon={<Ionicons name="wallet-outline" size={22} color={TEXT} />}
-              label="Wallet"
-              checked={method === 'wallet'}
-              onPress={() => setMethod('wallet')}
-            />
-            <RadioRow
-              icon={
-                <Image
-                  source={assets.images.dollarIcon}
-                  style={{ width: 24, height: 24, resizeMode: 'contain' }}
-                />
-              }
-              label="Cash"
-              checked={method === 'cash'}
-              onPress={() => setMethod('cash')}
-            />
+          {/* Title + subtitle */}
+          <View style={styles.headerBlock}>
+            <Text style={styles.h1}>Payment</Text>
+            <Text style={styles.sub}>Payment methods</Text>
+          </View>
 
-            {/* Cards list (only shown for card method) */}
+          {/* Content area (no global scrolling) */}
+          <View style={styles.content}>
+            {/* Method radios – always visible, non-scroll */}
+            <View>
+              <RadioRow
+                icon={
+                  <Image
+                    source={require('../../assets/icons/creditcard-icon.png')}
+                    style={{ height: 48, width: 48 }}
+                  />
+                }
+                label="Credit or Debit Card"
+                checked={method === 'card'}
+                onPress={() => setMethod('card')}
+              />
+              <RadioRow
+                icon={
+                  <Image
+                    source={require('../../assets/icons/wallet-icon.png')}
+                    style={{ height: 48, width: 48 }}
+                  />
+                }
+                label="Wallet"
+                checked={method === 'wallet'}
+                onPress={() => setMethod('wallet')}
+              />
+              <RadioRow
+                icon={
+                  <Image
+                    source={require('../../assets/icons/cash-icon.png')}
+                    style={{ height: 48, width: 48 }}
+                  />
+                }
+                label="Cash"
+                checked={method === 'cash'}
+                onPress={() => setMethod('cash')}
+              />
+            </View>
+
+            {/* Available cards block – ONLY this part scrolls */}
             {method === 'card' && (
-              <>
+              <View style={styles.cardsBlock}>
                 <View style={styles.sectionHead}>
                   <Text style={styles.sectionTitle}>Available Cards</Text>
-                  <Pressable style={styles.iconBtn} onPress={addCard} hitSlop={8}>
-                    <MaterialCommunityIcons
-                      name="credit-card-plus-outline"
-                      size={20}
-                      color={TEXT}
+                  <Pressable
+                    style={styles.iconBtn}
+                    onPress={addCard}
+                    hitSlop={8}
+                  >
+                    <Image
+                      source={require('../../assets/icons/add-creditcard-icon.png')}
+                      style={{ height: 48, width: 48 }}
                     />
                   </Pressable>
                 </View>
 
-                {cards.map(c => (
-                  <Pressable
-                    key={c.id}
-                    style={styles.cardRow}
-                    onPress={() => {
-                      setMethod('card');
-                      setSelectedCardId(c.id);
-                    }}
-                    accessibilityRole="button"
-                  >
-                    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                      {brandIcon(c.brand)}
-                      <View>
-                        <Text style={styles.cardTitle}>•••• {c.last4}</Text>
-                        <Text style={styles.cardSub}>Exp {c.exp}</Text>
+                <ScrollView
+                  style={styles.cardsScroll}
+                  contentContainerStyle={{ paddingBottom: 4 }}
+                  showsVerticalScrollIndicator={false}
+                  keyboardShouldPersistTaps="handled"
+                >
+                  {cards.map(c => (
+                    <Pressable
+                      key={c.id}
+                      style={styles.cardRow}
+                      onPress={() => {
+                        setMethod('card');
+                        setSelectedCardId(c.id);
+                      }}
+                      accessibilityRole="button"
+                    >
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 10,
+                        }}
+                      >
+                        {brandIcon(c.brand)}
+                        <View>
+                          <Text style={styles.cardTitle}>•••• {c.last4}</Text>
+                          <Text style={styles.cardSub}>Exp {c.exp}</Text>
+                        </View>
                       </View>
-                    </View>
-                    <Ionicons
-                      name={
-                        selectedCardId === c.id && method === 'card'
-                          ? 'radio-button-on'
-                          : 'radio-button-off'
-                      }
-                      size={20}
-                      color={TEXT}
-                    />
-                  </Pressable>
-                ))}
-              </>
+                      <Ionicons
+                        name={
+                          selectedCardId === c.id && method === 'card'
+                            ? 'radio-button-on'
+                            : 'radio-button-off'
+                        }
+                        size={20}
+                        color={
+                          selectedCardId === c.id && method === 'card'
+                            ? TEXT
+                            : '#D1D5DB'
+                        }
+                      />
+                    </Pressable>
+                  ))}
+                </ScrollView>
+              </View>
             )}
 
-            {/* Square info pill */}
-            <View style={styles.squarePill}>
+            {/* Square info pill – stays static above CTA */}
+            <View
+              style={[
+                styles.squarePill,
+                isSmall && { paddingVertical: 10 },
+              ]}
+            >
               <View style={styles.squareLogo}>
                 <Image
                   source={assets.images.sqaureTwoIcon}
-                  style={{ width: 32, height: 32, resizeMode: 'contain' }}
+                  style={{ width: 40, height: 40, resizeMode: 'contain' }}
                 />
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={styles.squareTxt}>
                   Square will securely process your payment, and your
-                  information will be safely stored on Square’s servers.
+                  information will be safely stored on Square&apos;s servers.
                 </Text>
               </View>
-              <Ionicons name="lock-closed-outline" size={16} color={TEXT} />
+              <Image
+                source={require('../../assets/icons/lock-icon.png')}
+                style={{ height: 20, width: 20 }}
+              />
             </View>
-          </ScrollView>
-
-          {/* Sticky CTA */}
-          <View
-            style={[
-              styles.ctaWrap,
-              { paddingBottom: Math.max(12, insets.bottom) },
-            ]}
-          >
-            <Pressable style={styles.cta} onPress={submit} accessibilityRole="button">
-              <Text style={styles.ctaText}>Use this method</Text>
-              <View style={styles.ctaIcon}>
-                <Ionicons name="arrow-forward" size={18} color={TEXT} />
-              </View>
-            </Pressable>
           </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </View>
+        </View>
+
+        {/* Bottom CTA – fixed, doesn’t jump too high/low */}
+        <View
+          style={[
+            styles.ctaWrap,
+            { paddingBottom: 8 },
+          ]}
+        >
+          <Pressable
+            style={styles.cta}
+            onPress={submit}
+            accessibilityRole="button"
+          >
+            <Text style={styles.ctaText}>Use this method</Text>
+            <View className="ctaIcon" style={styles.ctaIcon}>
+              <Ionicons name="arrow-forward" size={18} color={TEXT} />
+            </View>
+          </Pressable>
+        </View>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
@@ -295,11 +317,9 @@ function RadioRow({
       <Text style={styles.radioLabel} numberOfLines={2}>
         {label}
       </Text>
-      <Ionicons
-        name={checked ? 'radio-button-on' : 'radio-button-off'}
-        size={20}
-        color={TEXT}
-      />
+      <View style={[styles.checkCircle, checked && styles.checkCircleOn]}>
+        {checked && <Ionicons name="checkmark" size={20} color="#fff" />}
+      </View>
     </Pressable>
   );
 }
@@ -307,127 +327,178 @@ function RadioRow({
 /* ---------- styles ---------- */
 
 const styles = StyleSheet.create({
-  wrap: { flex: 1, justifyContent: 'flex-end' },
-  sheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
-    overflow: 'hidden',
-    // subtle shadow/elevation for floating look
+  screen: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  main: {
+    flex: 1,
+  },
+
+  topBar: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 2,
+  },
+  closeCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 32,
+    backgroundColor: '#FFFFFF',
+    alignItems: 'center',
+    justifyContent: 'center',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOpacity: 0.15,
-        shadowRadius: 16,
-        shadowOffset: { width: 0, height: -4 },
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 4 },
       },
-      android: { elevation: 10 },
+      android: { elevation: 4 },
     }),
   },
 
-  header: {
+  headerBlock: {
     paddingHorizontal: 16,
-    paddingBottom: 2,
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+    marginTop: 10,
+    marginBottom: 4,
   },
-  h1: { flex: 1, color: TEXT, fontSize: 18, fontFamily: FONTS.bold },
-  close: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: BG_SOFT,
-    alignItems: 'center',
-    justifyContent: 'center',
+  h1: {
+    color: TEXT,
+    fontSize: 24,
+    fontFamily: FONTS.semibold,
+    marginBottom: 4,
+  },
+  sub: {
+    color: TEXT,
+    fontSize: 16,
+    fontFamily: FONTS.regular,
   },
 
-  sub: {
-    color: MUTED,
-    marginTop: 2,
-    marginBottom: 6,
+  content: {
+    flex: 1,
     paddingHorizontal: 16,
-    fontFamily: FONTS.regular,
+    paddingTop: 12,
   },
 
   radioRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 12,
-    paddingHorizontal: 12,
-    gap: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 4,
+    gap: 14,
   },
   radioIcon: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: BG_SOFT,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  radioLabel: { color: TEXT, flex: 1, fontFamily: FONTS.bold },
+  radioLabel: {
+    color: TEXT,
+    flex: 1,
+    fontFamily: FONTS.semibold,
+    fontSize: 18,
+  },
+  checkCircle: {
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    borderWidth: 1.5,
+    borderColor: '#D2D5DA',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  checkCircleOn: {
+    backgroundColor: '#201E20',
+    borderColor: '#201E20',
+  },
 
+  cardsBlock: {
+    flex: 1,
+    marginTop: 24,
+  },
   sectionHead: {
-    marginTop: 8,
-    paddingHorizontal: 16,
+    marginBottom: 10,
+    paddingHorizontal: 4,
     flexDirection: 'row',
     alignItems: 'center',
   },
-  sectionTitle: { flex: 1, color: TEXT, fontFamily: FONTS.bold },
+  sectionTitle: {
+    flex: 1,
+    color: TEXT,
+    fontFamily: FONTS.semibold,
+    fontSize: 18,
+  },
   iconBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: BG_SOFT,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
   },
-
+  cardsScroll: {
+    flex: 1,
+  },
   cardRow: {
-    marginHorizontal: 12,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
+    paddingHorizontal: 4,
+    paddingVertical: 8,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: BORDER,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFFFFF',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 8,
   },
-  cardTitle: { color: TEXT, fontFamily: FONTS.bold },
-  cardSub: { color: '#9AA0A6', fontSize: 12, marginTop: 2, fontFamily: FONTS.regular },
+  cardTitle: { color: TEXT, fontFamily: FONTS.semibold, fontSize: 16 },
+  cardSub: {
+    color: '#8D8E8F',
+    fontSize: 14,
+    marginTop: 2,
+    fontFamily: FONTS.regular,
+  },
 
   squarePill: {
-    marginTop: 16,
-    marginHorizontal: 16,
-    backgroundColor: MINT,
-    borderRadius: 14,
-    padding: 12,
+    marginTop: 20,
+    marginBottom: 15,
+    backgroundColor: '#DAF8EE',
+    borderRadius: 16,
+    paddingHorizontal: 14,
+    paddingVertical: 16,
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'center',
     gap: 10,
   },
   squareLogo: {
-    width: 32,
-    height: 32,
-    borderRadius: 6,
-    backgroundColor: 'transparent',
+    width: 40,
+    height: 40,
+    paddingTop: 12,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  squareTxt: { color: TEXT, fontFamily: FONTS.bold },
+  squareTxt: {
+    color: TEXT,
+    fontFamily: FONTS.semibold,
+    fontSize: 16,
+  },
 
   ctaWrap: {
     paddingHorizontal: 16,
-    paddingTop: 6,
-    backgroundColor: '#fff',
-    borderTopWidth: Platform.select({ ios: StyleSheet.hairlineWidth, android: 0 }),
+    borderTopWidth: Platform.select({
+      ios: StyleSheet.hairlineWidth,
+      android: StyleSheet.hairlineWidth,
+    }),
     borderTopColor: '#EAEAEA',
+    backgroundColor: '#FFFFFF',
   },
   cta: {
-    height: 50,
+    height: 56,
     borderRadius: 28,
     backgroundColor: TEXT,
     flexDirection: 'row',
@@ -435,15 +506,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#FCFCFC', fontFamily: FONTS.bold, fontSize: 15 },
   ctaIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 });

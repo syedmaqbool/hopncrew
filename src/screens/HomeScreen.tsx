@@ -259,7 +259,7 @@ export default function HomeScreen({ navigation, route }: Props) {
         <Pressable style={styles.iconBtnTL} onPress={openMenu}>
           <Image
             source={assets.images.hamIcon}
-            style={{ width: 40, height: 40, borderRadius: 20 }}
+            style={{ width: 44, height: 44, borderRadius: 20 }}
           />
         </Pressable>
 
@@ -305,7 +305,7 @@ export default function HomeScreen({ navigation, route }: Props) {
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingVertical: 12 }}
+          contentContainerStyle={{ paddingVertical: 0 }}
           style={{
   marginTop: 8,
   shadowColor: '#201E20',
@@ -384,7 +384,7 @@ export default function HomeScreen({ navigation, route }: Props) {
             {/* <Ionicons name="home-outline" size={18} color="#111" /> */}
             <Image
               source={require('../../assets/icons/home.png')}
-              style={{ width: 18, height: 18 }}
+              style={{ width: 23, height: 23 }}
             />
             <Text style={styles.quickText}>Home</Text>
           </Pressable>
@@ -399,7 +399,7 @@ export default function HomeScreen({ navigation, route }: Props) {
             {/* <Ionicons name="briefcase-outline" size={18} color="#111" /> */}
             <Image
               source={require('../../assets/icons/work.png')}
-              style={{ width: 18, height: 18 }}
+              style={{ width: 23, height: 23 }}
             />
             <Text style={styles.quickText}>Work</Text>
           </Pressable>
@@ -423,11 +423,11 @@ const styles = StyleSheet.create({
 
   iconBtnTL: {
     position: 'absolute',
-    top: 45,
-    left: 12,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    top: 60,
+    left: 25,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
@@ -506,19 +506,19 @@ const styles = StyleSheet.create({
   cardBody: { marginTop: 16, color: '#444', fontFamily: FONTS.regular, fontSize: 14 },
   starsRow: { flexDirection: 'row', gap: 4, marginTop: 20 },
 
-  quickList: { marginTop: 0, gap: 6 },
+  quickList: { marginTop: 0 },
   quickItem: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
-    paddingVertical: 12,
+    paddingVertical: 8,
     paddingHorizontal: 10,
     borderRadius: 12,
     backgroundColor: '#fff',
     borderWidth: 0,
     borderColor: '#EFEFEF',
   },
-  quickText: { color: '#111', fontFamily: FONTS.semibold, marginLeft: 4 },
+  quickText: { color: '#111', fontFamily: FONTS.semibold, marginLeft: 4,fontSize:18},
 
   center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
 

@@ -19,7 +19,7 @@ import { FONTS } from '../../src/theme/fonts';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FlightDetails'>;
 
-const TEXT = '#111';
+const TEXT = '#201E20';
 const BG = '#F6F7F8';
 const BORDER = '#ECEDEE';
 const MINT = '#B9FBE7';
@@ -89,7 +89,12 @@ export default function FlightDetails({ navigation, route }: Props) {
           style={styles.hBtn}
           onPress={() => navigation.replace('App')}
         >
-          <Ionicons name="close" size={22} color={TEXT} />
+          <Image
+                        source={require('../../assets/icons/left-line-arrow-icon.png')}
+                        alt="left-arrow"
+                        style={{ height: 88, width: 98 }}
+                      />
+          {/* <Ionicons name="close" size={22} color={TEXT} /> */}
         </Pressable>
       </View>
 
@@ -106,7 +111,7 @@ export default function FlightDetails({ navigation, route }: Props) {
           <Image
             source={require('../../assets/icons/flight-icon.png')}
             alt="flight"
-            style={{ width: 48, height: 48, resizeMode: 'contain' }}
+            style={{ width: 40, height: 40, resizeMode: 'contain' }}
           />
           <View>
             <Text style={styles.title}>{`Your flight to ${airportCode}`}</Text>
@@ -115,47 +120,51 @@ export default function FlightDetails({ navigation, route }: Props) {
         </View>
 
         {/* Cards */}
-        <View style={{ gap: 12, marginTop: 16 }}>
+        <View style={{ gap: 12, marginVertical: 36 }}>
           <Pressable style={styles.row} onPress={startSchedule}>
             <View style={styles.rowLeftIcon}>
-              <Ionicons name="calendar-outline" size={18} color={TEXT} />
+              <Image source={require('../../assets/icons/flight-date-time.png')} alt='flight-date-time' style={{width:32,height:32}} />
+              {/* <Ionicons name="calendar-outline" size={18} color={TEXT} /> */}
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.rowTitle}>Data and time</Text>
               <Text style={styles.rowHint}>{whenLabel}</Text>
             </View>
             <View style={styles.rowRightBadge}>
-              <Ionicons name="chevron-down" size={18} color={TEXT} />
+              <Ionicons name="chevron-down" size={22} color={TEXT} />
             </View>
           </Pressable>
 
           <Pressable style={styles.row} onPress={pickFrom}>
             <View style={styles.rowLeftIcon}>
-              <Ionicons name="airplane-outline" size={18} color={TEXT} />
+              <Image source={require('../../assets/icons/flight-plane.png')} alt='flight-date-time' style={{width:32,height:32}} />
+              {/* <Ionicons name="airplane-outline" size={18} color={TEXT} /> */}
             </View>
             <View style={{ flex: 1 }}>
               <Text style={styles.rowTitle}>Where are you flying from?</Text>
-              <Text style={[styles.rowHint, !from && { color: '#9AA0A6' }]}>
+              {/* <Text style={[styles.rowHint, !from && { color: '#9AA0A6' }]}>
                 {from?.description ?? 'Select origin airport/city'}
-              </Text>
+              </Text> */}
             </View>
             <View style={styles.rowRightBadge}>
-              <AntDesign name="arrowright" size={16} color={TEXT} />
+              <AntDesign name="arrowright" size={20} color={TEXT} />
             </View>
           </Pressable>
         </View>
 
         {/* Info bullets */}
-        <View style={{ gap: 12, marginTop: 18 }}>
+        <View style={{ gap: 12, marginVertical: 18 }}>
           <View style={styles.infoRow}>
-            <Ionicons name="infinite" size={18} color={TEXT} />
+              <Image source={require('../../assets/icons/loop-icon.png')} alt='flight-date-time' style={{width:32,height:32}} />
+            {/* <Ionicons name="infinite" size={18} color={TEXT} /> */}
             <Text style={styles.infoText}>
               Lost baggage? Customs or immigration delays? No worries—your
               driver will wait as long as needed
             </Text>
           </View>
           <View style={styles.infoRow}>
-            <Ionicons name="sync-outline" size={18} color={TEXT} />
+              <Image source={require('../../assets/icons/flight-timer-icon.png')} alt='flight-date-time' style={{width:32,height:32}} />
+            {/* <Ionicons name="sync-outline" size={18} color={TEXT} /> */}
             <Text style={styles.infoText}>
               hop’n tracks your flight and adjusts your pickup time
               automatically. Whether it’s a flight delay or baggage hold-up,
@@ -210,71 +219,78 @@ export default function FlightDetails({ navigation, route }: Props) {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: '#fff' },
   header: {
-    height: 48,
-    paddingHorizontal: 16,
+    height: 58,
+    paddingHorizontal: 20,
     alignItems: 'center',
     flexDirection: 'row',
   },
   hBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F2F2F2',
+    width: 48,
+    height: 48,
+    borderRadius: 32,
+    // backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 3,
   },
-  body: { flex: 1, paddingHorizontal: 16 },
-  title: { fontSize: 22, color: TEXT, marginTop: 8, fontFamily: FONTS.bold },
-  sub: { color: '#666', marginTop: 4, fontFamily: FONTS.regular },
+  body: { flex: 1, paddingHorizontal: 20 },
+  title: { fontSize: 24, color: TEXT, marginTop: 8, fontFamily: FONTS.semibold,lineHeight:32 },
+  sub: { color: TEXT, marginTop: 2, fontFamily: FONTS.regular,fontSize:18 },
 
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#EFEFEF',
-    borderRadius: 20,
-    paddingHorizontal: 12,
+    borderRadius: 24,
+    paddingHorizontal: 16,
     paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: BORDER,
+    // borderWidth: 1,
+    // borderColor: BORDER,
+    height:76
   },
   rowLeftIcon: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: BG,
+    // backgroundColor: BG,
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
-  rowTitle: { color: TEXT, fontFamily: FONTS.bold },
-  rowHint: { color: '#666', marginTop: 2, fontFamily: FONTS.regular },
+  rowTitle: { color: TEXT, fontFamily: FONTS.semibold,fontSize:16,lineHeight:22 },
+  rowHint: { color: '#8D8E8F', marginTop: 0, fontFamily: FONTS.regular,fontSize:16,lineHeight:24 },
   rowRightBadge: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: MINT,
+     width: 44,
+    height: 44,
+    borderRadius: 32,
+    backgroundColor: "#B1FBE3",
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 10,
   },
 
-  infoRow: { flexDirection: 'row', gap: 10, alignItems: 'flex-start' },
-  infoText: { color: '#555', lineHeight: 20, flex: 1, fontFamily: FONTS.regular },
+  infoRow: { flexDirection: 'row', gap: 14, alignItems: 'flex-start' },
+  infoText: { color: '#201E20', lineHeight: 20, flex: 1, fontFamily: FONTS.regular ,fontSize:16},
 
   faqRow: {
-    height: 70,
+    height: 62,
     marginTop: 16,
-    padding: 12,
+    padding: 10,
+    paddingHorizontal:12,
     borderRadius: 12,
-    backgroundColor: BG,
-    borderWidth: 1,
+    backgroundColor: "#EFEFEF",
+    // borderWidth: 1,
     borderColor: BORDER,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  faqTitle: { color: TEXT, flex: 1, marginRight: 12, fontFamily: FONTS.bold },
-  faqBody: { color: '#666', marginTop: 8, lineHeight: 18 },
+  faqTitle: { color: TEXT, flex: 1, marginRight: 12, fontFamily: FONTS.semibold,fontSize:16,lineHeight:22 },
+  faqBody: { color: '#666', marginTop: 0, lineHeight: 20,fontFamily:FONTS.regular,fontSize:14 },
 
   linkRow: {
     alignSelf: 'flex-end',
@@ -287,12 +303,13 @@ const styles = StyleSheet.create({
     color: TEXT,
     textDecorationLine: 'underline',
     fontFamily: FONTS.regular,
+    fontSize:16
   },
 
   cta: {
     marginTop: 20,
-    height: 52,
-    borderRadius: 28,
+    height: 56,
+    borderRadius: 32,
     backgroundColor: TEXT,
     flexDirection: 'row',
     alignItems: 'center',
@@ -300,15 +317,15 @@ const styles = StyleSheet.create({
     gap: 10,
     marginBottom: 16,
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#FCFCFC', fontFamily: FONTS.semibold,fontSize:17 },
   ctaIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
 });

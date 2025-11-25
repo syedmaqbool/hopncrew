@@ -1,14 +1,12 @@
 // src/screens/AddCardModal.tsx
-import { Picker } from '@react-native-picker/picker';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import type { NativeStackScreenProps } from '@react-native-native-stack';
+import React, { useMemo, useState } from 'react';
 import {
-  Image, // 👈 add Keyboard
-  Keyboard,
+  ActionSheetIOS,
+  Image,
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -22,9 +20,12 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import assets from '../../assets';
 import { FONTS } from '../../src/theme/fonts';
 import type { RootStackParamList, SavedCard } from '../navigation/types';
-type Props = NativeStackScreenProps<RootStackParamList, 'AddCard'>;
 
 const MINT = '#B9FBE7';
+const TEXT = '#201E20';
+const BORDER = '#8D8E8F';
+
+type Props = NativeStackScreenProps<RootStackParamList, 'AddCard'>;
 
 const detectBrand = (num: string): SavedCard['brand'] => {
   const n = num.replace(/\s+/g, '');
@@ -38,8 +39,8 @@ const detectBrand = (num: string): SavedCard['brand'] => {
 
 const luhn = (num: string) => {
   const s = num.replace(/\s+/g, '');
-  let sum = 0,
-    dbl = false;
+  let sum = 0;
+  let dbl = false;
   for (let i = s.length - 1; i >= 0; i--) {
     let d = parseInt(s[i], 10);
     if (dbl) {
@@ -54,407 +55,392 @@ const luhn = (num: string) => {
 
 export default function AddCardModal({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
-  const scrollRef = useRef<ScrollView>(null);
-  const [kbHeight, setKbHeight] = useState(0);
   const [holder, setHolder] = useState('');
-  const [number, setNumber] = useState(''); // formatted with spaces
-  const [month, setMonth] = useState<string>('');
-  const [year, setYear] = useState<string>('');
+  const [number, setNumber] = useState('');
+  const [month, setMonth] = useState('');
+  const [year, setYear] = useState('');
   const [cvv, setCvv] = useState('');
 
   const clean = number.replace(/\s+/g, '');
   const brand = detectBrand(number);
 
   const years = useMemo(() => {
-    const y: string[] = [];
-    const start = new Date().getFullYear() % 100; // YY
-    for (let i = 0; i <= 12; i++) y.push(String(start + i).padStart(2, '0'));
-    return y;
+    const current = new Date().getFullYear();
+    const next: string[] = [];
+    for (let i = 0; i < 15; i++) {
+      next.push(String(current + i));
+    }
+    return next;
   }, []);
 
-  useEffect(() => {
-    const showEvt =
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
-    const hideEvt =
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
-    const s = Keyboard.addListener(showEvt, e =>
-      setKbHeight(e.endCoordinates.height),
-    );
-    const h = Keyboard.addListener(hideEvt, () => setKbHeight(0));
-    return () => {
-      s.remove();
-      h.remove();
-    };
-  }, []);
+  const months = useMemo(
+    () =>
+      Array.from({ length: 12 }).map((_, i) =>
+        String(i + 1).padStart(2, '0'),
+      ),
+    [],
+  );
 
   const valid = useMemo(() => {
     if (holder.trim().length < 2) return false;
     if (clean.length < 12) return false;
     if (!luhn(number)) return false;
-    if (!month || !year) return false;
     const mm = parseInt(month, 10);
-    if (mm < 1 || mm > 12) return false;
+    if (!mm || mm < 1 || mm > 12) return false;
+    if (!year) return false;
     if (brand === 'amex') {
       if (cvv.length !== 4) return false;
-    } else {
-      if (cvv.length !== 3) return false;
-    }
+    } else if (cvv.length !== 3) return false;
     return true;
-  }, [holder, number, month, year, cvv, brand, clean.length]);
+  }, [holder, clean.length, number, month, year, cvv, brand]);
 
-  const formatNumber = (raw: string) => {
-    // keep digits only, insert spaces: 4-4-4-4...
-    const digits = raw.replace(/\D+/g, '');
-    return digits.replace(/(.{4})/g, '$1 ').trim();
+  const formatNumber = (raw: string) =>
+    raw.replace(/\D+/g, '').replace(/(.{4})/g, '$1 ').trim();
+
+  const openMonthSheet = () => {
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['Cancel', ...months],
+          cancelButtonIndex: 0,
+        },
+        index => {
+          if (index > 0) setMonth(months[index - 1]);
+        },
+      );
+    } else {
+      // simple fallback for Android: cycle months
+      // you can replace with a proper modal if you want
+      const currentIndex = months.indexOf(month);
+      const next = months[(currentIndex + 1) % months.length];
+      setMonth(next);
+    }
+  };
+
+  const openYearSheet = () => {
+    if (Platform.OS === 'ios') {
+      ActionSheetIOS.showActionSheetWithOptions(
+        {
+          options: ['Cancel', ...years],
+          cancelButtonIndex: 0,
+        },
+        index => {
+          if (index > 0) setYear(years[index - 1]);
+        },
+      );
+    } else {
+      const currentIndex = years.indexOf(year);
+      const next = years[(currentIndex + 1) % years.length];
+      setYear(next);
+    }
   };
 
   const submit = async () => {
     if (!valid) return;
-
-    // 1) Call your backend to save the card (replace URL/body with your API)
-    try {
-      const payload = {
-        holder: holder.trim(),
-        number: clean, // usually you'd send a token, not raw PAN
-        exp_month: month,
-        exp_year: year,
-        cvv,
-      };
-
-      // Example (replace with your real endpoint & tokenization flow)
-      // const res = await fetch(`${API_BASE}/payments/cards`, {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      //   body: JSON.stringify(payload),
-      // });
-      // const json = await res.json();
-      // if (!res.ok) throw new Error(json?.message || 'Failed to save card');
-
-      // 2) Build the SavedCard for UI/state
-      const card: SavedCard = {
-        id: 'card_' + Date.now(), // use ID from API response in real code: json.id
-        brand,
-        last4: clean.slice(-4),
-        exp: `${month}/${year}`,
-      };
-
-      // 3) Return to Payment modal with new card
-      route.params?.onAdded?.(card);
-      navigation.goBack();
-    } catch (e) {
-      // show a toast/alert if needed
-      // Alert.alert('Card Error', (e as Error).message);
-    }
+    const card: SavedCard = {
+      id: 'card_' + Date.now(),
+      brand,
+      last4: clean.slice(-4),
+      exp: `${month}/${year.slice(-2)}`,
+    };
+    route.params?.onAdded?.(card);
+    navigation.goBack();
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      {/* dim background */}
-      <Pressable
-        style={[
-          StyleSheet.absoluteFillObject,
-          { backgroundColor: 'rgba(0,0,0,0.12)' },
-        ]}
-        onPress={() => navigation.goBack()}
-      />
-      <SafeAreaView edges={['bottom']} style={styles.wrap}>
-        <KeyboardAvoidingView
-          behavior={Platform.select({ ios: 'padding', android: 'height' })}
-          keyboardVerticalOffset={insets.top + 16} // 👈 important
-          style={{ flex: 1, justifyContent: 'flex-end' }}
-        >
-          <View style={[styles.sheet, { paddingTop: insets.top + 8 }]}>
-            {/* header */}
-            <View style={styles.header}>
-              <Pressable
-                style={styles.close}
-                onPress={() => navigation.goBack()}
-              >
-                <Ionicons name="close" size={18} color="#111" />
-              </Pressable>
-              <Text style={styles.title}>Add Card</Text>
-            </View>
-
-            <ScrollView
-              ref={scrollRef}
-              keyboardShouldPersistTaps="handled"
-              contentContainerStyle={{ padding: 16, paddingBottom: 20 }}
-              showsVerticalScrollIndicator={false}
-            >
-              <Text style={styles.sub}>Enter your card details</Text>
-
-              <TextInput
-                style={styles.input}
-                placeholder="Enter card holder’s name"
-                placeholderTextColor="#9AA0A6"
-                value={holder}
-                onFocus={() =>
-                  scrollRef.current?.scrollToEnd({ animated: true })
-                }
-                onChangeText={setHolder}
-                autoCapitalize="words"
-              />
-
-              <TextInput
-                style={styles.input}
-                placeholder="Enter card number"
-                placeholderTextColor="#9AA0A6"
-                keyboardType="numeric"
-                value={number}
-                onFocus={() =>
-                  scrollRef.current?.scrollToEnd({ animated: true })
-                } // 👈 nudge up
-                onChangeText={t => setNumber(formatNumber(t))}
-                maxLength={brand === 'amex' ? 17 : 19} // with spaces
-              />
-
-              <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>
-                <View style={[styles.selectBox, { flex: 1 }]}>
-                  <Text style={styles.selectLabel}>Expire</Text>
-                  <Picker
-                    selectedValue={month}
-                    onValueChange={v => setMonth(v)}
-                    style={styles.picker}
-                  >
-                    <Picker.Item label="MM" value="" />
-                    {Array.from({ length: 12 }).map((_, i) => {
-                      const m = String(i + 1).padStart(2, '0');
-                      return <Picker.Item key={m} label={m} value={m} />;
-                    })}
-                  </Picker>
-                </View>
-
-                <View style={[styles.selectBox, { flex: 1 }]}>
-                  <Text style={styles.selectLabel}> </Text>
-                  <Picker
-                    selectedValue={year}
-                    onValueChange={v => setYear(v)}
-                    style={styles.picker}
-                  >
-                    <Picker.Item label="YY" value="" />
-                    {years.map(y => (
-                      <Picker.Item key={y} label={y} value={y} />
-                    ))}
-                  </Picker>
-                </View>
-
-                <TextInput
-                  style={[styles.cvv, { flex: 1 }]}
-                  placeholder="CVV"
-                  placeholderTextColor="#9AA0A6"
-                  keyboardType="numeric"
-                  value={cvv}
-                  onFocus={() =>
-                    scrollRef.current?.scrollToEnd({ animated: true })
-                  }
-                  onChangeText={t =>
-                    setCvv(
-                      t.replace(/\D+/g, '').slice(0, brand === 'amex' ? 4 : 3),
-                    )
-                  }
-                  secureTextEntry
-                />
-              </View>
-
-              {/* Square info pill */}
-              <View style={styles.squarePill}>
-                <View style={styles.squareLogo}>
-                  <Image
-                    source={assets.images.squareIcon}
-                    style={{ width: 20, height: 20, resizeMode: 'contain' }}
-                  />
-                </View>
-                <Text style={{ flex: 1, color: '#111', fontSize: 12 }}>
-                  Square hold funds and charge after drop-off
-                </Text>
-                <Ionicons
-                  name="information-circle-outline"
-                  size={18}
-                  color="#111"
-                />
-              </View>
-
-              {/* Supported brands row (visual only) */}
-              <ScrollView
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                contentContainerStyle={styles.brandsRow}
-              >
-                <BrandPill icon={assets.images.payment1} />
-                <BrandPill icon={assets.images.payment2} />
-                <BrandPill icon={assets.images.payment3} />
-                <BrandPill icon={assets.images.payment4} />
-                <BrandPill icon={assets.images.payment5} />
-                <BrandPill icon={assets.images.payment6} />
-                <BrandPill icon={assets.images.payment7} />
-              </ScrollView>
-            </ScrollView>
-
-            {/* CTA */}
-            <Pressable
-              style={[styles.cta, !valid && { opacity: 0.5 }]}
-              onPress={submit}
-              disabled={!valid}
-            >
-              <Text style={styles.ctaText}>+ Add Card</Text>
-              <View style={styles.ctaIcon}>
-                <Ionicons name="arrow-forward" size={18} color="#111" />
-              </View>
-            </Pressable>
-          </View>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </View>
-  );
-}
-
-function BrandPill({ icon }: { icon: any }) {
-  return (
-    <View style={styles.brandPill}>
-      {typeof icon === 'string' ? (
-        <Text style={{ color: '#111', fontWeight: '700', fontSize: 12 }}>
-          {icon}
-        </Text>
-      ) : (
-        <Image
-          source={icon}
+    <SafeAreaView style={styles.screen} edges={['top', 'bottom']}>
+      <View
+        style={{ flex: 1 }}
+        // behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      >
+        <View
           style={{
-            width: 36,
-            height: 36,
-            maxWidth: '100%',
-            resizeMode: 'contain',
+            flex: 1,
+            paddingTop: 24,
+            paddingBottom: 30,
+            paddingHorizontal: 24,
           }}
-        />
-      )}
-    </View>
+        >
+          <Pressable
+            style={styles.closeBtn}
+            onPress={() => navigation.goBack()}
+            accessibilityRole="button"
+          >
+            <Ionicons name="close" size={22} color={TEXT} />
+          </Pressable>
+
+          <Text style={styles.h1}>Add Card</Text>
+          <Text style={styles.sub}>Enter your card details</Text>
+
+          <TextInput
+            style={styles.input}
+            placeholder="Enter card holder’s name"
+            placeholderTextColor="#B2B2B7"
+            autoCapitalize="words"
+            value={holder}
+            onChangeText={setHolder}
+          />
+
+          <TextInput
+            style={styles.input}
+            placeholder="Enter card number"
+            placeholderTextColor="#B2B2B7"
+            keyboardType="numeric"
+            value={number}
+            onChangeText={t => setNumber(formatNumber(t))}
+            maxLength={brand === 'amex' ? 17 : 19}
+          />
+
+          {/* labels for expire / cvv */}
+          <View style={styles.expHeaderRow}>
+            <Text style={styles.expireLabel}>Expire</Text>
+            <Text style={styles.cvvLabel}>CVV</Text>
+          </View>
+
+          {/* MM / YYYY / CVV row */}
+          <View style={styles.expRow}>
+            <Pressable
+              style={[styles.fakePicker, { flex: 1 }]}
+              onPress={openMonthSheet}
+            >
+              <Text
+                style={[
+                  styles.pickerText,
+                  !month && { color: '#B2B2B7' },
+                ]}
+              >
+                {month || 'MM'}
+              </Text>
+              <Ionicons
+                name="chevron-down"
+                size={16}
+                color="#B2B2B7"
+                style={styles.pickerIcon}
+              />
+            </Pressable>
+
+            <Pressable
+              style={[styles.fakePicker, { flex: 1 }]}
+              onPress={openYearSheet}
+            >
+              <Text
+                style={[
+                  styles.pickerText,
+                  !year && { color: '#B2B2B7' },
+                ]}
+              >
+                {year || 'YYYY'}
+              </Text>
+              <Ionicons
+                name="chevron-down"
+                size={16}
+                color="#B2B2B7"
+                style={styles.pickerIcon}
+              />
+            </Pressable>
+
+            <TextInput
+              style={styles.cvv}
+              placeholder="CVV"
+              placeholderTextColor="#B2B2B7"
+              keyboardType="numeric"
+              value={cvv}
+              onChangeText={t =>
+                setCvv(
+                  t.replace(/\D+/g, '').slice(0, brand === 'amex' ? 4 : 3),
+                )
+              }
+              secureTextEntry
+            />
+          </View>
+
+          <View style={styles.squarePill}>
+            <Image
+              source={assets.images.squareIcon}
+              style={{ width: 22, height: 22, resizeMode: 'contain' }}
+            />
+            <Text style={styles.squareText}>
+              Square hold funds and charge after drop-off
+            </Text>
+            <Ionicons
+              name="information-circle-outline"
+              size={18}
+              color={TEXT}
+            />
+          </View>
+
+          {/* brands in one centered line */}
+          <View style={styles.brandsRow}>
+            {[
+              assets.images.payment1,
+              assets.images.payment2,
+              assets.images.payment3,
+              assets.images.payment4,
+              assets.images.payment5,
+              assets.images.payment6,
+              assets.images.payment7,
+            ].map((icon, idx) => (
+              <View key={idx} style={styles.brandPill}>
+                <Image
+                  source={icon}
+                  style={{ width: 40, height: 24, resizeMode: 'contain' }}
+                />
+              </View>
+            ))}
+          </View>
+        </View>
+
+        <Pressable
+          style={[styles.cta, !valid && { opacity: 0.4 }]}
+          onPress={submit}
+          disabled={!valid}
+        >
+          <Text style={styles.ctaText}>+ Add Card</Text>
+          <View style={styles.ctaIcon}>
+            <Ionicons name="arrow-forward" size={18} color={TEXT} />
+          </View>
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  wrap: { flex: 1, justifyContent: 'flex-end' },
-  sheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
-    maxHeight: '96%',
+  screen: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 6,
-    paddingBottom: 6,
-  },
-  close: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#F3F4F6',
+  closeBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 32,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: 8,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+        shadowOffset: { width: 0, height: 4 },
+      },
+      android: { elevation: 4 },
+    }),
   },
-  title: { color: '#111', fontSize: 18, fontFamily: FONTS.bold },
-  sub: { color: '#6F6F6F', marginBottom: 8, fontFamily: FONTS.regular },
-
+  h1: { color: TEXT, fontSize: 24, fontFamily: FONTS.semibold, marginTop:16 },
+  sub: {
+    color: TEXT,
+    fontSize: 18,
+    fontFamily: FONTS.semibold,
+    marginTop: 8,
+    marginBottom: 24,
+  },
   input: {
-    height: 46,
+    height: 50,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#E6E6E6',
-    backgroundColor: '#fff',
-    paddingHorizontal: 14,
-    color: '#111',
-    marginTop: 10,
-  },
-
-  selectBox: {
-    borderWidth: 1,
-    borderColor: '#E6E6E6',
-    borderRadius: 14,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    marginTop: 10,
-  },
-  selectLabel: {
-    position: 'absolute',
-    top: -18,
-    left: 4,
-    color: '#6F6F6F',
-    fontSize: 12,
+    borderColor: BORDER,
+    marginBottom: 16,
+    paddingHorizontal: 18,
+    color: TEXT,
     fontFamily: FONTS.regular,
   },
-  picker: {
-    height: 56,
-    color: '#111',
-    lineHeight: 0,
-    borderRadius: 46,
-    padding: 0,
-    fontSize: 10,
+
+  /* expire / cvv layout */
+  expHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 14,
+    marginTop: 4,
+  },
+  expireLabel: {
+    color: '#201E20',
+    fontFamily: FONTS.semibold,
+    fontSize:16,
+  },
+  cvvLabel: {
+     color: '#201E20',
+    fontFamily: FONTS.semibold,
+    fontSize:16,
+    right:54,
+  },
+
+  expRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    marginBottom: 24,
+  },
+  fakePicker: {
+    borderWidth: 1,
+    borderColor: BORDER,
+    borderRadius: 24,
+    paddingHorizontal: 16,
+    height: 50,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  pickerText: {
+    flex: 1,
+    color: TEXT,
+    fontFamily: FONTS.regular,
+  },
+  pickerIcon: {
+    marginLeft: 4,
+  },
+  cvv: {
+    width: 90,
+    height: 50,
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: BORDER,
+    paddingHorizontal: 18,
+    color: TEXT,
+    fontFamily: FONTS.semibold,
   },
 
   squarePill: {
-    marginTop: 16,
-    backgroundColor: MINT,
-    borderRadius: 14,
-    padding: 12,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
+    backgroundColor: MINT,
+    borderRadius: 18,
+    padding: 9,
+    marginVertical: 85,
   },
-  squareLogo: {
-    width: 26,
-    height: 26,
-    borderRadius: 6,
-    backgroundColor: 'transparent',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+  squareText: { flex: 1, color: TEXT, fontFamily: FONTS.regular, fontSize:13 },
 
   brandsRow: {
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingBottom: 10,
-    marginTop: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 12,
+    marginBottom: 18,
+    marginTop: 4,
   },
   brandPill: {
-    paddingHorizontal: 0,
-    paddingVertical: 0,
-    borderRadius: 10,
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    borderColor: '#EEE',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   cta: {
-    margin: 16,
-    height: 50,
-    borderRadius: 28,
+    marginHorizontal: 24,
+    marginVertical: 34,
+    height: 56,
+    borderRadius: 32,
     backgroundColor: '#111',
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
   },
-  cvv: {
-    height: 56,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: '#E6E6E6',
-    backgroundColor: '#fff',
-    paddingHorizontal: 14,
-    color: '#111',
-    marginTop: 10,
-  },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#fff', fontFamily: FONTS.bold, fontSize: 16 },
   ctaIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
+    position: 'absolute',
+    right: 8,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'absolute',
-    right: 10,
   },
 });

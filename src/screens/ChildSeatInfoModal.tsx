@@ -1,5 +1,5 @@
 // src/screens/ChildSeatInfoModal.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,8 @@ import {
   StyleSheet,
   FlatList,
   Image,
+  ScrollView,
+  useWindowDimensions,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -19,36 +21,22 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ChildSeatInfo'>;
 
 const MINT = '#B9FBE7';
 
-const SEAT_GUIDES = [
-  {
-    id: 'infantRear',
-    title: 'Infant Rear Face',
-    icon: require('../../assets/icons/child_nine.png'),
-    body: 'Newborn babies and infants need special protection while in a vehicle. In a collision, a properly installed rear-facing child car seat can save your baby’s life. Under Ontario’s Highway Traffic Act, infants must use a rear-facing car seat until they weigh at least 9 kg (20 lb).',
-  },
-  {
-    id: 'toddlerFront',
-    title: 'Toddler Front Face',
-    icon: require('../../assets/icons/child_seven.png'),
-    body: 'Under the Highway Traffic Act, children must use a forward-facing and rear - facing child car seat when they weigh between 9 kg and 18 kg (20 to 40 lb.). You need to use a forward - facing and rear facing child car seat until your child weighs at least 18 kilograms (40 lb).',
-  },
-  {
-    id: 'toddlerRear',
-    title: 'Toddler Rear Face',
-    icon: require('../../assets/icons/child_eight.png'),
-    body: 'Under the Highway Traffic Act, children must use a forward-facing and rear - facing child car seat when they weigh between 9 kg and 18 kg (20 to 40 lb.). You need to use a forward - facing and rear facing child car seat until your child weighs at least 18 kilograms (40 lb).',
-  },
-  {
-    id: 'booster',
-    title: 'Booster',
-    icon: require('../../assets/icons/child_six.png'),
-    body: 'Booster seats raise children so adult seatbelts protect them better. Booster seats protect children from serious injury 3 ½ times better than seatbelts alone. It is required for your child to use a booster seat if they are under the age of 8, weighs between 18 to 36 kilograms (40-80 pounds), and is shorter than 4 feet -9 inches (145 centimeters) tall.',
-  },
-];
-
 export default function ChildSeatInfoModal({ navigation }: Props) {
   const [seatTypes, setSeatTypes] = useState<ChildSeatType[]>([]);
   const [loading, setLoading] = useState(false);
+  const { width: screenWidth, height: screenHeight } = useWindowDimensions();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const listRef = useRef<FlatList<ChildSeatType>>(null);
+
+  // Modal width (center popup)
+  const MODAL_HORIZONTAL_MARGIN = 24;
+  const MODAL_MAX_WIDTH = 420;
+  const modalWidth = Math.min(screenWidth - MODAL_HORIZONTAL_MARGIN * 2, MODAL_MAX_WIDTH);
+
+  // 🔧 Card sizing: 1 full + ~half next card visible *inside the modal*
+  const CARD_SPACING = 16;
+  const CARD_WIDTH = (modalWidth - CARD_SPACING) / 1.5; // 1.5 cards in viewport
+  const SNAP_INTERVAL = CARD_WIDTH + CARD_SPACING;
 
   useEffect(() => {
     (async () => {
@@ -63,64 +51,97 @@ export default function ChildSeatInfoModal({ navigation }: Props) {
       }
     })();
   }, []);
+
   return (
     <View style={styles.fill}>
+      {/* Backdrop */}
       <Pressable style={styles.backdrop} onPress={() => navigation.goBack()} />
 
-      <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
-        <View style={styles.sheet}>
+      {/* Centered popup */}
+      <SafeAreaView style={styles.centerWrap}>
+        <View style={[styles.sheet, { width: modalWidth }]}>
           <View style={styles.header}>
-            {/* <Text style={styles.title}>Child Seat Guide</Text> */}
+            <Text style={styles.close}>Close</Text>
             <Pressable style={styles.close} onPress={() => navigation.goBack()}>
-              <Ionicons name="close" size={24} color="#8D8E8F" />
+              <Ionicons name="close" size={24} color="#201E20" />
             </Pressable>
           </View>
 
-          <View style={styles.freePill}>
-            <Text style={styles.freeText}>Free</Text>
-          </View>
-
-          <FlatList
-            data={seatTypes}
-            keyExtractor={it => String(it.id)}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 4, paddingTop: 8 }}
-            renderItem={({ item }) => (
-              <View style={styles.card}>
-                <View style={{ alignItems: 'center', marginBottom: 8 }}>
-                  {item.image_url ? (
-                    <Image
-                      source={{ uri: item.image_url }}
-                      style={{ width: 100, height: 100, resizeMode: 'contain' }}
-                    />
-                  ) : (
-                    <View
-                      style={{
-                        width: 100,
-                        height: 100,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 16,
-                        backgroundColor: '#F4F4F5',
-                      }}
-                    >
-                      <Text style={{ color: '#111', fontSize: 34, fontWeight: '800' }}>?</Text>
-                    </View>
-                  )}
-                </View>
-                <Text style={styles.cardTitle}>{item.label}</Text>
-                <Text style={styles.cardBody}>{item.description}</Text>
-              </View>
-            )}
+          <Image
+            source={require('../../assets/icons/free-icon.png')}
+            alt="free-icon"
+            style={{ width: 68, height: 38 }}
           />
 
-          <Pressable style={styles.cta} onPress={() => navigation.goBack()}>
-            <Text style={styles.ctaText}>Close</Text>
-            <View style={styles.ctaIcon}>
-              <Ionicons name="close" size={18} color="#111" />
-            </View>
-          </Pressable>
+          <View style={{ marginTop: 8 }}>
+            <FlatList
+              ref={listRef}
+              data={seatTypes}
+              keyExtractor={it => String(it.id)}
+              horizontal
+              snapToInterval={SNAP_INTERVAL}
+              snapToAlignment="start"
+              decelerationRate="fast"
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingTop: 12,
+              }}
+              onMomentumScrollEnd={e => {
+                const offsetX = e.nativeEvent.contentOffset.x;
+                const idx = Math.round(offsetX / SNAP_INTERVAL);
+                setActiveIndex(Math.max(0, Math.min(idx, seatTypes.length - 1)));
+              }}
+              renderItem={({ item, index }) => (
+                <View
+                  style={[
+                    styles.card,
+                    {
+                      width: CARD_WIDTH,
+                      marginRight: index === seatTypes.length - 1 ? 0 : CARD_SPACING,
+                    },
+                  ]}
+                >
+                  <Text style={styles.cardTitle}>{item.label}</Text>
+                  <View style={styles.cardImageWrap}>
+                    {item.image_url ? (
+                      <Image source={{ uri: item.image_url }} style={styles.cardImage} />
+                    ) : (
+                      <View style={styles.cardImagePlaceholder}>
+                        <Text
+                          style={{
+                            color: '#111',
+                            fontSize: 34,
+                            fontWeight: '800',
+                          }}
+                        >
+                          ?
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                  <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 8 }}
+                  >
+                    <Text style={styles.cardBody}>{item.description}</Text>
+                  </ScrollView>
+                </View>
+              )}
+            />
+          </View>
+
+          {/* 🔄 Navigation lines */}
+          <View style={styles.sliderDots}>
+            {seatTypes.map((_, i) => (
+              <View
+                key={i}
+                style={[
+                  styles.dot,
+                  i === activeIndex ? styles.dotActive : styles.dotInactive,
+                ]}
+              />
+            ))}
+          </View>
         </View>
       </SafeAreaView>
     </View>
@@ -133,55 +154,93 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(0,0,0,0.35)',
   },
-  sheetWrap: { flex: 1, justifyContent: 'flex-end' },
+  // ⬇️ Center the popup instead of bottom sheet
+  centerWrap: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   sheet: {
     backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    paddingHorizontal: 16,
-    paddingTop: 12,
+    borderRadius: 24,
+    paddingHorizontal: 20,
+    paddingTop: 30,
     paddingBottom: 22,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-    shadowOffset: { width: 0, height: -4 },
-    elevation: 10,
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 6 },
+    elevation: 12,
+    maxHeight: '99%',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-end',
     marginBottom: 8,
+    gap: 6,
   },
-  title: { color: '#111', fontSize: 16, fontFamily: FONTS.bold },
+  title: { color: '#201E20', fontSize: 16, fontFamily: FONTS.bold },
   close: {
-    width: 32,
-    height: 32,
-    // borderRadius: 16,
-    // backgroundColor: '#F2F2F2',
+    // width: 32,
+    // height: 32,
+    color: '#201E20',
+    fontFamily: FONTS.regular,
+    fontSize:16,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  freePill: {
-    alignSelf: 'flex-start',
-    backgroundColor: '#EAFDF5',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 10,
-    marginBottom: 6,
-  },
-  freeText: { color: '#16a34a', fontSize: 12, fontFamily: FONTS.bold },
   card: {
-    width: 208,
-    borderRadius: 14,
-    backgroundColor: '#fff',
+    borderRadius: 24,
+    backgroundColor: '#EFEFEF',
     borderWidth: 1,
-    borderColor: '#EFEFEF',
-    padding: 12,
-    marginRight: 10,
+    borderColor: '#ECECEC',
+    padding: 20,
+    height: 564,
+    width: 224,
   },
-  cardTitle: { color: '#111', marginBottom: 6, fontFamily: FONTS.bold },
-  cardBody: { color: '#666', fontSize: 12, lineHeight: 18, fontFamily: FONTS.regular },
+  cardTitle: {
+    color: '#201E20',
+    textAlign: 'center',
+    fontSize: 24,
+    marginBottom: 12,
+    fontFamily: FONTS.regular,
+  },
+  cardImageWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 16,
+  },
+  cardImage: { width: 192, height: 192, resizeMode: 'contain' },
+  cardImagePlaceholder: {
+    width: 192,
+    height: 192,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 20,
+    backgroundColor: '#E5E5EA',
+  },
+  cardBody: {
+    color: '#8D8E8F',
+    fontSize: 15,
+    lineHeight: 20,
+    fontFamily: FONTS.semibold,
+  },
+  sliderDots: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 12,
+    marginVertical: 16,
+    paddingTop: 8,
+  },
+  dot: {
+    width: 40,
+    height: 2,
+    borderRadius: 2,
+  },
+  dotActive: { backgroundColor: '#1F1F23' },
+  dotInactive: { backgroundColor: '#D9D9DE' },
   cta: {
     marginTop: 16,
     height: 48,

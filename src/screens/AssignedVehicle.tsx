@@ -325,6 +325,7 @@ const sheetPlatformStyle = Platform.select({
       <SafeAreaView edges={['bottom']} style={[styles.sheetWrap, sheetPlatformStyle]}>
         <View style={styles.sheetShadow}>
           <View style={styles.sheet}>
+              <View style={{backgroundColor:'#EFEFEF',paddingVertical:14}}>
             <View style={styles.etaRow}>
               <View style={{ flex: 1 }}>
                 <Text style={styles.hi}>Hi David,</Text>
@@ -349,20 +350,23 @@ const sheetPlatformStyle = Platform.select({
               </Text>
               <Ionicons name="chevron-down" size={16} color="#111" />
             </Pressable>
+              </View>
 
             {/* Driver card */}
             <View style={styles.driverCard}>
               <View
                 style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
+                  // flexDirection: 'row',
+                  // alignItems: 'center',
                   gap: 10,
                   flex: 1,
                 }}
               >
+                <View style={{flexDirection:'row',alignItems:'flex-end',gap:8}}>
                 <View>
                   <Image
-                    source={assets.images.avatarMan}
+                    source={require('../../assets/icons/avatar-icon.png')}
+                    alt='avatar-icon'
                     style={{
                       width: 44,
                       height: 44,
@@ -371,11 +375,12 @@ const sheetPlatformStyle = Platform.select({
                     }}
                   />
                   <View style={styles.proBadge}>
-                    <Text style={styles.proTxt}>PRO</Text>
+                  <Image source={require('../../assets/icons/pro-icon.png')} alt='pro-icon' style={{width:20,height:20}} />
                   </View>
                 </View>
+                <Text style={styles.driverName}>{driver.name}</Text>
+                </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={styles.driverName}>{driver.name}</Text>
                   <Text style={styles.driverSub}>
                     {driver.years ?? 5} years {driver.km ?? '2 Million km'}
                     {'\n'}Airport transfers Experience
@@ -385,21 +390,24 @@ const sheetPlatformStyle = Platform.select({
                       flexDirection: 'row',
                       alignItems: 'center',
                       gap: 6,
+                      marginTop:6
                     }}
                   >
-                    <Ionicons name="shield-checkmark" size={16} color="#111" />
+                    <Image source={require('../../assets/icons/identify-icon.png')} alt='identify-icon' style={{width:14,height:15}} />
+                    {/* <Ionicons name="shield-checkmark" size={16} color="#111" /> */}
                     <Text style={styles.verified}>Identity verified</Text>
                   </View>
                 </View>
               </View>
 
-              <View style={{ alignItems: 'center' }}>
+              <View style={{ alignItems: 'center',marginBottom:10,position:'relative' }}>
+                <Image source={require('../../assets/icons/info-gray-icon.png')} alt='info-icon' style={{height:24,width:24,position:'absolute',right:10,top:-12}} />
                 <Image
                   source={
                     (route.params?.vehicle as any)?.image ||
                     assets.images.escaladeIcon
                   }
-                  style={{ width: 120, height: 84, resizeMode: 'contain' }}
+                  style={{ width: 112, height: 70, resizeMode: 'contain' }}
                 />
                 <View style={styles.plate}>
                   <Text style={styles.plateNum}>{vehicle.plate}</Text>
@@ -421,21 +429,24 @@ const sheetPlatformStyle = Platform.select({
                 })
               }
             >
-              <Ionicons name="call-outline" size={18} color="#111" />
+                <Image source={require('../../assets/icons/phone-icon.png')} alt='phone-icon' style={{height:24,width:20}}/>
+              {/* <Ionicons name="call-outline" size={18} color="#201E20" /> */}
               <Text style={styles.hollowTxt}>Contact</Text>
             </Pressable>
             <Pressable
               style={styles.hollowBtn}
                 onPress={() => navigation.navigate('CancelRide')}
               >
-                <Ionicons name="close-outline" size={18} color="#111" />
+                <Image source={require('../../assets/icons/close-icon.png')} alt='close-icon' style={{height:24,width:19}}/>
+                {/* <Ionicons name="close-outline" size={18} color="#201E20" /> */}
                 <Text style={styles.hollowTxt}>Cancel</Text>
               </Pressable>
               <Pressable
                 style={styles.hollowBtn}
                 onPress={() => navigation.navigate('Policies')}
               >
-                <Ionicons name="help-circle-outline" size={18} color="#111" />
+                <Image source={require('../../assets/icons/support-icon.png')} alt='support-icon' style={{height:19,width:18}}/>
+                {/* <Ionicons name="help-circle-outline" size={18} color="#201E20" /> */}
                 <Text style={styles.hollowTxt}>Support</Text>
               </Pressable>
             </View>
@@ -447,7 +458,7 @@ const sheetPlatformStyle = Platform.select({
 }
 
 const styles = StyleSheet.create({
-  mapWrap: { flex: 0.6, backgroundColor: '#E8ECEF' },
+  mapWrap: { flex: 0.4, backgroundColor: '#E8ECEF' },
   headerRow: {
     position: 'absolute',
     top: 10,
@@ -561,7 +572,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   sheetShadow: {
-    marginTop: -20,
+    marginTop: -30,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     backgroundColor: 'transparent',
@@ -576,28 +587,30 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     overflow: 'hidden',
-    padding: 16,
+    paddingVertical: 35,
   },
 
-  etaRow: { flexDirection: 'row', alignItems: 'center' },
-  hi: { color: '#111', fontSize: 22, fontFamily: FONTS.bold },
-  pick: { color: '#111', marginTop: 2, fontFamily: FONTS.bold },
+  etaRow: { flexDirection: 'row', alignItems: 'center',
+    padding: 20 },
+  hi: { color: '#201E20', fontSize: 24, fontFamily: FONTS.semibold },
+  pick: { color: '#201E20', marginTop: 2, fontFamily: FONTS.semibold,fontSize: 24, },
   etaPill: {
-    width: 96,
-    height: 96,
-    borderRadius: 18,
+    width: 104,
+    height: 112,
+    borderRadius: 24,
     backgroundColor: '#111',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  etaNum: { color: '#EFFF5A', fontSize: 36, lineHeight: 40, fontFamily: FONTS.bold },
-  etaUnit: { color: '#fff', marginTop: -6, fontFamily: FONTS.regular },
+  etaNum: { color: '#EFFF5A', fontSize: 64, lineHeight: 74, fontFamily: FONTS.regular },
+  etaUnit: { color: '#fff', marginTop: -13, fontFamily: FONTS.regular,fontSize:16,right:14,lineHeight: 20 },
 
   policies: {
-    marginTop: 14,
-    backgroundColor: '#F4F5F6',
-    borderRadius: 18,
-    padding: 10,
+    marginTop: 10,
+    backgroundColor: '#FCFCFC',
+    // borderRadius: 18,
+    paddingHorizontal: 20,
+    paddingVertical: 5,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 10,
@@ -608,65 +621,68 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderRadius: 16,
   },
-  policiesChipTxt: { color: '#fff', fontFamily: FONTS.bold },
+  policiesChipTxt: { color: '#FCFCFC', fontFamily: FONTS.bold },
   policiesSub: { color: '#6F6F6F', flex: 1, fontFamily: FONTS.regular },
 
   driverCard: {
-    marginTop: 14,
+    marginTop: 10,
     backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 12,
-    borderWidth: 1,
+    // borderRadius: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    // borderWidth: 1,
     borderColor: '#EEE',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 10,
   },
-  driverName: { color: '#111', fontFamily: FONTS.bold },
-  driverSub: { color: '#6F6F6F', marginTop: 2, fontFamily: FONTS.regular },
-  verified: { color: '#111', fontFamily: FONTS.bold },
+  driverName: { color: '#201E20', fontFamily: FONTS.regular,fontSize:18 },
+  driverSub: { color: '#524E4E', marginTop: 2, fontFamily: FONTS.regular,fontSize:14 },
+  verified: { color: '#524E4E', fontFamily: FONTS.regular,fontSize:14 },
   proBadge: {
     position: 'absolute',
-    right: -2,
-    bottom: -2,
-    backgroundColor: '#FFE15A',
-    paddingHorizontal: 6,
-    paddingVertical: 2,
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: '#111',
+    left: 0,
+    bottom: -4,
+    // backgroundColor: '#FFE15A',
+    // paddingHorizontal: 6,
+    // paddingVertical: 2,
+    // borderRadius: 8,
+    // borderWidth: 1,
+    // borderColor: '#111',
   },
   proTxt: { color: '#111', fontSize: 10, fontFamily: FONTS.bold },
 
   plate: {
-    marginTop: 6,
-    backgroundColor: '#F4F5F6',
-    borderRadius: 12,
+    backgroundColor: '#EFEFEF',
+    borderRadius: 16,
     paddingHorizontal: 10,
     paddingVertical: 6,
     alignItems: 'center',
   },
-  plateNum: { color: '#111', fontFamily: FONTS.bold },
-  plateSub: { color: '#6F6F6F', fontSize: 12 },
+  plateNum: { color: '#111', fontFamily: FONTS.semibold,fontSize:16 },
+  plateSub: { color: '#8D8E8F', fontSize: 12,fontFamily: FONTS.regular, },
 
   actionRow: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent:'center',
     gap: 10,
-    marginTop: 14,
+    marginVertical: 4,
+    marginHorizontal:15
   },
   hollowBtn: {
     flex: 1,
-    height: 48,
-    borderRadius: 24,
+    height: 56,
+    // width:122,
+    borderRadius: 32,
     borderWidth: 1,
-    borderColor: '#E5E5E5',
+    borderColor: '#CFCDCD',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
     gap: 6,
     backgroundColor: '#fff',
   },
-  hollowTxt: { color: '#111', fontFamily: FONTS.bold },
+  hollowTxt: { color: '#111', fontFamily: FONTS.semibold,fontSize:16 },
 });

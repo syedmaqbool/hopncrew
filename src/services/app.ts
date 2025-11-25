@@ -343,10 +343,18 @@ export type VehicleOption = {
   image_url?: string | null;
 };
 
+export type VehicleTypeMeta = {
+  id: number;
+  name: string;
+  image_url?: string | null;
+  base_price?: number;
+};
+
 export type RideCostResult = {
   route_info: RouteInfo;
   request_parameters?: { passengers?: number; luggage_items?: number };
   vehicle_options: VehicleOption[];
+  related_vehicle_types?: VehicleTypeMeta[];
 };
 
 /** ===== API: calculateRideCost ===== */
@@ -428,16 +436,72 @@ export async function calculateRideCost(
     image_url: it?.image_url ?? null,
   }));
 
-  return { route_info, request_parameters, vehicle_options };
+  const relatedVehicleTypesRaw: any[] = Array.isArray(
+    data?.related_data?.vehicle_types,
+  )
+    ? data.related_data.vehicle_types
+    : [];
+
+  const related_vehicle_types: VehicleTypeMeta[] = relatedVehicleTypesRaw
+    .map((it: any): VehicleTypeMeta | null => {
+      const id =
+        it?.vehicle_type_id ??
+        it?.id ??
+        it?.vehicle_type?.id ??
+        it?.vehicleTypeId;
+      if (id == null) return null;
+      return {
+        id: Number(id),
+        name: String(it?.name ?? it?.vehicle_type_name ?? ''),
+        image_url: it?.image_url ?? it?.image ?? it?.vehicle_type?.image_url ?? null,
+        base_price:
+          it?.base_price != null ? Number(it.base_price) : undefined,
+      };
+    })
+    .filter((v): v is VehicleTypeMeta => v !== null);
+
+  return { route_info, request_parameters, vehicle_options, related_vehicle_types };
 }
 
 /** ===== Mapper: vehicle options -> UI quotes =====
  * Keeps your FareOptionsScreen props stable (id/tier/price/image/etc.)
  */
-export function vehicleOptionsToQuotes(vehicle_options: VehicleOption[]) {
+export function vehicleOptionsToQuotes(
+  vehicle_options: VehicleOption[],
+  relatedVehicleTypes: VehicleTypeMeta[] = [],
+) {
+  const typeMap = new Map<number, VehicleTypeMeta>();
+  relatedVehicleTypes.forEach(meta => {
+    typeMap.set(meta.id, meta);
+  });
+
+  if ((!vehicle_options || vehicle_options.length === 0) && relatedVehicleTypes.length > 0) {
+    return relatedVehicleTypes.map(meta => ({
+      id: String(meta.id),
+      tier: meta.name || 'Vehicle',
+      price: meta.base_price != null ? Number(meta.base_price) : 0,
+      oldPrice: undefined,
+      image: meta.image_url ?? null,
+      seatText: undefined,
+      details: undefined,
+      fare_per_km: undefined,
+      max_passengers: undefined,
+      max_luggage: undefined,
+      price_breakdown: undefined,
+      eta: undefined,
+    }));
+  }
+
   return (vehicle_options || []).map((v) => {
     const id = String(v.vehicle_type_id);
-    const tier = v.vehicle_name || 'Vehicle';
+    const meta = typeMap.get(v.vehicle_type_id);
+    const tier = meta?.name || v.vehicle_name || 'Vehicle';
+    const fallbackPrice = Number(v.total_price ?? 0);
+    const price = meta?.base_price != null ? Number(meta.base_price) : fallbackPrice;
+    const oldPrice =
+      meta?.base_price != null && fallbackPrice && fallbackPrice !== price
+        ? fallbackPrice
+        : undefined;
     const perVeh = v.price_per_vehicle ?? v.total_price;
     const vehiclesNeeded = v.vehicles_needed ?? v.price_breakdown?.vehicles_needed;
     const total = v.total_price;
@@ -445,15 +509,16 @@ export function vehicleOptionsToQuotes(vehicle_options: VehicleOption[]) {
     const seatText =
       vehiclesNeeded && perVeh
         ? `${vehiclesNeeded} × $${perVeh} • total $${total}`
-        : `Total $${total}`;
+        : v.vehicle_details || undefined;
 
     return {
       id,
       tier,
       seatText,
-      details: v.vehicle_details ?? undefined,
-      price: total, // what you show on the left slab
-      image: v.image_url ?? null,
+      details: undefined,
+      price,
+      oldPrice,
+      image: v.image_url ?? meta?.image_url ?? null,
       fare_per_km: v.price_breakdown?.fare_per_km,
       max_passengers: v.vehicle_capacity?.max_passengers,
       max_luggage: v.vehicle_capacity?.max_luggage,

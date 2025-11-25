@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import {
   Animated,
   Easing,
+  Image,
   Keyboard,
   Platform,
   Pressable,
@@ -19,7 +20,7 @@ import type { RootStackParamList } from '../navigation/types';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'FlightManual'>;
 
-const TEXT = '#111';
+const TEXT = '#201E20';
 const MINT = '#B9FBE7';
 const BORDER = '#ECEDEE';
 const SUB = '#6B7280';
@@ -108,13 +109,14 @@ export default function FlightManualModal({ navigation, route }: Props) {
           <View style={styles.headerRow}>
             <Text style={styles.title}>Enter Flight Number</Text>
             <Pressable onPress={close} style={styles.closeBtn}>
-              <Ionicons name="close" size={18} color={TEXT} />
+              <Ionicons name="close" size={24} color={"#8D8E8F"} />
             </Pressable>
           </View>
 
           {/* Input pill */}
           <View style={styles.inputPill}>
-            <Ionicons name="airplane-outline" size={18} color={SUB} />
+            <Image source={require('../../assets/icons/flight-plane.png')} alt='flight-date-time' style={{width:24,height:24}} />
+            {/* <Ionicons name="airplane-outline" size={18} color={SUB} /> */}
             <TextInput
               style={styles.input}
               placeholder="E.g. AC4567"
@@ -133,11 +135,12 @@ export default function FlightManualModal({ navigation, route }: Props) {
           {/* Hint card */}
           <View style={styles.hintCard}>
             <View style={styles.hintIcon}>
-              <Ionicons
+              {/* <Ionicons
                 name="checkmark-circle-outline"
                 size={18}
                 color={TEXT}
-              />
+              /> */}
+              <Image source={require('../../assets/icons/tick-rounded-icon.png')} alt='tick-rounded-icon' style={{width:32,height:32}} />
             </View>
             <Text style={styles.hintTxt}>
               You can usually find this on a confirmation email from the company
@@ -154,7 +157,7 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: 'rgba(0,0,0,0.45)',
   },
   sheetWrap: { flex: 1, justifyContent: 'flex-end' },
   sheet: {
@@ -162,8 +165,8 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingHorizontal: 16,
-    paddingTop: 14,
-    paddingBottom: 18,
+    paddingTop: 24,
+    paddingBottom: 24,
   },
   headerRow: {
     flexDirection: 'row',
@@ -171,12 +174,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 10,
   },
-  title: { color: TEXT, fontSize: 18, fontFamily: FONTS.bold },
+  title: { color: TEXT, fontSize: 20, fontFamily: FONTS.semibold },
   closeBtn: {
-    width: 32,
-    height: 32,
+    width: 42,
+    height: 42,
     borderRadius: 16,
-    backgroundColor: '#F2F2F2',
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -189,29 +192,31 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: BORDER,
-    paddingHorizontal: 12,
-    height: 52,
+    paddingHorizontal: 6,
+    paddingLeft: 18,
+    height: 50,
+    marginVertical:12
   },
   input: { flex: 1, color: TEXT },
   addBtn: {
-    backgroundColor: MINT,
-    paddingHorizontal: 14,
+    backgroundColor: "#B1FBE3",
+    paddingHorizontal: 10,
     paddingVertical: 8,
-    borderRadius: 18,
-    borderWidth: 1,
+    borderRadius: 22,
+    // borderWidth: 1,
     borderColor: '#CFF6E6',
   },
-  addTxt: { color: TEXT, fontFamily: FONTS.bold },
+  addTxt: { color: TEXT, fontFamily: FONTS.semibold,fontSize:17 },
 
   hintCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    backgroundColor: '#EAFDF5',
-    borderColor: '#CFF6E6',
-    borderWidth: 1,
-    borderRadius: 16,
-    padding: 12,
+    gap: 18,
+    backgroundColor: '#EEFFF6',
+    // borderColor: '#CFF6E6',
+    // borderWidth: 1,
+    borderRadius: 24,
+    padding: 16,
     marginTop: 16,
   },
   hintIcon: {
@@ -222,5 +227,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  hintTxt: { color: TEXT, flex: 1, fontFamily: FONTS.regular },
+  hintTxt: { color: TEXT, flex: 1, fontFamily: FONTS.semibold,fontSize:16 },
 });
