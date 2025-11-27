@@ -8,6 +8,7 @@ import {
   Pressable,
   Animated,
   Easing,
+  Image,
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -182,7 +183,8 @@ export default function RideSelectionScreen({ navigation }: Props) {
             >
               <View style={styles.cardTop}>
                 <View style={styles.cardIconLeft}>
-                  <Ionicons name="airplane-outline" size={18} color="#0B1220" />
+                  <Image source={require('../../assets/icons/flight-plane.png')} alt='flight-plane' style={{width:24,height:24}} />
+                  {/* <Ionicons name="airplane-outline" size={18} color="#0B1220" /> */}
                 </View>
                 <Text style={styles.heading}>Airport ➜ Home</Text>
                 <View style={styles.badge}>
@@ -226,7 +228,8 @@ export default function RideSelectionScreen({ navigation }: Props) {
             >
               <View style={styles.cardTop}>
                 <View style={styles.cardIconLeft}>
-                  <Ionicons name="home-outline" size={18} color="#0B1220" />
+                  <Image source={require('../../assets/icons/home.png')} alt='flight-plane' style={{width:20,height:20}} />
+                  {/* <Ionicons name="home-outline" size={18} color="#0B1220" /> */}
                 </View>
                 <Text style={styles.heading}>Home ➜ Airport</Text>
                 <View style={[styles.badge, { backgroundColor: '#E0E7FF' }]}>

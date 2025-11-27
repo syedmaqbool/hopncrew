@@ -7,6 +7,7 @@ import {
   Pressable,
   ScrollView,
   useWindowDimensions,
+  Image,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,16 +18,16 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'WhyChooseUs'>;
 
-const MINT = '#B9FBE7';
-const SHEET_RATIO = 0.7; // 70% height
+const MINT = '#B1FBE3';
+const SHEET_RATIO = 0.8; // 70% height
 
 const FEATURES: { icon: string; title: string; sub: string }[] = [
-  { icon: 'shield-check-outline', title: 'Guaranteed', sub: '20+ years of reliable pickup' },
-  { icon: 'lock-outline', title: 'Flat Fixed Rate', sub: 'No surge or per km/minute charges' },
-  { icon: 'clock-outline', title: 'Cancellation and Changes', sub: 'Up to 1 hour before pickup' },
-  { icon: 'checkbox-multiple-marked-outline', title: 'Square hold funds', sub: 'Charge after drop-off' },
-  { icon: 'baby-carriage', title: 'FREE child car seats', sub: '' },
-  { icon: 'hand-truck', title: 'Luggage assistance', sub: '' },
+  { icon: <Image source={require('../../assets/icons/guaranteed-icon.png')} alt='guaranteed' style={{height:52,width:52}} />, title: 'Guaranteed', sub: '20+ years of reliable pickup' },
+  { icon: <Image source={require('../../assets/icons/big-lock-icon.png')} alt='lock' style={{height:56,width:40}} />, title: 'Flat Fixed Rate', sub: 'No surge or per km/minute charges' },
+  { icon: <Image source={require('../../assets/icons/big-timer-icon.png')} alt='timer' style={{height:45,width:40}} />, title: 'Cancellation and Changes', sub: 'Up to 1 hour before pickup' },
+  { icon: <Image source={require('../../assets/icons/square-icon.png')} alt='guaranteed' style={{height:52,width:52}} />, title: 'Square hold funds', sub: 'Charge after drop-off' },
+  { icon: <Image source={require('../../assets/icons/child-seat-icon.png')} alt='guaranteed' style={{height:52,width:52}} />, title: 'FREE child car seats', sub: '' },
+  { icon: <Image source={require('../../assets/icons/person-luggage-icon.png')} alt='guaranteed' style={{height:52,width:40}} />, title: 'Luggage assistance', sub: '' },
 ];
 
 export default function WhyChooseUsModal({ navigation, route }: Props) {
@@ -58,7 +59,7 @@ export default function WhyChooseUsModal({ navigation, route }: Props) {
                       onPress={close}
                       hitSlop={10}
                     >
-                      <Ionicons name="close" size={18} color="#111" />
+                      <Ionicons name="close" size={24} color="#8D8E8F" />
             <Text style={styles.closeTxt}>Close</Text>
                     </Pressable>
 
@@ -71,7 +72,8 @@ export default function WhyChooseUsModal({ navigation, route }: Props) {
           >
             {/* Brand pill */}
             <View style={styles.brandPill}>
-              <Text style={styles.brandText}>hop’n™</Text>
+              {/* <Text style={styles.brandText}>hop’n™</Text> */}
+              <Image source={require('../../assets/icons/hopn-logo.png')} alt='hopn-logo' style={{height:32,width:106}} />
             </View>
 
             {/* Heading */}
@@ -84,7 +86,8 @@ export default function WhyChooseUsModal({ navigation, route }: Props) {
               {FEATURES.map((f, idx) => (
                 <View key={idx} style={styles.row}>
                   <View style={styles.rowIcon}>
-                    <MaterialCommunityIcons name={f.icon as any} size={22} color="#111" />
+                    {f.icon}
+                    {/* <MaterialCommunityIcons name={f.icon as any} size={22} color="#111" /> */}
                   </View>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.rowTitle}>{f.title}</Text>
@@ -95,10 +98,11 @@ export default function WhyChooseUsModal({ navigation, route }: Props) {
             </View>
 
             {/* Info cards */}
-            <View style={{ gap: 10, marginTop: 10 }}>
+            <View style={{ gap: 10, marginTop: 10,backgroundColor:'#B1FBE3' }}>
               <InfoCard
                 title="Flight Delayed? No Problem:"
                 body="Hop’n tracks your flight and adjusts your pickup time automatically. Whether it’s a flight delay or baggage hold-up, we’ve got you covered. Simply choose “By flight arrival” and let your captain ensure a smooth pickup experience."
+                extraPadding={15}
               />
               <InfoCard
                 title="Enjoy Unlimited Wait Time:"
@@ -112,11 +116,14 @@ export default function WhyChooseUsModal({ navigation, route }: Props) {
   );
 }
 
-function InfoCard({ title, body }: { title: string; body: string }) {
+function InfoCard({ title, body,extraPadding }: { title: string; body: string,extraPadding:any }) {
   return (
-    <View style={cardStyles.wrap}>
+    <View style={[cardStyles.wrap, {paddingTop:extraPadding}]}>
       <Text style={cardStyles.title}>{title}</Text>
-      <Text style={cardStyles.body}>{body}</Text>
+      <View style={{flexDirection:'row',gap:10,alignItems:'flex-start',justifyContent:'center',marginHorizontal:20, marginVertical:10}}>
+        <Image source={require('../../assets/icons/flight-timer-icon.png')} alt='flight-timer' style={{height:30,width:30}} />
+         <Text style={cardStyles.body}>{body}</Text>
+      </View>
     </View>
   );
 }
@@ -127,7 +134,7 @@ function InfoCard({ title, body }: { title: string; body: string }) {
 const styles = StyleSheet.create({
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.25)',
+    backgroundColor: 'rgba(0,0,0,0.45)',
   },
 
   centerWrap: {
@@ -158,7 +165,7 @@ const styles = StyleSheet.create({
     gap:8,
     zIndex: 2,
   },
-  closeTxt: { color: '#9AA0A6', fontFamily: FONTS.bold },
+  closeTxt: { color: '#9AA0A6', fontFamily: FONTS.regular,fontSize:16 },
 
   scrollContent: {
     paddingHorizontal: 16,
@@ -166,12 +173,16 @@ const styles = StyleSheet.create({
   },
 
   brandPill: {
-    alignSelf: 'flex-start',
+    flexDirection:'row',
     backgroundColor: MINT,
     paddingHorizontal: 20,
-    paddingVertical: 6,
-    borderRadius: 20,
+    // paddingVertical: 6,
+    borderRadius: 40,
     marginBottom: 10,
+    height:64,
+    width:214,
+    alignItems:'center',
+    justifyContent:'center'
   },
   brandText: {
     fontSize: 20,
@@ -181,20 +192,23 @@ const styles = StyleSheet.create({
   },
 
   h1: {
-    fontSize: 34,
-    color: '#111',
-    lineHeight: 42,
+    fontSize: 48,
+    color: '#201E20',
+    lineHeight: 60,
     marginBottom: 12,
-    fontFamily: FONTS.bold,
+    fontFamily: FONTS.semibold,
   },
 
   row: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 10,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#EFEFEF',
+    alignItems:'center',
+    justifyContent:'space-between',
+    // alignItems: 'flex-start',
+    gap: 37,
+    paddingHorizontal: 15,
+    paddingVertical: 18,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#EFEFEF',
   },
   rowIcon: {
     width: 36,
@@ -206,16 +220,16 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#EEE',
   },
-  rowTitle: { color: '#111', fontFamily: FONTS.bold },
-  rowSub: { color: '#666', marginTop: 2, fontFamily: FONTS.regular },
+  rowTitle: { color: '#201E20', fontFamily: FONTS.semibold, fontSize:16 },
+  rowSub: { color: '#201E20', marginTop: 2, fontFamily: FONTS.semibold, fontSize:16 },
 });
 
 const cardStyles = StyleSheet.create({
   wrap: {
     backgroundColor: MINT,
     borderRadius: 12,
-    padding: 12,
+    paddingHorizontal: 12,
   },
-  title: { color: '#111', marginBottom: 4, fontFamily: FONTS.bold },
-  body: { color: '#233', lineHeight: 18, fontFamily: FONTS.regular },
+  title: { color: '#201E20', marginBottom: 4, fontFamily: FONTS.semibold,fontSize:18 },
+  body: { color: '#524E4E', lineHeight: 20, fontFamily: FONTS.regular,fontSize:14 },
 });

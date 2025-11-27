@@ -120,7 +120,7 @@ export default function FlightDetails({ navigation, route }: Props) {
         </View>
 
         {/* Cards */}
-        <View style={{ gap: 12, marginVertical: 36 }}>
+        <View style={{ gap: 12, marginVertical: 26 }}>
           <Pressable style={styles.row} onPress={startSchedule}>
             <View style={styles.rowLeftIcon}>
               <Image source={require('../../assets/icons/flight-date-time.png')} alt='flight-date-time' style={{width:32,height:32}} />

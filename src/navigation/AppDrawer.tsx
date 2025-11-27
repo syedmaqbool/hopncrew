@@ -16,6 +16,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import HomeScreen from '../screens/HomeScreen';
 import { FONTS } from '../theme/fonts';
+import assets from '../../assets';
 
 export type AppDrawerParamList = {
   Home: undefined;
@@ -363,17 +364,84 @@ function CustomDrawerContent(props: any) {
 
             {/* bottom card (search + ride) */}
             <View style={styles.homeBottomWrapper}>
-              <View style={styles.homeSearchBar} />
-              <View style={styles.homeRideCard} />
+              <View style={styles.homeSearchBar}>
+                <Image source={require('../../assets/icons/search-icon.png')} alt='search-icon' style={{width:24,height:24,position:'absolute',top:12,left:20}} />
+                 <Text style={{ color: '#201E20000', fontFamily: FONTS.regular, fontSize: 16,position:'absolute',top:13,left:48 }}>
+                              Where are you going?
+                            </Text>
+              </View>
+              <View style={styles.homeRideCard}>
+                <View style={styles.card}>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: 10,
+                }}
+              >
+                <View>
+                  <Image
+                    source={assets.images.avatarMan}
+                    style={{ width: 48, height: 48, borderRadius: 20,position:'absolute',top:-40 }}
+                  />
+                </View>
+                <View>
+                  <Text style={styles.cardTitle}>John</Text>
+                  <Text style={styles.cardSub}>
+                    Post on <Text style={styles.googleText}>Google</Text>
+                  </Text>
+                </View>
+                <View>
+                  <Image
+                    source={assets.images.googleIcon}
+                    style={{ width: 40, height: 40, borderRadius: 20 }}
+                  />
+                </View>
+              </View>
+              <Text numberOfLines={2} style={styles.cardBody}>
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit…
+              </Text>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-end',
+                  paddingHorizontal: 2,
+                  marginTop: 10,
+                  gap: 8,
+                }}
+              >
+                <View style={styles.starsRow}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Image source={require('../../assets/icons/star-icon.png')} alt='star-icon' style={{width:20,height:20}} />
+                    // <Ionicons
+                    //   key={i}
+                    //   name={i < p.stars ? 'star' : 'star-outline'}
+                    //   size={14}
+                    //   color="#FFC107"
+                    // />
+                  ))}
+                </View>
+
+                <Text style={styles.cardSubTwo}>15 November</Text>
+              </View>
+            </View>
+              </View>
             </View>
 
             {/* menu button from home page */}
             <Pressable
-              style={[styles.menuBtn, { top: insets.top + 18 }]}
+              style={[styles.menuBtn, { top: 30 }]}
               onPress={() => navigation.closeDrawer()}
             >
-              <Ionicons name="menu" size={18} color="#111013" />
+              <Image
+            source={assets.images.hamIcon}
+            style={{ width: 44, height: 44, borderRadius: 20 }}
+          />
+              {/* <Ionicons name="menu" size={18} color="#111013" /> */}
             </Pressable>
+            <Image source={require('../../assets/backgrounds/signin.png')} />
           </View>
         </Animated.View>
       </View>
@@ -385,11 +453,11 @@ function CustomDrawerContent(props: any) {
 
 const styles = StyleSheet.create({
   leftPane: {
-    width: '78%',
+    width: '65%',
     backgroundColor: '#111013',
   },
   rightPane: {
-    width: '22%',
+    width: '35%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
@@ -477,7 +545,7 @@ const styles = StyleSheet.create({
   // right stack
   previewWrapper: {
     width: '100%',
-    height: '92%',
+    height: '78%',
     justifyContent: 'center',
     alignItems: 'center',
     position: 'relative',
@@ -486,25 +554,31 @@ const styles = StyleSheet.create({
   // two grey shadow layers behind
   shadowLayerBack: {
     position: 'absolute',
-    top: 40,
-    bottom: 40,
+    top: 55,
+    bottom: 55,
     right: 0,
-    left: 30,
-    borderTopLeftRadius: 40,
-    borderBottomLeftRadius: 40,
-    backgroundColor: '#3E3D41',
-    opacity: 0.9,
+    left: -10,
+    borderTopLeftRadius: 30,
+    borderBottomLeftRadius: 30,
+    // height:700,
+    backgroundColor: '#FCFCFC',
+    zIndex:4,
+    opacity: .4
+    // width:'99%'
   },
   shadowLayerMid: {
     position: 'absolute',
-    top: 28,
-    bottom: 28,
-    right: -10,
-    left: 20,
-    borderTopLeftRadius: 40,
-    borderBottomLeftRadius: 40,
-    backgroundColor: '#66656A',
-    opacity: 0.9,
+    top: 35,
+    bottom: 35,
+    right: 0,
+    left: 0,
+    borderTopLeftRadius: 30,
+    borderBottomLeftRadius: 30,
+    // height:700,
+    backgroundColor: '#FCFCFC',
+    opacity: .4,
+    zIndex:5
+    // width:'99%'
   },
 
   // main white card that shows part of home screen
@@ -512,12 +586,13 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     bottom: 16,
-    right: -20,
+    right: 0,
     left: 10,
-    borderTopLeftRadius: 40,
-    borderBottomLeftRadius: 40,
+    borderTopLeftRadius: 30,
+    borderBottomLeftRadius: 30,
     backgroundColor: '#FFFFFF',
     overflow: 'hidden',
+    zIndex:6
   },
 
   // top map area (just like in your screenshot)
@@ -529,13 +604,15 @@ const styles = StyleSheet.create({
   // bottom card area (search + ride block)
   homeBottomWrapper: {
     position: 'absolute',
-    left: -40, // so only some of it shows in 22% width
-    right: 40,
-    bottom: -16,
-    height: 170,
-    paddingHorizontal: 32,
+    left: 20, // so only some of it shows in 22% width
+    right: -60,
+    bottom: 30,
+    height: 250,
+    // paddingHorizontal: 32,
+    zIndex:99
   },
   homeSearchBar: {
+    position:'relative',
     height: 46,
     borderRadius: 23,
     backgroundColor: '#FFFFFF',
@@ -547,6 +624,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   homeRideCard: {
+    position:'relative',
     flex: 1,
     borderRadius: 28,
     backgroundColor: '#FFFFFF',
@@ -555,11 +633,12 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     shadowOffset: { width: 0, height: 6 },
     elevation: 6,
+    height: 76,
   },
 
   menuBtn: {
     position: 'absolute',
-    right: 22,
+    right: 65,
     width: 44,
     height: 44,
     borderRadius: 22,
@@ -571,5 +650,31 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOffset: { width: 0, height: 4 },
     elevation: 6,
+    zIndex:99
+  },
+
+  card: {
+    position:'absolute',
+    marginTop: 20,
+    width: 270,
+    height: 106,
+    padding: 18,
+    marginRight: 12,
+    borderRadius: 32,
+    backgroundColor: '#fff',
+    borderWidth: 0,
+    borderColor: '#EFEFEF',
+    elevation: 1,
+    marginBottom: 16,
+  },
+  cardTitle: { color: '#201E20', fontFamily: FONTS.regular, fontSize: 16,position:'absolute',left:10,top:-25 },
+  cardSub: { color: '#201E20', fontSize: 12, fontFamily: FONTS.regular, marginLeft:10 },
+  cardSubTwo: { color: '#8D8E8F', fontSize: 13, fontFamily: FONTS.regular },
+  cardBody: { marginTop: 10, color: '#444', fontFamily: FONTS.regular, fontSize: 14, paddingLeft:3 },
+  starsRow: { flexDirection: 'row', gap: 4, marginTop: 0 },
+  googleText: {
+    color: '#1976D2',
+    fontFamily: FONTS.regular,
+    fontSize: 12,
   },
 });
