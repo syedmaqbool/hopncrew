@@ -1,8 +1,14 @@
+// src/screens/MyRidesScreen.tsx
 import React, { useMemo, useState } from 'react';
 import {
-  View, Text, StyleSheet, Pressable, FlatList, Image,
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  FlatList,
+  Image,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
@@ -13,70 +19,156 @@ type Props = NativeStackScreenProps<RootStackParamList, 'MyRides'>;
 
 type Ride = {
   id: string;
-  when: string;                  // "Today, 5:19 PM"
-  fare: number;                  // 30.26
-  from: string;                  // "Toronto Pearson Airport - T1"
-  to: string;                    // "Hamill Avenue San Diego, CA 929"
-  mapThumb?: any;                // require('...') if you have a local image
+  when: string;
+  fare: number;
+  from: string;
+  to: string;
+  mapThumb?: any;
 };
 
-const MINT = '#B9FBE7';
-
-const MOCK: Record<'Upcoming'|'Completed'|'Canceled', Ride[]> = {
+const MOCK: Record<'Upcoming' | 'Completed' | 'Canceled', Ride[]> = {
   Upcoming: [
-    { id: 'u1', when: 'Today, 5:19 PM', fare: 30.26, from: 'Toronto Pearson Airport - T1', to: 'Hamill Avenue San Diego, CA 929' },
-    { id: 'u2', when: 'May 14, 6:00 PM', fare: 46.24, from: 'Toronto Pearson Airport - T1', to: 'Hamill Avenue San Diego, CA 929' },
-    { id: 'u3', when: 'May 13, 8:24 AM', fare: 16.21, from: 'Toronto Pearson Airport - T1', to: 'Hamill Avenue San Diego, CA 929' },
+    {
+      id: 'u1',
+      when: 'Today, 5:19 PM',
+      fare: 30.26,
+      from: 'Toronto Pearson Airport - T 1',
+      to: 'Hamill Avenue San Diego, CA 929',
+    },
+    {
+      id: 'u2',
+      when: 'May 14, 6:00 PM',
+      fare: 46.24,
+      from: 'Toronto Pearson Airport - T 1',
+      to: 'Hamill Avenue San Diego, CA 929',
+    },
+    {
+      id: 'u3',
+      when: 'May 13, 8:24 AM',
+      fare: 16.21,
+      from: 'Toronto Pearson Airport - T 1',
+      to: 'Hamill Avenue San Diego, CA 929',
+    },
   ],
   Completed: [
-    { id: 'c1', when: 'Apr 21, 9:05 AM', fare: 27.10, from: 'Toronto Pearson Airport - T3', to: 'Bloor St W, Toronto, ON' },
-    { id: 'c2', when: 'Apr 18, 4:10 PM', fare: 58.75, from: 'Union Station', to: 'YYZ Terminal 1' },
+    {
+      id: 'c1',
+      when: 'Apr 21, 9:05 AM',
+      fare: 27.1,
+      from: 'Toronto Pearson Airport - T 3',
+      to: 'Bloor St W, Toronto, ON',
+    },
+    {
+      id: 'c2',
+      when: 'Apr 18, 4:10 PM',
+      fare: 58.75,
+      from: 'Union Station',
+      to: 'YYZ Terminal 1',
+    },
   ],
   Canceled: [
-    { id: 'x1', when: 'Mar 3, 10:00 AM', fare: 0, from: 'Downtown', to: 'YYZ' },
+    {
+      id: 'x1',
+      when: 'Mar 3, 10:00 AM',
+      fare: 0,
+      from: 'Downtown',
+      to: 'YYZ',
+    },
   ],
 };
 
-export default function MyRidesModal({ navigation }: Props) {
-  const [tab, setTab] = useState<'Upcoming'|'Completed'|'Canceled'>('Upcoming');
+export default function MyRidesScreen({ navigation }: Props) {
+  const insets = useSafeAreaInsets();
+  const [tab, setTab] = useState<'Upcoming' | 'Completed' | 'Canceled'>(
+    'Upcoming',
+  );
 
   const data = useMemo(() => MOCK[tab], [tab]);
+  const openMenu = () => navigation.goBack();
 
   return (
-    <View style={styles.fill}>
-      {/* Tap outside to dismiss */}
-      <Pressable style={styles.backdrop} onPress={() => navigation.goBack()} />
+    <View style={{ flex: 1 }}>
+      {/* MAP BACKGROUND */}
+      <Image
+        source={require('../../assets/backgrounds/signin.png')}
+        style={styles.mapBg}
+        resizeMode="cover"
+      />
 
-      <SafeAreaView style={styles.sheetWrap} edges={['bottom']}>
-        <View style={styles.sheet}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Pressable style={styles.closeBtn} onPress={() => navigation.goBack()}>
-              <Ionicons name="close" size={18} color="#111" />
-            </Pressable>
-            <Text style={styles.headerTitle}>My Rides</Text>
-            <View style={{ width: 34 }} />
-          </View>
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* HEADER */}
+        <View style={styles.headerRow}>
+         <Pressable style={styles.menuBtn} onPress={openMenu}>
+            <Image
+            source={assets.images.hamIcon}
+            style={{ width: 48, height: 48, borderRadius: 20 }}
+          />
+          </Pressable>
 
-          {/* Segmented control */}
+          <Text style={styles.headerTitle}>My Rides</Text>
+
+          <View style={{ width: 40 }} />
+        </View>
+
+        {/* WHITE PANEL */}
+        <View style={styles.whitePanel}>
+          {/* SEGMENTED CONTROL */}
           <View style={styles.segmentWrap}>
-            {(['Upcoming','Completed','Canceled'] as const).map(s => {
+            {(['Upcoming', 'Completed', 'Canceled'] as const).map(s => {
               const active = tab === s;
               return (
-                <Pressable key={s} onPress={() => setTab(s)} style={[styles.segment, active && styles.segmentActive]}>
-                  <Text style={[styles.segmentText, active && styles.segmentTextActive]}>{s}</Text>
+                <Pressable
+                  key={s}
+                  onPress={() => setTab(s)}
+                  style={[styles.segment, active && styles.segmentActive]}
+                >
+                  <Text
+                    style={[
+                      styles.segmentText,
+                      active && styles.segmentTextActive,
+                    ]}
+                  >
+                    {s}
+                  </Text>
                 </Pressable>
               );
             })}
           </View>
 
-          {/* Ride list */}
+          {/* LIST */}
           <FlatList
             data={data}
-            keyExtractor={(item) => item.id}
-            contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
-            renderItem={({ item }) => <RideCard ride={item} />}
+            keyExtractor={item => item.id}
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 32 }}
+            renderItem={({ item }) => (
+    <RideCard
+      ride={item}
+      onPress={() =>
+        navigation.navigate('RideDetails', {
+          ride: {
+            id: item.id,
+            status: tab,                // 'Upcoming' | 'Completed' | 'Canceled'
+            whenLabel: item.when,
+            from: item.from,
+            to: item.to,
+            distanceKm: 12.5,          // put real value if you have
+            timeLabel: '30 - 40 min',  // put real value if you have
+            fare: item.fare,
+            driver: {
+              name: 'Jonas',
+              rating: 4.2,
+              carPlate: 'ERS 8579',
+              carModel: 'Toyota Camry',
+            },
+          },
+          onCancel: (id: string) => {
+            console.log('cancel ride', id);
+          },
+        })
+      }
+    />
+  )}
           />
         </View>
       </SafeAreaView>
@@ -84,98 +176,217 @@ export default function MyRidesModal({ navigation }: Props) {
   );
 }
 
-function RideCard({ ride }: { ride: Ride }) {
+/* ---------------- Ride Card ---------------- */
+
+function RideCard({ ride,onPress }: { ride: Ride,onPress: () => void; }) {
   return (
+    <Pressable onPress={onPress}>
     <View style={styles.card}>
-      <View style={styles.cardHeader}>
-        <Text style={styles.when}>{ride.when}</Text>
-        <Text style={styles.fare}>Fare: <Text style={styles.fareStrong}>${ride.fare.toFixed(2)}</Text></Text>
+      {/* Map area */}
+      <View style={styles.mapWrapper}>
+        <Image
+          source={assets.images.rideMap}
+          style={styles.mapImage}
+          resizeMode="cover"
+        />
+
+        {/* top white bar (when + fare) */}
+        <View style={styles.cardHeader}>
+          <Text style={styles.when}>{ride.when}</Text>
+          <Text style={styles.fare}>
+            Fare : <Text style={styles.fareStrong}>${ride.fare.toFixed(2)}</Text>
+          </Text>
+        </View>
       </View>
 
-      {/* Map thumbnail (placeholder box; drop your image if you have one) */}
-      <View style={styles.mapThumb}>
-        <Image source={assets.images.rideMap} style={{width:'100%',height:'100%', borderRadius: 8}} resizeMode="cover" />
-      </View>
+      {/* bottom info */}
+      <View style={styles.cardBottom}>
+        <View style={styles.iconColumn}>
+          {/* <View style={styles.dotOuter}>
+            <View style={styles.dotInner} />
+          </View> */}
+          <Image source={require('../../assets/icons/marker-dot-icon.png')} alt='marker-dot-icon' style={{width:16,height:16}} />
+          <View style={styles.dashedLine} />
+          {/* <Ionicons name="location" size={18} color="#201E20" /> */}
+          <Image source={require('../../assets/icons/drop-off-dot.png')} alt='drop-off-dot' style={{width:16,height:19}} />
+        </View>
 
-      {/* From / To */}
-      <View style={styles.row}>
-        <Ionicons name="location-outline" size={16} color="#6C7075" />
-        <Text style={styles.place}>{ride.from}</Text>
-      </View>
-      <View style={styles.divider} />
-      <View style={styles.row}>
-        <Ionicons name="pin-outline" size={16} color="#6C7075" />
-        <Text style={styles.place}>{ride.to}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.placeTop}>{ride.from}</Text>
+          <Text style={styles.placeBottom}>{ride.to}</Text>
+        </View>
       </View>
     </View>
+    </Pressable>
   );
 }
 
 /* ---------------- styles ---------------- */
+
 const styles = StyleSheet.create({
-  fill: { flex: 1 },
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'transparent' },
-
-  sheetWrap: { flex: 1, justifyContent: 'flex-end' },
-  sheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: '92%',
-    overflow: 'hidden',
+  mapBg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '48%',
   },
 
-  header: {
-    flexDirection: 'row', alignItems: 'center',
-    justifyContent: 'space-between', paddingHorizontal: 12, paddingTop: 8, paddingBottom: 4,
+  headerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingTop: 60,
+    justifyContent: 'flex-start',
+    gap:16
   },
-  closeBtn: {
-    width: 34, height: 34, borderRadius: 17, backgroundColor: '#fff',
-    borderWidth: 1, borderColor: '#EEE', alignItems: 'center', justifyContent: 'center',
+  menuBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 21,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
-  headerTitle: { fontSize: 18, color: '#111', fontFamily: FONTS.bold },
+  headerTitle: {
+    fontSize: 18,
+    lineHeight:32,
+    fontFamily: FONTS.regular,
+    color: '#201E20',
+  },
+
+  whitePanel: {
+    flex: 1,
+    marginTop: 20,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 20,
+    paddingTop: 18,
+  },
 
   segmentWrap: {
-    marginHorizontal: 16, marginTop: 10, marginBottom: 6, borderColor: '#EFEFEF', borderWidth: 1,
-    borderRadius: 20, backgroundColor: '#Fff', padding: 4,
-    flexDirection: 'row', gap: 6,
+    flexDirection: 'row',
+    padding: 4,
+    borderRadius: 32,
+    borderWidth: .5,
+    borderColor: '#8D8E8F',
+    backgroundColor: '#FFFFFF',
+    marginBottom: 18,
   },
   segment: {
-    flex: 1, height: 36, borderRadius: 16,
-    alignItems: 'center', justifyContent: 'center',
+    flex: 1,
+    height: 54,
+    borderRadius: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  segmentActive: { backgroundColor: '#111' },
-  segmentText: { color: '#111', fontFamily: FONTS.bold },
-  segmentTextActive: { color: '#fff' },
+  segmentActive: {
+    backgroundColor: '#111111',
+    fontSize: 15,
+  },
+  segmentText: {
+    fontFamily: FONTS.semibold,
+    color: '#201E20',
+    fontSize: 15,
+  },
+  segmentTextActive: {
+    color: '#FCFCFC',
+    fontFamily: FONTS.semibold,
+    fontSize: 15,
+  },
 
   card: {
-    backgroundColor: '#EFEFEF',
-    borderRadius: 10,
-    borderWidth: 1, borderColor: '#EFEFEF',
-    paddingHorizontal: 0,
-    marginBottom: 12,
+    borderRadius: 26,
+    backgroundColor: '#F5F5F7',
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  mapWrapper: {
+    height: 170,
     position: 'relative',
-    // shadow for iOS
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 },
-    // elevation for Android
-    elevation: 1,
   },
-  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8, paddingHorizontal: 15, paddingVertical: 10,
-     position: 'absolute', top: 5, left: 4, right: 0, backgroundColor: '#fff', zIndex: 10, width: '97%',
-      marginLeft: 'auto', marginRight : 'auto', borderRadius: 10, shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 6, shadowOffset: { width: 0, height: 2 }, elevation: 1, },
-  when: { color: '#111', fontFamily: FONTS.regular },
-  fare: { color: '#6C7075', fontFamily: FONTS.semibold },
-  fareStrong: { color: '#111', fontFamily: FONTS.bold },
-
-  mapThumb: {
-    height: 180, borderRadius: 20, backgroundColor: '#EDEFF1', marginBottom: 10,
+  mapImage: {
+    width: '100%',
+    height: '100%',
   },
-  mapBar:{
-    borderRadius: 20,
+  cardHeader: {
+    position: 'absolute',
+    top: 10,
+    left: 12,
+    right: 12,
+    height:50,
+    borderRadius: 16,
+    backgroundColor: '#FFFFFF',
+    flexDirection: 'row',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  when: {
+    fontFamily: FONTS.regular,
+    color: '#201E20',
+    fontSize: 16,
+  },
+  fare: {
+    fontFamily: FONTS.regular,
+    color: '#8D8E8F',
+    fontSize: 16,
+  },
+  fareStrong: {
+    fontFamily: FONTS.semibold,
+    color: '#201E20',
+    fontSize: 18
   },
 
-
-  row: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 10,   },
-  place: { color: '#111', flex: 1 },
-  divider: { height: 1, backgroundColor: '#EFEFEF' },
+  cardBottom: {
+    flexDirection: 'row',
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    backgroundColor: '#EFEFEF',
+  },
+  iconColumn: {
+    width: 26,
+    alignItems: 'center',
+    marginRight: 10,
+  },
+  dotOuter: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: '#201E20',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  dotInner: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: '#201E20',
+  },
+  dashedLine: {
+    width: 1,
+    flex: 1,
+    borderStyle: 'dashed',
+    borderWidth: 1,
+    borderColor: '#C4C4C4',
+    marginVertical: 8,
+  },
+  placeTop: {
+    fontFamily: FONTS.regular,
+    color: '#201E20',
+    fontSize: 16,
+    marginBottom: 8,
+  },
+  placeBottom: {
+    fontFamily: FONTS.regular,
+    color: '#201E20',
+    fontSize: 16,
+  },
 });

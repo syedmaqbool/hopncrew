@@ -1,79 +1,99 @@
-// src/screens/AccountSettingsModal.tsx
+// src/screens/AccountSettingsScreen.tsx
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FONTS } from '../../src/theme/fonts';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/types';
+import { Image } from 'react-native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'AccountSettings'>;
 
-export default function AccountSettingsModal({ navigation }: Props) {
+const TEXT = '#201E20';
+const BORDER = '#E4E4E6';
+
+export default function AccountSettingsScreen({ navigation }: Props) {
   const onDelete = () => {
-    Alert.alert(
-      'Delete account?',
-      'This action is permanent. Are you sure you want to continue?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        { text: 'Delete', style: 'destructive', onPress: () => {/* call your API, then: */ navigation.goBack(); } },
-      ],
-    );
+    // hook up real delete flow here
   };
 
   return (
-    <View style={styles.wrap}>
-      {/* dim background; tap to dismiss */}
-      <Pressable style={styles.backdrop} onPress={() => navigation.goBack()} />
+    <View style={{ flex: 1, backgroundColor: '#FFFFFF' }}>
+      {/* MAP BACKGROUND */}
+      <Image
+        source={require('../../assets/backgrounds/signin.png')}
+        style={styles.mapBg}
+        resizeMode="cover"
+      />
 
-      <SafeAreaView edges={['bottom']} style={styles.sheet}>
-        {/* header */}
-        <View style={styles.header}>
-          <Pressable style={styles.roundBtn} onPress={() => navigation.goBack()}>
-            <Ionicons name="chevron-back" size={18} color="#111" />
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* HEADER */}
+        <View style={styles.headerRow}>
+          <Pressable style={styles.backBtn} onPress={() => navigation.goBack()}>
+            <Ionicons name="arrow-back" size={24} color={TEXT} />
           </Pressable>
-          <Text style={styles.title}>Account Settings</Text>
-          <View style={{ width: 32 }} />
+          <Text style={styles.headerTitle}>Account Settings</Text>
         </View>
 
-        {/* card with 3 rows */}
-        <View style={styles.card}>
-          <Row
-            title="Emergency Contacts"
-            subtitle="Save contact will be called"
-            onPress={() => navigation.navigate('EmergencyContacts')}
-          />
-          <Divider />
-          <Row
-            title="Favourite Address"
-            subtitle="Your favourite address list"
-            onPress={() => navigation.navigate('FavouriteAddresses')}
-          />
-          <Divider />
-          <Row
-            title="Favourite Drivers"
-            subtitle="Your favourite drivers list"
-            onPress={() => navigation.navigate('FavouriteDrivers')}
-          />
-        </View>
+        {/* WHITE SHEET */}
+        <View style={styles.sheet}>
+          {/* CARD */}
+          <View style={styles.card}>
+            <Row
+              title="Emergency Contacts"
+              subtitle="Save contact will be called"
+              onPress={() => navigation.navigate('EmergancyContacts')}
+            />
+            <Divider />
+            <Row
+              title="Favourite Address"
+              subtitle="Your favourite address list"
+              onPress={() => {
+                navigation.navigate('FavouriteAddress');
+              }}
+            />
+            <Divider />
+            <Row
+              title="Favourite Drivers"
+              subtitle="Your favourite drivers list"
+              onPress={() => {
+                navigation.navigate('FavouriteDrivers');
+              }}
+            />
+          </View>
 
-        {/* delete link */}
-        <Pressable onPress={onDelete} style={{ marginTop: 24, alignItems: 'center' }}>
-          <Text style={styles.delete}>Delete your Account</Text>
-        </Pressable>
+          {/* DELETE LINK */}
+          <Pressable onPress={onDelete} style={styles.deleteWrap}>
+            <Text style={styles.deleteText}>Delete your Account</Text>
+          </Pressable>
+        </View>
       </SafeAreaView>
     </View>
   );
 }
 
-function Row({ title, subtitle, onPress }: { title: string; subtitle: string; onPress?: () => void }) {
+function Row({
+  title,
+  subtitle,
+  onPress,
+}: {
+  title: string;
+  subtitle: string;
+  onPress?: () => void;
+}) {
   return (
     <Pressable style={styles.row} onPress={onPress}>
       <View style={{ flex: 1 }}>
         <Text style={styles.rowTitle}>{title}</Text>
         <Text style={styles.rowSub}>{subtitle}</Text>
       </View>
-      <Ionicons name="chevron-forward" size={18} color="#8C8C8C" />
+      <Ionicons name="chevron-forward" size={20} color="#B1B1B4" />
     </Pressable>
   );
 }
@@ -83,46 +103,83 @@ function Divider() {
 }
 
 const styles = StyleSheet.create({
-  wrap: { flex: 1, justifyContent: 'flex-end' },
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.35)' },
-
-  sheet: {
-    height: '70%',
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 22,
-    borderTopRightRadius: 22,
-    paddingHorizontal: 14,
-    paddingBottom: 18,
+  mapBg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '35%',
   },
 
-  header: {
+  headerRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingTop: 10,
-    paddingBottom: 8,
+    paddingHorizontal: 20,
+    paddingTop: 4,
+    paddingBottom: 10,
+    gap: 12,
   },
-  roundBtn: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: '#F3F3F4', alignItems: 'center', justifyContent: 'center',
+  backBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 32,
+    borderColor: '#CCCCCC',
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  title: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
+  headerTitle: {
+    fontSize: 18,
+    color: TEXT,
+    fontFamily: FONTS.regular,
+  },
+
+  sheet: {
+    flex: 1,
+    marginTop: 20,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 20,
+    paddingTop: 28,
+  },
 
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 14,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
+    borderRadius: 26,
     borderWidth: 1,
-    borderColor: '#EDEDED',
-    shadowColor: '#000', shadowOpacity: 0.05, shadowRadius: 8, shadowOffset: { width: 0, height: 2 },
+    borderColor: BORDER,
+    backgroundColor: '#FFFFFF',
+    overflow: 'hidden',
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+  },
+  rowTitle: {
+    fontSize: 18,
+    color: TEXT,
+    fontFamily: FONTS.semibold,
+  },
+  rowSub: {
+    marginTop: 6,
+    fontSize: 16,
+    color: '#A1A3AA',
+    fontFamily: FONTS.regular,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: BORDER,
   },
 
-  row: { flexDirection: 'row', alignItems: 'center', paddingVertical: 14 },
-  rowTitle: { color: '#111', fontSize: 14, fontFamily: FONTS.bold },
-  rowSub: { color: '#8C8C8C', marginTop: 2, fontFamily: FONTS.regular },
-
-  divider: { height: 1, backgroundColor: '#EFEFEF' },
-
-  delete: { color: '#E53935', fontFamily: FONTS.bold },
+  deleteWrap: {
+    marginTop: 40,
+    alignItems: 'center',
+  },
+  deleteText: {
+    fontSize: 18,
+    color: '#E53935',
+    fontFamily: FONTS.semibold,
+  },
 });

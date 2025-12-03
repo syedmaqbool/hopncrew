@@ -48,7 +48,7 @@ export default function AddMoneyModal({
           <View style={styles.header}>
             <Text style={styles.title}>Enter Amount</Text>
             <Pressable onPress={onClose} style={styles.closeBtn}>
-              <Ionicons name="close" size={18} color="#111" />
+              <Ionicons name="close" size={26} color="#8D8E8F" />
             </Pressable>
           </View>
 
@@ -73,7 +73,7 @@ export default function AddMoneyModal({
           >
             <Text style={styles.ctaText}>Add</Text>
             <View style={styles.ctaIcon}>
-              <Ionicons name="add" size={18} color="#111" />
+              <Ionicons name="add" size={24} color="#111" />
             </View>
           </Pressable>
 
@@ -88,33 +88,34 @@ export default function AddMoneyModal({
 }
 
 const styles = StyleSheet.create({
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.35)' },
+  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.65)' },
   sheetWrap: { flex: 1, justifyContent: 'flex-end' },
   sheet: {
     backgroundColor: '#fff',
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    padding: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 40,
     gap: 12,
   },
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
-  title: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
+  title: { fontSize: 20, color: '#111', fontFamily: FONTS.semibold },
   closeBtn: {
-    width: 30, height: 30, borderRadius: 15, backgroundColor: '#F2F3F4',
+    width: 44, height: 44, borderRadius: 15,
     alignItems: 'center', justifyContent: 'center',
   },
   input: {
-    height: 44,
-    borderWidth: 1, borderColor: '#E6E6E6',
+    height: 50,
+    borderWidth: .5, borderColor: '#8D8E8F',
     borderRadius: 22, paddingHorizontal: 14,
-    color: '#111', backgroundColor: '#fff',
+    color: '#201E20', backgroundColor: '#fff',marginVertical:18
   },
   cta: {
-    height: 50, borderRadius: 28, backgroundColor: '#111',
+    height: 56, borderRadius: 32, backgroundColor: '#201E20',
     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10,
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
-  ctaIcon: { width: 32, height: 32, borderRadius: 16, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10, },
+  ctaText: { color: '#FCFCFC', fontFamily: FONTS.semibold,fontSize:17 },
+  ctaIcon: { width: 44, height: 44, borderRadius: 24, backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 8, },
   cancel: { alignItems: 'center', paddingVertical: 8 },
-  cancelText: { color: '#6C7075', fontFamily: FONTS.semibold },
+  cancelText: { color: '#201E20', fontFamily: FONTS.semibold,fontSize:17 },
 });

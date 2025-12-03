@@ -10,6 +10,7 @@ import {
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
+  useDrawerStatus,
 } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -63,36 +64,27 @@ function CustomDrawerContent(props: any) {
     : 'Guest';
 
   // animation for right 3-layer stack
+  const drawerStatus = useDrawerStatus();
   const anim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    const openSub = navigation.addListener('drawerOpen', () => {
-      Animated.timing(anim, {
-        toValue: 1,
-        duration: 320,
-        useNativeDriver: true,
-      }).start();
-    });
-
-    const closeSub = navigation.addListener('drawerClose', () => {
-      Animated.timing(anim, {
-        toValue: 0,
-        duration: 260,
-        useNativeDriver: true,
-      }).start();
-    });
-
+  if (drawerStatus === 'open') {
+    // 🔥 Drawer just opened → play entrance animation
+    anim.setValue(0);
     Animated.timing(anim, {
       toValue: 1,
       duration: 320,
       useNativeDriver: true,
     }).start();
-
-    return () => {
-      openSub?.();
-      closeSub?.();
-    };
-  }, [anim, navigation]);
+  } else {
+    // 🔙 Drawer closed → reset / reverse
+    Animated.timing(anim, {
+      toValue: 0,
+      duration: 260,
+      useNativeDriver: true,
+    }).start();
+  }
+}, [drawerStatus, anim]);
 
   const translateX = anim.interpolate({
     inputRange: [0, 1],
@@ -239,27 +231,28 @@ function CustomDrawerContent(props: any) {
                 />
               }
               label="Loyalty Program"
-              onPress={() =>
-                navigation.navigate('RideDetails', {
-                  ride: {
-                    id: 'item.id',
-                    status: 'Upcoming',
-                    whenLabel: 'Today, 5:19 PM',
-                    from: 'Toronto Pearson Airport - T 1',
-                    to: 'Hamill Avenue San Diego, CA 929',
-                    distanceKm: 12.5,
-                    timeLabel: '30 - 40 min',
-                    fare: 256,
-                    driver: {
-                      name: 'Jonas',
-                      rating: 4.2,
-                      carPlate: 'ERS 8579',
-                      carModel: 'Toyota Camry',
-                    },
-                  },
-                  onCancel: (id: string) => console.log('cancel ride', id),
-                })
-              }
+              onPress={()=> navigation.navigate('LoyaltyProgramScreen')}
+              // onPress={() =>
+              //   navigation.navigate('RideDetails', {
+              //     ride: {
+              //       id: 'item.id',
+              //       status: 'Upcoming',
+              //       whenLabel: 'Today, 5:19 PM',
+              //       from: 'Toronto Pearson Airport - T 1',
+              //       to: 'Hamill Avenue San Diego, CA 929',
+              //       distanceKm: 12.5,
+              //       timeLabel: '30 - 40 min',
+              //       fare: 256,
+              //       driver: {
+              //         name: 'Jonas',
+              //         rating: 4.2,
+              //         carPlate: 'ERS 8579',
+              //         carModel: 'Toyota Camry',
+              //       },
+              //     },
+              //     onCancel: (id: string) => console.log('cancel ride', id),
+              //   })
+              // }
             />
             <Row
               icon={
@@ -279,7 +272,7 @@ function CustomDrawerContent(props: any) {
                 />
               }
               label="Help Center"
-              onPress={() => navigation.navigate('HelpCenter')}
+              onPress={() => navigation.navigate('HelpCenterScreen')}
             />
             <Row
               icon={
@@ -366,8 +359,8 @@ function CustomDrawerContent(props: any) {
             <View style={styles.homeBottomWrapper}>
               <View style={styles.homeSearchBar}>
                 <Image source={require('../../assets/icons/search-icon.png')} alt='search-icon' style={{width:24,height:24,position:'absolute',top:12,left:20}} />
-                 <Text style={{ color: '#201E20000', fontFamily: FONTS.regular, fontSize: 16,position:'absolute',top:13,left:48 }}>
-                              Where are you going?
+                 <Text style={{ color: '#201E20000', fontFamily: FONTS.regular, fontSize: 16,position:'absolute',top:13,left:48,width:"100%" }}>
+                              Where are you
                             </Text>
               </View>
               <View style={styles.homeRideCard}>
@@ -453,11 +446,11 @@ function CustomDrawerContent(props: any) {
 
 const styles = StyleSheet.create({
   leftPane: {
-    width: '65%',
+    width: '70%',
     backgroundColor: '#111013',
   },
   rightPane: {
-    width: '35%',
+    width: '30%',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: 'transparent',
@@ -604,7 +597,7 @@ const styles = StyleSheet.create({
   // bottom card area (search + ride block)
   homeBottomWrapper: {
     position: 'absolute',
-    left: 20, // so only some of it shows in 22% width
+    left: 15, // so only some of it shows in 22% width
     right: -60,
     bottom: 30,
     height: 250,
@@ -622,6 +615,7 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     shadowOffset: { width: 0, height: 3 },
     elevation: 4,
+    width:"100%"
   },
   homeRideCard: {
     position:'relative',
@@ -638,7 +632,7 @@ const styles = StyleSheet.create({
 
   menuBtn: {
     position: 'absolute',
-    right: 65,
+    right: 45,
     width: 44,
     height: 44,
     borderRadius: 22,

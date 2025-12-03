@@ -69,6 +69,29 @@ import SelectedAirportScreen from '../screens/SelectedAirportScreen';
 import FlightManualModal from '../screens/FlightManualModal';
 import ScanBagSizeScreen from '../screens/ScanBagSizeScreen';
 import CoupenPopupModal from '../screens/CoupenPopupModal';
+import PaymentCashScreen from '../screens/PaymentCashScreen';
+import PaymentCredit from '../screens/PaymentCreditScreen';
+import PaymentGoogle from '../screens/PaymentGoogleScreen';
+import PaymentApple from '../screens/PaymentAppleScreen';
+import PaymentAddCreditCard from '../screens/PaymentAddCreditCard';
+import PaymentAddGooglePay from '../screens/PaymentAddGooglePay';
+import PaymentAddApplePay from '../screens/PaymentAddApplePay';
+import PaymentPersonal from '../screens/PaymentPersonalScreen';
+import PaymentPersonalEdit from '../screens/PaymentPersonalEditScreen';
+import ChoosePaymentPersonal from '../screens/ChoosePaymentPersonalScreen';
+import PaymentBusinessScreen from '../screens/PaymentBusinessScreen';
+import BusinessEmailScreen from '../screens/BusinessEmailScreen';
+import LoyaltyProgramScreen from '../screens/LoyaltyProgramScreen';
+import LoyaltyDetailsScreen from '../screens/LoyaltyDetailsScreen';
+import HelpCenterScreen from '../screens/HelpCenterScreen';
+import HelpSupportScreen from '../screens/HelpSupportScreen';
+import ContactUsScreen from '../screens/ContactUsScreen';
+import PoliciesScreen from '../screens/PoliciesScreen';
+import TermsScreen from '../screens/TermsScreen';
+import EmergancyContacts from '../screens/EmergancyContacts';
+import ChooseContact from '../screens/ChooseContact';
+import FavouriteAddress from '../screens/FavouriteAddress';
+import FavouriteDrivers from '../screens/FavouriteDrivers';
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function RootNavigator({
@@ -175,8 +198,119 @@ export default function RootNavigator({
         component={PaymentScreen}
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="PaymentCash"
+        component={PaymentCashScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaymentCredit"
+        component={PaymentCredit}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaymentGoogle"
+        component={PaymentGoogle}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaymentApple"
+        component={PaymentApple}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="PaymentAddCreditCard"
+        component={PaymentAddCreditCard}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaymentAddGooglePay"
+        component={PaymentAddGooglePay}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaymentAddApplePay"
+        component={PaymentAddApplePay}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaymentPersonal"
+        component={PaymentPersonal}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaymentPersonalEdit"
+        component={PaymentPersonalEdit}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ChoosePaymentPersonal"
+        component={ChoosePaymentPersonal}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaymentBusinessScreen"
+        component={PaymentBusinessScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="BusinessEmailScreen"
+        component={BusinessEmailScreen}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="LoyaltyProgramScreen"
+        component={LoyaltyProgramScreen}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="LoyaltyDetailsScreen"
+        component={LoyaltyDetailsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="HelpSupportScreen"
+        component={HelpSupportScreen}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="ContactUsScreen"
+        component={ContactUsScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PoliciesScreen"
+        component={PoliciesScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="TermsScreen"
+        component={TermsScreen}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="EmergancyContacts"
+        component={EmergancyContacts}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="ChooseContact"
+        component={ChooseContact}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="FavouriteAddress"
+        component={FavouriteAddress}
+        options={{ headerShown: false }}
+      />
+       <Stack.Screen
+        name="FavouriteDrivers"
+        component={FavouriteDrivers}
+        options={{ headerShown: false }}
+      />
+      {/* PoliciesScreen ContactUsScreen */}
 
-      {/* Transparent/bottom-sheet modals */}
+      {/* BusinessEmailScreen Transparent/bottom-sheet modals */}
       <Stack.Group
         screenOptions={{
           presentation: 'transparentModal',
@@ -296,6 +430,15 @@ export default function RootNavigator({
         <Stack.Screen
           name="AddPaymentMethod"
           component={AddPaymentMethodModal}
+          options={{
+            presentation: 'transparentModal',
+            headerShown: false,
+            contentStyle: { backgroundColor: 'transparent' },
+          }}
+        />
+         <Stack.Screen
+          name="HelpCenterScreen"
+          component={HelpCenterScreen}
           options={{
             presentation: 'transparentModal',
             headerShown: false,

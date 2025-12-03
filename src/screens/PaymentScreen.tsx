@@ -21,172 +21,167 @@ import { FONTS } from '../../src/theme/fonts';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Payment'>;
 
-const MINT = '#B9FBE7';
-const TEXT = '#111';
+const TEXT = '#201E20';
 const BORDER = '#EFEFEF';
 const BG_SOFT = '#F6F7F8';
+const MINT = '#B9FBE7';
 
 export default function PaymentScreen({ navigation }: Props) {
   const { width } = useWindowDimensions();
   const isSmall = width < 360;
-  const isTablet = width >= 768;
 
   const [profile, setProfile] = useState<'personal' | 'business'>('personal');
 
-  const tilePaddingV = isSmall ? 16 : 22;
-  const rowPaddingV = isSmall ? 12 : 14;
+  const openMenu = () => navigation.goBack();
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Pressable
-          style={styles.roundBtn}
-          onPress={() => navigation.goBack()}
-          hitSlop={10}
-          accessibilityRole="button"
-          accessibilityLabel="Go back"
-        >
-          <Ionicons name="chevron-back" size={18} color={TEXT} />
-        </Pressable>
-        <Text style={styles.headerTitle}>Payment</Text>
-        <View style={{ width: 34 }} />
-      </View>
+    <View style={{ flex: 1, backgroundColor: '#FFF' }}>
+      {/* MAP / BACKGROUND */}
+      <Image
+        source={assets.images.mapBg || require('../../assets/backgrounds/signin.png')}
+        style={styles.mapBg}
+        resizeMode="cover"
+      />
 
-      <ScrollView
-        contentContainerStyle={{
-          padding: 16,
-          paddingBottom: 28,
-        }}
-        showsVerticalScrollIndicator={false}
-        keyboardShouldPersistTaps="handled"
-      >
-        {/* Section pill */}
-        <View style={styles.sectionPill}>
-          <Text style={styles.sectionPillText}>Payment Methods</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        {/* HEADER */}
+        <View style={styles.header}>
+          <Pressable style={styles.menuBtn} onPress={openMenu}>
+            <Image
+              source={assets.images.hamIcon}
+              style={{ width: 48, height: 48, borderRadius: 24 }}
+            />
+          </Pressable>
+
+          <Text style={styles.headerTitle}>Payment</Text>
         </View>
 
-        <View
-          style={{
-            backgroundColor: BG_SOFT,
-            marginBottom: 12,
-            paddingHorizontal: 16,
-            paddingTop: 12,
-            borderRadius: 24,
-          }}
-        >
-          {/* Top tiles: Cash / Credit Cards */}
-          <View style={styles.tilesWrap}>
-            <MethodTile
-              title="Cash"
-              icon={
-                <Image
-                  source={assets.images.dollarIcon}
-                  style={{ width: 40, height: 30, resizeMode: 'contain' }}
-                />
-              }
-              onPress={() => {}}
-              paddingV={tilePaddingV}
-            />
+        {/* WHITE PANEL */}
+        <View style={styles.contentPanel}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 32 }}
+          >
+            {/* PAYMENT METHODS CARD + TAB */}
+            <View style={styles.methodsWrapper}>
+              <View style={styles.methodsCard}>
+                {/* top tiles */}
+                <View style={styles.tilesWrap}>
+                  <MethodTile
+                    title="Cash"
+                    icon={
+                      <Image source={require('../../assets/icons/pay-cash-icon.png')} alt='pay-cash' style={{height:24,width:40}} />
+                      
+                    }
+                    onPress={() => navigation.navigate('PaymentCash')}
+                  />
+                  <MethodTile
+                    title="Credit Cards"
+                    icon={
+                      <Image source={require('../../assets/icons/pay-card-icon.png')} alt='pay-cash' style={{height:27,width:40}} />
+                    }
+                    onPress={() => navigation.navigate('PaymentCredit')}
+                  />
+                </View>
 
-            <MethodTile
-              title="Credit Cards"
-              icon={
-                <MaterialCommunityIcons
-                  name="credit-card-outline"
-                  size={28}
-                  color={TEXT}
-                />
-              }
-              onPress={() => navigation.navigate('CreditCards')}
-              paddingV={tilePaddingV}
-            />
-          </View>
+                {/* Google Pay / Apple Pay */}
+                <View style={styles.listCard}>
+                  <PaymentRow
+                    icon={
+                      <Image source={require('../../assets/icons/gpay-icon.png')} alt='pay-cash' style={{height:22,width:22}} />
+                    }
+                    title="Google Pay"
+                    subtitle="paula.lewis69@gmail.com"
+                    onPress={() => navigation.navigate('PaymentGoogle')}
+                  />
+                  <View style={styles.divider} />
+                  <PaymentRow
+                    icon={
+                      <Image source={require('../../assets/icons/apay-icon.png')} alt='pay-cash' style={{height:27,width:22}} />
+                    }
+                    title="Apple Pay"
+                    subtitle="paula.lewis69@gmail.com"
+                    onPress={() => navigation.navigate('PaymentApple')}
+                  />
+                </View>
+              </View>
 
-          {/* Google Pay / Apple Pay */}
-          <View style={styles.listCard}>
-            <PaymentRow
-              icon={<AntDesign name="google" size={18} color={TEXT} />}
-              title="Google Pay"
-              subtitle="paula.lewis69@gmail.com"
-              onPress={() =>
-                navigation.navigate('GooglePay', {
-                  email: 'paula.lewis69@gmail.com',
-                })
-              }
-              paddingV={rowPaddingV}
-            />
-            <View style={styles.divider} />
-            <PaymentRow
-              icon={<AntDesign name="apple1" size={18} color={TEXT} />}
-              title="Apple Pay"
-              subtitle="paula.lewis69@gmail.com"
-              onPress={() =>
-                navigation.navigate('ApplePay', {
-                  email: 'paula.lewis69@gmail.com',
-                })
-              }
-              paddingV={rowPaddingV}
-            />
-          </View>
+              {/* Black tab overlapping */}
+              <View style={styles.sectionPill}>
+                <Text style={styles.sectionPillText}>Payment Methods</Text>
+              </View>
+            </View>
+
+            {/* Add payment method CTA */}
+            <Pressable
+              style={styles.addBtn}
+              onPress={() => navigation.navigate('AddPaymentMethod')}
+            >
+              <Text style={styles.addBtnText}>Add Payment Method</Text>
+              <View style={styles.addBtnIcon}>
+                <Ionicons name="add" size={28} color={TEXT} />
+              </View>
+            </Pressable>
+
+            {/* Ride Profiles */}
+            <Text
+              style={[
+                styles.blockTitle,
+                isSmall && { marginTop: 20, marginBottom: 12 },
+              ]}
+            >
+              Ride Profiles
+            </Text>
+
+            <View style={styles.profileRow}>
+              <ProfileTile
+                title="Personal"
+                // active={profile === 'personal'}
+                icon={
+                      <Image source={require('../../assets/icons/pay-person-icon.png')} alt='pay-cash' style={{height:28,width:26}} />
+                }
+                onPress={() => navigation.navigate('PaymentPersonal')}
+              />
+              <ProfileTile
+                title="Business"
+                // active={profile === 'business'}
+                icon={
+                      <Image source={require('../../assets/icons/pay-business-icon.png')} alt='pay-cash' style={{height:22,width:23}} />
+                }
+                onPress={() => navigation.navigate('PaymentBusinessScreen')}
+              />
+            </View>
+          </ScrollView>
         </View>
-
-        {/* Add payment method CTA */}
-        <Pressable
-          style={styles.addBtn}
-          onPress={() => navigation.navigate('AddPaymentMethod')}
-          accessibilityRole="button"
-          hitSlop={8}
-        >
-          <Text style={styles.addBtnText}>Add Payment Method</Text>
-          <View style={styles.addBtnIcon}>
-            <Ionicons name="add" size={18} color={TEXT} />
-          </View>
-        </Pressable>
-
-        {/* Ride Profiles */}
-        <Text style={[styles.blockTitle, isSmall && { marginBottom: 8 }]}>
-          Ride Profiles
-        </Text>
-
-        <View style={styles.tilesWrap}>
-          <ProfileTile
-            title="Personal"
-            active={profile === 'personal'}
-            icon={<Ionicons name="person-circle-outline" size={26} color={TEXT} />}
-            onPress={() => setProfile('personal')}
-            paddingV={isSmall ? 14 : 18}
-          />
-          <ProfileTile
-            title="Business"
-            active={profile === 'business'}
-            icon={<Ionicons name="briefcase-outline" size={24} color={TEXT} />}
-            onPress={() => setProfile('business')}
-            paddingV={isSmall ? 14 : 18}
-          />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 }
 
 /* ---------- small components ---------- */
+
 function MethodTile({
   title,
   icon,
   onPress,
-  paddingV = 22,
 }: {
   title: string;
   icon: React.ReactNode;
   onPress?: () => void;
-  paddingV?: number;
 }) {
+  if (onPress) {
+    return (
+      <Pressable style={styles.tile} onPress={onPress}>
+        <View style={styles.tileIcon}>{icon}</View>
+        <Text style={styles.tileText}>{title}</Text>
+      </Pressable>
+    );
+  }
   return (
-    <Pressable style={[styles.tile, { paddingVertical: paddingV }]} onPress={onPress}>
+    <View style={styles.tile}>
       <View style={styles.tileIcon}>{icon}</View>
       <Text style={styles.tileText}>{title}</Text>
-    </Pressable>
+    </View>
   );
 }
 
@@ -195,22 +190,21 @@ function PaymentRow({
   title,
   subtitle,
   onPress,
-  paddingV = 14,
 }: {
   icon: React.ReactNode;
   title: string;
   subtitle?: string;
   onPress?: () => void;
-  paddingV?: number;
 }) {
   return (
-    <Pressable style={[styles.row, { paddingVertical: paddingV }]} onPress={onPress}>
+    <Pressable onPress={onPress}>
+    <View style={styles.row}>
       <View style={styles.rowIcon}>{icon}</View>
       <View style={{ flex: 1 }}>
         <Text style={styles.rowTitle}>{title}</Text>
         {!!subtitle && <Text style={styles.rowSub}>{subtitle}</Text>}
       </View>
-      <Ionicons name="chevron-forward" size={18} color="#B6BAC0" />
+    </View>
     </Pressable>
   );
 }
@@ -220,23 +214,19 @@ function ProfileTile({
   icon,
   active,
   onPress,
-  paddingV = 18,
 }: {
   title: string;
   icon: React.ReactNode;
   active?: boolean;
   onPress?: () => void;
-  paddingV?: number;
 }) {
   return (
     <Pressable
       onPress={onPress}
       style={[
         styles.profileTile,
-        { paddingVertical: paddingV },
-        active && { borderColor: TEXT, backgroundColor: '#fff' },
+        active && { borderColor: TEXT, backgroundColor: '#FFFFFF' },
       ]}
-      accessibilityRole="button"
     >
       <View style={styles.profileIconWrap}>{icon}</View>
       <Text style={styles.profileText}>{title}</Text>
@@ -245,134 +235,213 @@ function ProfileTile({
 }
 
 /* ---------- styles ---------- */
+
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: '#FFF' },
+  mapBg: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '35%',
+  },
 
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingTop: Platform.select({ ios: 6, android: 8 }),
-    paddingBottom: 8,
-    justifyContent: 'space-between',
+    paddingHorizontal: 20,
+    paddingTop: Platform.select({ ios: 4, android: 10 }),
+    paddingBottom: 10,
+    gap:12,
+    justifyContent: 'flex-start',
   },
-  roundBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 17,
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: BORDER,
-    alignItems: 'center',
+  menuBtn: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 2 },
   },
-  headerTitle: { color: TEXT, fontSize: 18, fontFamily: FONTS.bold },
+  headerTitle: {
+    fontSize: 18,
+    color: TEXT,
+    fontFamily: FONTS.regular,
+  },
+
+  contentPanel: {
+    flex: 1,
+    marginTop: 10,
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 20,
+    paddingTop: 24,
+  },
+
+  methodsWrapper: {
+    marginBottom: 26,
+    marginTop:52,
+  },
+  methodsCard: {
+    backgroundColor: "#EFEFEF",
+    borderRadius: 26,
+    paddingHorizontal: 16,
+    paddingTop: 20, // space for pill
+    paddingBottom: 16,
+  },
 
   sectionPill: {
-    alignSelf: 'flex-start',
+    position: 'absolute',
+    top: -52,
+    left: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 17.5,
     backgroundColor: TEXT,
-    borderTopLeftRadius: 23,
-    borderTopRightRadius: 23,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    marginBottom: 10,
-    marginLeft: 8,
+    borderTopLeftRadius: 26,
+    borderTopRightRadius: 26,
+    width:194,
   },
-  sectionPillText: { color: '#fff', fontFamily: FONTS.regular },
+  sectionPillText: {
+    color: '#FFFFFF',
+    fontFamily: FONTS.semibold,
+    fontSize: 18,
+    lineHeight:18
+  },
 
   tilesWrap: {
     flexDirection: 'row',
     gap: 12,
-    marginBottom: 14,
+    marginBottom: 16,
   },
 
   tile: {
     flex: 1,
-    backgroundColor: '#fff',
-    borderRadius: 14,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#EDEDED',
+    justifyContent:'center',
+    // paddingVertical: 18,
+    height:120,
+    width:169
   },
   tileIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 12,
-    backgroundColor: '#F3F4F6',
-    alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 10,
   },
-  tileText: { color: TEXT, fontFamily: FONTS.medium },
+  tileText: {
+    fontSize: 18,
+    color: TEXT,
+    fontFamily: FONTS.regular,
+  },
 
   listCard: {
-    backgroundColor: '#fff',
-    borderRadius: 16,
+    // backgroundColor: '#FFFFFF',
+    borderRadius: 20,
     borderWidth: 1,
     borderColor: BORDER,
     overflow: 'hidden',
-    marginBottom: 14,
   },
-  divider: { height: StyleSheet.hairlineWidth, backgroundColor: BORDER },
+  divider: {
+    height: StyleSheet.hairlineWidth,
+    backgroundColor: BORDER,
+  },
 
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
-    paddingHorizontal: 12,
-    marginBottom: 0,
+    paddingHorizontal: 14,
+    height:72,
+    // paddingVertical:10,
+    marginVertical:7,
+    backgroundColor:'#FCFCFC',
+    borderRadius:18
   },
   rowIcon: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    backgroundColor: '#F5F6F7',
-    alignItems: 'center',
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#F3F4F6',
     justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
   },
-  rowTitle: { color: TEXT, fontFamily: FONTS.bold },
-  rowSub: { color: '#9AA0A6', fontSize: 12, marginTop: 2, fontFamily: FONTS.regular },
+  rowTitle: {
+    fontSize: 18,
+    color: TEXT,
+    fontFamily: FONTS.regular,
+  },
+  rowSub: {
+    fontSize: 14,
+    color: '#8D8E8F',
+    marginTop: 2,
+    fontFamily: FONTS.regular,
+  },
 
   addBtn: {
-    height: 50,
-    borderRadius: 28,
+    marginTop: 0,
+    height: 56,
+    borderRadius: 30,
     backgroundColor: TEXT,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
-    marginBottom: 18,
+    marginBottom: 26,
   },
-  addBtnText: { color: '#fff', fontFamily: FONTS.bold },
+  addBtnText: {
+    color: '#F2F2F7',
+    fontFamily: FONTS.regular,
+    lineHeight:22,
+    fontSize: 18,
+  },
   addBtnIcon: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: MINT,
-    alignItems: 'center',
-    justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 6,
+    width: 46,
+    height: 46,
+    borderRadius: 32,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: TEXT,
   },
 
-  blockTitle: { color: TEXT, marginBottom: 10, fontFamily: FONTS.semibold },
+  blockTitle: {
+    fontSize: 18,
+    color: TEXT,
+    lineHeight:18,
+    fontFamily: FONTS.semibold,
+    marginBottom: 14,
+  },
 
+  profileRow: {
+    flexDirection: 'row',
+    gap: 18,
+  },
   profileTile: {
     flex: 1,
-    backgroundColor: BG_SOFT,
-    borderRadius: 14,
+    borderRadius: 20,
+    backgroundColor: "#EFEFEF",
     borderWidth: 1,
     borderColor: '#CFCDCD',
     alignItems: 'center',
+    paddingVertical: 20,
   },
   profileIconWrap: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#F3F4F6',
-    alignItems: 'center',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#FFFFFF',
     justifyContent: 'center',
-    marginBottom: 8,
+    alignItems: 'center',
+    marginBottom: 10,
   },
-  profileText: { color: TEXT, fontFamily: FONTS.bold },
+  profileText: {
+    fontSize: 18,
+    color: "#282828",
+    fontFamily: FONTS.semibold,
+  },
 });

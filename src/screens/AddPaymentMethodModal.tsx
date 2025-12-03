@@ -1,6 +1,12 @@
 // src/screens/AddPaymentMethodModal.tsx
 import React from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Pressable,
+  Image,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -12,37 +18,63 @@ import type { RootStackParamList } from '../navigation/types';
 type Props = NativeStackScreenProps<RootStackParamList, 'AddPaymentMethod'>;
 
 export default function AddPaymentMethodModal({ navigation }: Props) {
+  const close = () => navigation.goBack();
+
   return (
     <View style={styles.wrap}>
       {/* dim background; tap to dismiss */}
-      <Pressable style={styles.backdrop} onPress={() => navigation.goBack()} />
+      <Pressable style={styles.backdrop} onPress={close} />
 
       {/* bottom sheet */}
       <SafeAreaView edges={['bottom']} style={styles.sheet}>
         {/* header */}
         <View style={styles.header}>
           <Text style={styles.title}>Add Payment Method</Text>
-          <Pressable onPress={() => navigation.goBack()} style={styles.closeBtn}>
-            <Ionicons name="close" size={18} color="#111" />
+          <Pressable onPress={close} hitSlop={10}>
+            <Ionicons name="close" size={28} color="#8D8E8F" />
           </Pressable>
         </View>
 
         {/* options */}
-        <View style={{ padding: 14, gap: 10 }}>
+        <View style={styles.list}>
           <RowButton
-            icon={<MaterialCommunityIcons name="credit-card-outline" size={18} color="#fff" />}
+            icon={
+              // <MaterialCommunityIcons
+              //   name="credit-card-outline"
+              //   size={22}
+              //   color="#FFFFFF"
+              // />
+              <Image source={require('../../assets/icons/card-white-icon.png')} alt='card' style={{width:33,height:22}} />
+            }
             label="Credit Card"
-            onPress={() => navigation.navigate('CreditCards')}
+            onPress={() => {
+              close();
+              navigation.navigate('PaymentAddCreditCard');
+            }}
           />
           <RowButton
-            icon={<MaterialCommunityIcons name="google" size={18} color="#fff" />}
+            icon={
+              <Image source={require('../../assets/icons/g-white-icon.png')} alt='card' style={{width:22,height:23}} />
+            }
             label="Google Pay"
-            onPress={() => navigation.navigate('GooglePay', { email: 'paula.lewis69@gmail.com' })}
+            onPress={() => {
+              close();
+              navigation.navigate('PaymentAddGooglePay', {
+                email: 'paula.lewis69@gmail.com',
+              });
+            }}
           />
           <RowButton
-            icon={<MaterialCommunityIcons name="apple" size={18} color="#fff" />}
+            icon={
+              <Image source={require('../../assets/icons/a-white-icon.png')} alt='card' style={{width:23,height:28}} />
+            }
             label="Apple Pay"
-            onPress={() => navigation.navigate('GooglePay', { email: 'paula.lewis69@gmail.com' })}
+            onPress={() => {
+              close();
+              navigation.navigate('PaymentAddApplePay', {
+                email: 'paula.lewis69@gmail.com',
+              });
+            }}
           />
         </View>
       </SafeAreaView>
@@ -51,64 +83,78 @@ export default function AddPaymentMethodModal({ navigation }: Props) {
 }
 
 function RowButton({
-  icon, label, onPress,
-}: { icon: React.ReactNode; label: string; onPress: () => void }) {
+  icon,
+  label,
+  onPress,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  onPress: () => void;
+}) {
   return (
     <Pressable style={styles.row} onPress={onPress}>
-      <View style={styles.rowIcon}>{icon}</View>
-      <Text style={styles.rowText}>{label}</Text>
-      <AntDesign name="right" size={16} color="#fff" />
+      <View style={styles.rowLeft}>
+        {icon}
+        <Text style={styles.rowText}>{label}</Text>
+      </View>
+      <Ionicons name="chevron-forward" size={20} color="#FFFFFF" />
     </Pressable>
   );
 }
 
-const MINT = '#B9FBE7';
-
 const styles = StyleSheet.create({
-  fill: { flex: 1 },
-
-   wrap: {
+  wrap: {
     flex: 1,
     justifyContent: 'flex-end',
   },
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.35)' },
+  backdrop: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.35)',
+  },
 
-  // ~45% height sheet; adjust if you want taller
   sheet: {
-    height: '45%',
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    overflow: 'hidden',
+    backgroundColor: '#FFFFFF',
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
+    paddingHorizontal: 20,
+    paddingTop: 8,
+    paddingBottom: 26,
   },
 
   header: {
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 6,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    marginVertical: 30
   },
-  title: { fontSize: 16, color: '#111', fontFamily: FONTS.bold },
-  closeBtn: {
-    width: 30, height: 30, borderRadius: 15, backgroundColor: '#F3F3F4',
-    alignItems: 'center', justifyContent: 'center',
+  title: {
+    fontSize: 20,
+    color: '#201E20',
+    fontFamily: FONTS.regular,
+  },
+
+  list: {
+    gap: 16,
   },
 
   row: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    backgroundColor: '#111',
-    borderRadius: 14,
-    paddingVertical: 14,
-    paddingHorizontal: 14,
+    justifyContent: 'space-between',
+    backgroundColor: '#111013',
+    borderRadius: 18,
+    height:79,
+    paddingHorizontal: 20,
   },
-  rowIcon: {
-    width: 28, height: 28, borderRadius: 14,
-    backgroundColor: MINT,
-    alignItems: 'center', justifyContent: 'center',
+  rowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
   },
-  rowText: { flex: 1, color: '#fff', fontFamily: FONTS.bold },
+  rowText: {
+    color: '#FFFFFF',
+    fontSize: 18,
+    fontFamily: FONTS.regular,
+    lineHeight:26
+  },
 });

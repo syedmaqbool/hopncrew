@@ -1,16 +1,14 @@
-// src/screens/EditProfileModal.tsx
-import React, { useMemo, useState } from 'react';
+// src/screens/EditProfileScreen.tsx
+import React, { useState, useMemo } from 'react';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 import {
   View,
   Text,
-  Modal,
-  Pressable,
-  StyleSheet,
-  TextInput,
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
   Image,
+  Pressable,
+  TextInput,
+  ScrollView,
+  StyleSheet,
   Switch,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -18,24 +16,20 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { Picker } from '@react-native-picker/picker';
 import { FONTS } from '../../src/theme/fonts';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigation/types';
+import assets from '../../assets';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'EditProfile'>;
-
-type Country = { code: string; dial: string; label: string; flag: string };
-
-const COUNTRIES: Country[] = [
-  { code: 'US', dial: '+1',   label: 'United States', flag: '🇺🇸' },
-  { code: 'GB', dial: '+44',  label: 'United Kingdom', flag: '🇬🇧' },
-  { code: 'AE', dial: '+971', label: 'UAE', flag: '🇦🇪' },
-  { code: 'PK', dial: '+92',  label: 'Pakistan', flag: '🇵🇰' },
+const COUNTRIES = [
+  { code: 'US', dial: '+1', flag: '🇺🇸' },
+  { code: 'GB', dial: '+44', flag: '🇬🇧' },
+  { code: 'AE', dial: '+971', flag: '🇦🇪' },
+  { code: 'PK', dial: '+92', flag: '🇵🇰' },
 ];
 
-const MINT = '#B9FBE7';
+const MINT = '#FFE55E';
 
-export default function EditProfileModal({ navigation, route }: Props) {
+export default function EditProfileScreen({ navigation, route }) {
   const insets = useSafeAreaInsets();
+  const [sameWhatsapp, setSameWhatsapp] = useState(true);
 
   const initial = route.params?.initial ?? {
     name: '',
@@ -44,19 +38,18 @@ export default function EditProfileModal({ navigation, route }: Props) {
     phone: '',
     whatsappSame: false,
     referral: '',
-    avatarUrl: undefined as string | undefined,
+    avatarUrl: undefined,
   };
-
-  const initialCountry =
-    COUNTRIES.find(c => c.dial === initial.dial) ?? COUNTRIES[0];
 
   const [name, setName] = useState(initial.name);
   const [email, setEmail] = useState(initial.email);
-  const [country, setCountry] = useState<Country>(initialCountry);
+  const [country, setCountry] = useState(
+    COUNTRIES.find(c => c.dial === initial.dial) ?? COUNTRIES[0]
+  );
   const [phone, setPhone] = useState(initial.phone);
   const [whatsappSame, setWhatsappSame] = useState(initial.whatsappSame);
   const [referral, setReferral] = useState(initial.referral);
-  const [avatarUrl, setAvatarUrl] = useState<string | undefined>(initial.avatarUrl);
+  const [avatarUrl, setAvatarUrl] = useState(initial.avatarUrl);
   const [pickerOpen, setPickerOpen] = useState(false);
 
   const canSave = useMemo(
@@ -64,162 +57,166 @@ export default function EditProfileModal({ navigation, route }: Props) {
     [name, email, phone]
   );
 
-  const onClose = () => navigation.goBack();
-
   const onSave = () => {
     if (!canSave) return;
     route.params?.onSave?.({
-      name: name.trim(),
-      email: email.trim(),
+      name,
+      email,
+      phone,
       dial: country.dial,
-      phone: phone.trim(),
       whatsappSame,
-      referral: referral.trim(),
+      referral,
       avatarUrl,
     });
     navigation.goBack();
   };
 
-  const pickAvatar = async () => {
-    // Hook up your picker here (e.g., react-native-image-picker)
-    // setAvatarUrl('file://...');
-  };
+  const openMenu = () => navigation.goBack();
 
   return (
-    <View style={styles.fill}>
-      {/* Tap outside to dismiss */}
-      <Pressable style={styles.backdrop} onPress={onClose} />
+    <View style={{ flex: 1 }}>
+      {/* BACKGROUND MAP IMAGE */}
+      <Image
+        source={require('../../assets/backgrounds/signin.png')}
+        style={styles.mapBg}
+        resizeMode="cover"
+      />
 
-      <SafeAreaView style={styles.sheetWrap} edges={['bottom']}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-          keyboardVerticalOffset={Platform.OS === 'ios' ? insets.top + 24 : 0}
-          style={{ flex: 1 }}
-        >
-          <View style={styles.sheet}>
-            {/* Header row */}
-            <View style={styles.headerRow}>
-              <Pressable style={styles.hamBtn} onPress={onClose}>
-                <Ionicons name="close" size={18} color="#111" />
+      {/* SAFE AREA */}
+      <SafeAreaView style={{ flex: 1 }}>
+
+        {/* HEADER */}
+        <View style={[styles.headerRow, { marginTop: 4 }]}>
+          <Pressable style={styles.menuBtn} onPress={openMenu}>
+            <Image
+            source={assets.images.hamIcon}
+            style={{ width: 48, height: 48, borderRadius: 20 }}
+          />
+          </Pressable>
+
+          <Text style={styles.headerTitle}>Edit Profile</Text>
+        </View>
+
+        {/* WHITE PANEL */}
+        <View style={styles.whitePanel}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ paddingBottom: 50 }}
+          >
+            <Text style={styles.helperText}>
+              You can edit the details &{'\n'}update your profile
+            </Text>
+
+            {/* AVATAR */}
+            <View style={styles.avatarWrap}>
+              <View style={styles.avatarCircle}>
+                {avatarUrl ? (
+                  <Image source={{ uri: avatarUrl }} style={{ width: '100%', height: '100%' }} />
+                ) : (
+                  <Image
+                    source={require('../../assets/icons/defaultgirl.png')}
+                    style={{ width: '100%', height: '100%' }}
+                  />
+                )}
+              </View>
+
+              <Pressable style={styles.editBadge}>
+                <Ionicons name="pencil" size={14} color="#111" />
               </Pressable>
-              <Text style={styles.headerTitle}>Edit Profile</Text>
-              <View style={{ width: 34 }} />
             </View>
 
-            {/* Decorative map slice is implied behind; we keep the top white block rounded */}
-            <ScrollView
-              contentContainerStyle={{ padding: 16, paddingBottom: 24 }}
-              keyboardShouldPersistTaps="handled"
-              showsVerticalScrollIndicator={false}
-            >
-              <Text style={styles.helper}>
-                You can edit the details &{'\n'}update your profile
-              </Text>
+            <Text style={styles.avatarLabel}>Your Profile Picture</Text>
 
-              {/* Avatar */}
-              <View style={styles.avatarWrap}>
-                <View style={styles.avatarCircle}>
-                  {avatarUrl ? (
-                    <Image
-                      source={{ uri: avatarUrl }}
-                      style={styles.avatarImg}
-                    />
-                  ) : (
-                    <Ionicons name="person" size={36} color="#6C7075" />
-                  )}
-                </View>
-                <Pressable style={styles.pencil} onPress={pickAvatar}>
-                  <Ionicons name="pencil" size={14} color="#111" />
-                </Pressable>
-              </View>
-              <Text style={styles.avatarLabel}>Your Profile Picture</Text>
+            {/* INPUTS */}
+            <TextInput
+              style={styles.input}
+              placeholder="Paula Lewis"
+              placeholderTextColor="#AAA"
+              value={name}
+              onChangeText={setName}
+            />
 
-              {/* Inputs */}
-              <TextInput
-                style={styles.input}
-                placeholder="Paula Lewis"
-                placeholderTextColor="#9AA0A6"
-                value={name}
-                onChangeText={setName}
-              />
+            <TextInput
+              style={styles.input}
+              placeholder="paula.lewis67@gmail.com"
+              placeholderTextColor="#AAA"
+              value={email}
+              onChangeText={setEmail}
+              keyboardType="email-address"
+            />
 
-              <TextInput
-                style={styles.input}
-                placeholder="paula@example.com"
-                placeholderTextColor="#9AA0A6"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-              />
+            {/* PHONE */}
+            {/* Phone row */}
+                        <View style={styles.phoneInputRow}>
+                          <Pressable
+                            style={styles.ccButton}
+                            onPress={() => setPickerOpen(true)}
+                          >
+                            <Text style={styles.ccText}>
+                              {country.flag} {country.dial}
+                            </Text>
+                            <Ionicons name="chevron-down" size={16} color="#777" />
+                          </Pressable>
+                          <TextInput
+                            style={styles.phoneInput}
+                            placeholder="Mobile Number"
+                            placeholderTextColor="#9AA0A6"
+                            keyboardType="phone-pad"
+                            value={phone}
+                            onChangeText={setPhone}
+                            returnKeyType="next"
+                          />
+                        </View>
+            
 
-              <View style={styles.phoneRow}>
-                <Pressable style={styles.ccBtn} onPress={() => setPickerOpen(true)}>
-                  <Text style={styles.ccTxt}>{country.flag}  {country.dial}</Text>
-                  <Ionicons name="chevron-down" size={14} color="#777" />
-                </Pressable>
-                <TextInput
-                  style={[styles.input, { flex: 1, marginTop: 0 }]}
-                  placeholder="0123456789"
-                  placeholderTextColor="#9AA0A6"
-                  keyboardType="phone-pad"
-                  value={phone}
-                  onChangeText={setPhone}
-                />
-              </View>
+            {/* WHATSAPP SAME NUMBER */}
+           <Pressable
+                        style={styles.checkboxRow}
+                        onPress={() => setSameWhatsapp(v => !v)}
+                      >
+                        <View
+                          style={[
+                            styles.checkboxBox,
+                            sameWhatsapp && styles.checkboxChecked,
+                          ]}
+                        >
+                          {sameWhatsapp && (
+                            <Ionicons name="checkmark" size={16} color="#fff" />
+                          )}
+                        </View>
+                        <Text style={styles.checkboxText}>Same number on WhatsApp?</Text>
+                      </Pressable>
 
-              {/* WhatsApp same number */}
-              <View style={styles.switchRow}>
-                <View style={styles.checkboxLike}>
-                  <Switch
-                    value={whatsappSame}
-                    onValueChange={setWhatsappSame}
-                    trackColor={{ true: MINT, false: '#EEE' }}
-                    thumbColor={whatsappSame ? '#111' : '#fff'}
-                  />
-                </View>
-                <Text style={styles.switchLabel}>Same no on What'sApp?</Text>
-              </View>
+            <TextInput
+              style={styles.input}
+              placeholder="HOP29F"
+              placeholderTextColor="#AAA"
+              value={referral}
+              onChangeText={setReferral}
+              autoCapitalize="characters"
+            />
 
-              <TextInput
-                style={styles.input}
-                placeholder="Referral Code"
-                placeholderTextColor="#9AA0A6"
-                autoCapitalize="characters"
-                value={referral}
-                onChangeText={setReferral}
-              />
-
-            </ScrollView>
-
-            {/* Update CTA */}
+            {/* UPDATE BUTTON */}
             <Pressable
-              style={[styles.cta, !canSave && { opacity: 0.5 }]}
-              onPress={onSave}
+              style={[styles.updateBtn, !canSave && { opacity: 0.4 }]}
               disabled={!canSave}
+              onPress={onSave}
             >
-              <Text style={styles.ctaTxt}>Update</Text>
-              <View style={styles.ctaIcon}>
-                <AntDesign name="arrowright" size={18} color="#111" />
-              </View>
+              <Text style={styles.updateTxt}>Update</Text>
             </Pressable>
-          </View>
-        </KeyboardAvoidingView>
+
+          </ScrollView>
+        </View>
       </SafeAreaView>
 
-      {/* Country picker modal */}
-      <Modal
-        transparent
-        visible={pickerOpen}
-        animationType="fade"
-        onRequestClose={() => setPickerOpen(false)}
-      >
-        <Pressable style={styles.modalBg} onPress={() => setPickerOpen(false)}>
-          <View style={styles.modalCard}>
-            <Text style={styles.modalTitle}>Select country</Text>
+      {/* COUNTRY PICKER */}
+      {pickerOpen && (
+        <View style={styles.pickerOverlay}>
+          <Pressable style={{ flex: 1 }} onPress={() => setPickerOpen(false)} />
+          <View style={styles.pickerCard}>
             <Picker
               selectedValue={country.code}
-              onValueChange={(val) => {
+              onValueChange={val => {
                 const next = COUNTRIES.find(c => c.code === val)!;
                 setCountry(next);
               }}
@@ -227,132 +224,220 @@ export default function EditProfileModal({ navigation, route }: Props) {
               {COUNTRIES.map(c => (
                 <Picker.Item
                   key={c.code}
-                  label={`${c.flag} ${c.label} (${c.dial})`}
+                  label={`${c.flag} ${c.dial}`}
                   value={c.code}
                 />
               ))}
             </Picker>
           </View>
-        </Pressable>
-      </Modal>
+        </View>
+      )}
     </View>
   );
 }
 
-/* ---------------- styles ---------------- */
+/* ------------------- STYLES ------------------- */
+
 const styles = StyleSheet.create({
-  fill: { flex: 1, marginTop: 170 },
-  // keep background visible (map/screen)
-  backdrop: { ...StyleSheet.absoluteFillObject, backgroundColor: 'transparent' },
-  sheetWrap: { flex: 1, justifyContent: 'flex-end' },
-  sheet: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: '1000%',
-    overflow: 'hidden',
+  mapBg: {
+    width: '100%',
+    height: '95%',
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
 
   headerRow: {
-    flexDirection: 'row',
+    // flexDirection: 'row',
+    // alignItems: 'center',
+    paddingHorizontal: 20,
+    // justifyContent: 'space-between',
+  },
+  menuBtn: {
+    width: 40, height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FFF',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingTop: 8,
-    paddingBottom: 4,
-    justifyContent: 'space-between',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  hamBtn: {
-    width: 34, height: 34, borderRadius: 17,
-    backgroundColor: '#fff',
-    borderWidth: 1, borderColor: '#EEE',
-    alignItems: 'center', justifyContent: 'center',
+  headerTitle: {
+    marginTop:24,
+    fontSize: 24,
+    fontFamily: FONTS.semibold,
+    color: '#201E20',
   },
-  headerTitle: { fontSize: 18, color: '#111', fontFamily: FONTS.bold },
 
-  helper: {
+  whitePanel: {
+    marginTop: 20,
+    flex: 1,
+    backgroundColor: '#FFF',
+    borderTopLeftRadius: 40,
+    borderTopRightRadius: 40,
+    paddingHorizontal: 26,
+    paddingTop: 20,
+  },
+
+  helperText: {
     textAlign: 'center',
-    color: '#6C7075',
-    marginTop: 6,
-    marginBottom: 10,
-    fontFamily: FONTS.regular,
+    fontSize: 18,
+    color: '#201E20',
+    fontFamily:FONTS.regular,
+    marginBottom: 20,
   },
 
-  avatarWrap: { alignItems: 'center', marginTop: 6 },
+  avatarWrap: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: 10,
+  },
   avatarCircle: {
-    width: 72, height: 72, borderRadius: 36,
-    backgroundColor: '#EDEFF1',
-    alignItems: 'center', justifyContent: 'center',
+    width: 74,
+    height: 74,
+    borderRadius: 37,
     overflow: 'hidden',
   },
-  avatarImg: { width: '100%', height: '100%' },
-  pencil: {
-    marginTop: -14,
-    backgroundColor: MINT,
-    width: 26, height: 26, borderRadius: 13,
-    alignItems: 'center', justifyContent: 'center',
-    borderWidth: 1, borderColor: '#D6F6EB',
+  editBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#FFE55E',
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    right: '36%',
+    bottom: -4,
+    borderWidth: 2, borderColor: '#FFF',
   },
   avatarLabel: {
     textAlign: 'center',
+    fontFamily: FONTS.semibold,
     color: '#111',
-    fontFamily: FONTS.bold,
-    marginTop: 8,
-    marginBottom: 12,
+    fontSize: 20,
+    marginBottom: 20,
   },
 
   input: {
-    height: 46,
+    height: 50,
+    borderRadius: 26,
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: '#DDD',
+    paddingHorizontal: 18,
+    fontFamily: FONTS.regular,
+    color: '#201E20',
+    fontSize:16,
+    marginTop: 18,
+  },
+
+  phoneRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 12,
+    gap: 10,
+  },
+  countryBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 26,
+    backgroundColor: '#FFF',
+    borderWidth: 1,
+    borderColor: '#DDD',
+    paddingHorizontal: 18,
+    paddingVertical: 12,
+    gap: 6,
+  },
+  countryTxt: {
+    fontSize: 14,
+    color: '#111',
+    fontFamily: FONTS.medium,
+  },
+
+  whRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 18,
+    gap: 10,
+  },
+  whLabel: {
+    fontSize: 15,
+    color: '#111',
+    fontFamily: FONTS.medium,
+  },
+
+  updateBtn: {
+    marginTop: 30,
+    height: 56,
+    borderRadius: 40,
+    backgroundColor: '#111',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  updateTxt: {
+    color: '#FFF',
+    fontSize: 18,
+    fontFamily: FONTS.semibold,
+  },
+
+  pickerOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.3)',
+    justifyContent: 'flex-end',
+  },
+  pickerCard: {
+    backgroundColor: '#FFF',
+    padding: 10,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+  },
+
+  phoneInputRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginTop: 18,
     borderRadius: 24,
     borderWidth: 1,
     borderColor: '#E6E6E6',
-    paddingHorizontal: 14,
+    // paddingVertical: 6,
+    paddingHorizontal: 18,
     backgroundColor: '#fff',
-    color: '#111',
-    marginTop: 10,
+    height:50
   },
 
-  phoneRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 10 },
-  ccBtn: {
-    flexDirection: 'row', alignItems: 'center', gap: 6,
-    borderWidth: 1, borderColor: '#E6E6E6',
-    backgroundColor: '#fff', borderRadius: 24,
-    paddingVertical: 10, paddingHorizontal: 12,
-  },
-  ccTxt: { fontSize: 14, color: '#111', fontFamily: FONTS.regular },
-
-  switchRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 12 },
-  checkboxLike: {
-    width: 32, height: 32, borderRadius: 16,
-    alignItems: 'center', justifyContent: 'center',
-    backgroundColor: '#F6F7F8',
-    borderWidth: 1, borderColor: '#EEE',
-  },
-  switchLabel: { color: '#111', fontFamily: FONTS.semibold },
-
-  cta: {
-    margin: 20,
-    height: 50,
-    borderRadius: 28,
-    backgroundColor: '#111',
+  ccButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
+    gap: 6,
+    paddingVertical: 0,
   },
-  ctaTxt: { color: '#fff', fontFamily: FONTS.bold },
-  ctaIcon: {
-    width: 32, height: 32, borderRadius: 16,
-    backgroundColor: MINT, alignItems: 'center', justifyContent: 'center', position: 'absolute', right: 10,
+  ccText: { fontSize: 16, color: '#201E20', fontFamily: FONTS.regular },
+  phoneInput: {
+    flex: 1,
+    fontFamily: FONTS.regular,
+    fontSize: 16,
+    paddingVertical: 0,
   },
 
-  modalBg: { flex: 1, backgroundColor: 'rgba(0,0,0,0.25)', justifyContent: 'flex-end' },
-  modalCard: {
-    backgroundColor: '#fff',
-    paddingHorizontal: 12,
-    paddingTop: 12,
-    paddingBottom: 24,
-    borderTopLeftRadius: 16,
-    borderTopRightRadius: 16,
+  checkboxRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 16,
+    marginHorizontal:8,
+    gap: 12,
   },
-  modalTitle: { fontSize: 16, color: '#111', marginBottom: 8, fontFamily: FONTS.bold },
+  checkboxBox: {
+    width: 20,
+    height: 20,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  checkboxChecked: { backgroundColor: '#201E20', borderColor: '#111' },
+  checkboxText: { color: '#111', fontFamily: FONTS.regular,fontSize:16 },
 });

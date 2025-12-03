@@ -7,6 +7,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Swipeable } from 'react-native-gesture-handler';
 import { FONTS } from '../../src/theme/fonts';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { RootStackParamList } from '../navigation/types';
+
+type Props = NativeStackScreenProps<RootStackParamList, 'Notifications'>;
 
 type Notice = {
   id: string;
@@ -27,7 +31,7 @@ const seed: Notice[] = [
   { id: '7', title: 'Discounts and news', body: 'Includes special offers, recommendations, and product updates.', date: '2025-05-06' },
 ];
 
-export default function NotificationsScreen() {
+export default function NotificationsScreen({ navigation }:Props) {
   const [items, setItems] = useState(seed);
 
   const onDelete = (id: string) => setItems(prev => prev.filter(n => n.id !== id));
@@ -39,7 +43,7 @@ export default function NotificationsScreen() {
 
   const renderRightActions = (id: string) => (
     <Pressable style={styles.deletePane} onPress={() => onDelete(id)}>
-      <Ionicons name="trash" size={22} color="#fff" />
+      <Ionicons name="trash" size={24} color="#fff" />
     </Pressable>
   );
 
@@ -74,10 +78,12 @@ export default function NotificationsScreen() {
     <SafeAreaView style={styles.safe}>
       {/* header */}
       <View style={styles.header}>
-        <Pressable style={styles.roundBtn}><Ionicons name="ellipsis-horizontal" size={18} color="#111" /></Pressable>
+        <View style={{flexDirection:'row',alignItems:'center',gap:14}}>
+        <Pressable onPress={()=> navigation.goBack()} style={styles.roundBtn}><Text style={{ fontSize: 20, color: "#201E20" }}>•••</Text></Pressable>
         <Text style={styles.headerTitle}>Notifications</Text>
-        <Pressable style={styles.roundBtn} onPress={() => setItems([])}>
-          <Ionicons name="trash-outline" size={18} color="#111" />
+        </View>
+        <Pressable style={styles.roundDelBtn} onPress={() => setItems([])}>
+          <Ionicons name="trash-outline" size={24} color="#fff" />
         </Pressable>
       </View>
 
@@ -97,36 +103,52 @@ const styles = StyleSheet.create({
 
   header: {
     flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-    paddingHorizontal: 12, paddingBottom: 8, paddingTop: 6,
+    paddingHorizontal: 18, paddingBottom: 8, paddingTop: 6,
   },
-  headerTitle: { color: '#111', fontSize: 18, fontFamily: FONTS.bold },
+  headerTitle: { color: '#111', fontSize: 18, fontFamily: FONTS.regular },
   roundBtn: {
-    width: 34, height: 34, borderRadius: 17, backgroundColor: '#F3F4F5',
-    alignItems: 'center', justifyContent: 'center',
+     width: 48,
+    height: 48,
+    borderRadius: 32,
+    borderColor: '#D5D5D7',
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  roundDelBtn: {
+     width: 48,
+    height: 48,
+    borderRadius: 32,
+    borderColor: '#D5D5D7',
+    backgroundColor:'#000',
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   card: {
     flexDirection: 'row',
     paddingVertical: 14,
-    paddingHorizontal: 10,
+    paddingHorizontal: 8,
+    gap:18,
     backgroundColor: '#fff',
-    borderRadius: 12,
+    borderRadius: 24,
   },
   dateCol: { width: 64, alignItems: 'center' },
   dateBadge: {
-    width: 52, borderRadius: 8, backgroundColor: '#F3F4F5',
+    width: 70,height:70, borderRadius: 24, backgroundColor: '#EFEFEF',
     alignItems: 'center', justifyContent: 'center', paddingVertical: 6,
   },
-  day: { color: '#111', fontFamily: FONTS.bold },
+  day: { color: '#111', fontFamily: FONTS.regular,fontSize: 16 },
   mon: { color: '#6C7075', fontSize: 12, fontFamily: FONTS.regular },
 
-  title: { color: '#111', marginBottom: 4, fontFamily: FONTS.bold },
-  body: { color: '#6C7075', lineHeight: 18, fontFamily: FONTS.regular },
+  title: { color: '#111', marginBottom: 4, fontFamily: FONTS.medium,fontSize:16 },
+  body: { color: '#6C7075', lineHeight: 18, fontFamily: FONTS.regular,fontSize:16 },
 
   separator: { height: 1, backgroundColor: '#EEE', marginLeft: 74, marginRight: 10 },
 
   deletePane: {
     width: 84, alignItems: 'center', justifyContent: 'center',
-    backgroundColor: '#E53935', marginVertical: 6, borderTopRightRadius: 12, borderBottomRightRadius: 12,
+    backgroundColor: '#DF0000', marginVertical: 6, borderTopRightRadius: 12, borderBottomRightRadius: 12,
   },
 });
