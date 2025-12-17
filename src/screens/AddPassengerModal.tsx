@@ -18,6 +18,7 @@ import {
   Animated,
   Easing,
   InteractionManager,
+  type ViewToken,
 } from 'react-native';
 import {
   SafeAreaView,
@@ -43,6 +44,20 @@ const MINT = '#B9FBE7';
 export default function AddPassengerModal({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const seatListRef = useRef<FlatList>(null);
+  const [seatPage, setSeatPage] = useState(0);
+  const seatViewabilityConfig = useRef({
+    viewAreaCoveragePercentThreshold: 60,
+  }).current;
+  const seatViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: Array<ViewToken> }) => {
+      if (viewableItems && viewableItems.length > 0) {
+        const first = viewableItems[0];
+        if (typeof first.index === 'number') {
+          setSeatPage(Math.max(0, first.index));
+        }
+      }
+    },
+  ).current;
 
   const [isLoading, setIsLoading] = useState(true);
 
@@ -136,6 +151,10 @@ export default function AddPassengerModal({ navigation, route }: Props) {
       }
     })();
   }, []);
+
+  useEffect(() => {
+    setSeatPage(0);
+  }, [seatTypes.length]);
 
   // Safe helper: choose a passenger type by keyword
   const chooseType = (keywords: string[], fallbackIndex: number) => {
@@ -257,11 +276,9 @@ export default function AddPassengerModal({ navigation, route }: Props) {
         >
           {/* Top bar */}
           <View style={styles.topBar}>
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>Schedule a Ride</Text>
-            </View>
+          <Text style={styles.title}>Add Passenger</Text>
             <Pressable style={styles.close} onPress={() => exit(true)}>
-              <Ionicons name="close" size={18} color="#111" />
+              <Ionicons name="close" size={24} color="#8D8E8F" />
             </Pressable>
           </View>
 
@@ -269,7 +286,6 @@ export default function AddPassengerModal({ navigation, route }: Props) {
             contentContainerStyle={{ paddingBottom: 18 }}
             showsVerticalScrollIndicator={false}
           >
-            <Text style={styles.title}>Add Passenger</Text>
 
             {/* Counters */}
             <View style={styles.block}>
@@ -337,7 +353,9 @@ export default function AddPassengerModal({ navigation, route }: Props) {
                           }))
                         }
                       />
-                      {idx < passengerTypes.length - 1 && <Separator />}
+                      {/* {idx < passengerTypes.length - 1 && <View style={{flexDirection:'row',justifyContent:'center',alignItems:'center'}}>
+                        <Separator />
+                        </View>} */}
                     </View>
                   );
                 })
@@ -346,9 +364,10 @@ export default function AddPassengerModal({ navigation, route }: Props) {
 
             {/* Child seats */}
             <View style={{ marginTop: 14 }}>
-              <View style={styles.freePill}>
+              {/* <View style={styles.freePill}>
                 <Text style={styles.freeText}>Free</Text>
-              </View>
+              </View> */}
+              <Image source={require('../../assets/icons/free-icon.png')} alt='free-icon' style={{width:50,height:28}} />
 
               <View style={styles.seatHeader}>
                 <View
@@ -359,22 +378,23 @@ export default function AddPassengerModal({ navigation, route }: Props) {
                   </Text>
                   <Image
                     source={assets.images.passengerIcon}
-                    style={{ width: 30, height: 30, resizeMode: 'contain' }}
+                    style={{ width: 44, height: 44, resizeMode: 'contain' }}
                   />
                 </View>
+              </View>
                 <Pressable onPress={() => navigation.navigate('ChildSeatInfo')}>
                   <View
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
-                      justifyContent: 'center',
+                      justifyContent: 'flex-end',
+                      marginTop: 20,
                     }}
                   >
                     <Text style={styles.link}>Found right seat </Text>
                     <Icon name="chevron-forward" size={16} color="#6086C1" />
                   </View>
                 </Pressable>
-              </View>
 
               <FlatList
                 ref={seatListRef}
@@ -382,6 +402,8 @@ export default function AddPassengerModal({ navigation, route }: Props) {
                 keyExtractor={it => String(it.id)}
                 horizontal
                 showsHorizontalScrollIndicator={false}
+                viewabilityConfig={seatViewabilityConfig}
+                onViewableItemsChanged={seatViewableItemsChanged}
                 contentContainerStyle={{
                   paddingHorizontal: 4,
                   paddingTop: 8,
@@ -432,6 +454,19 @@ export default function AddPassengerModal({ navigation, route }: Props) {
                   );
                 }}
               />
+              {seatTypes.length > 1 && (
+                <View style={styles.dotsRow}>
+                  {seatTypes.map((seat, idx) => (
+                    <View
+                      key={String(seat.id ?? idx)}
+                      style={[
+                        styles.dot,
+                        idx === seatPage ? styles.dotActive : styles.dotInactive,
+                      ]}
+                    />
+                  ))}
+                </View>
+              )}
             </View>
           </ScrollView>
 
@@ -470,7 +505,7 @@ export default function AddPassengerModal({ navigation, route }: Props) {
                 });
               }}
             >
-              <Text style={styles.luggageText}>Add Luggage</Text>
+              <Text style={styles.luggageText}>+ Add Luggage</Text>
               <View style={styles.mintCircle}>
                 <AntDesign name="arrowright" size={18} color="#111" />
               </View>
@@ -505,11 +540,16 @@ function Row({
   return (
     <View style={styles.row}>
       <View style={styles.rowIcon}>{icon}</View>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.rowTitle}>{title}</Text>
-        <Text style={styles.rowSub}>{subtitle}</Text>
+      <View>
+        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+        <View style={{ flex: 1 }}>
+          <Text style={styles.rowTitle}>{title}</Text>
+          <Text style={styles.rowSub} numberOfLines={1} ellipsizeMode="tail">{subtitle}</Text>
+        </View>
+        <Stepper value={value} onMinus={onMinus} onPlus={onPlus} />
+        </View>
+        <Separator />
       </View>
-      <Stepper value={value} onMinus={onMinus} onPlus={onPlus} />
     </View>
   );
 }
@@ -525,11 +565,13 @@ function Stepper({
   return (
     <View style={styles.stepper}>
       <Pressable style={styles.stepBtn} onPress={onMinus}>
-        <AntDesign name="minus" size={14} color="#111" />
+        {/* <AntDesign name="minus" size={14} color="#111" /> */}
+        <Image source={require('../../assets/icons/minus-icon.png')} alt='minus' style={{width:40,height:40}} />
       </Pressable>
       <Text style={styles.stepVal}>{value}</Text>
       <Pressable style={[styles.stepBtn, styles.stepBtnPlus]} onPress={onPlus}>
-        <AntDesign name="plus" size={14} color="#fff" />
+        {/* <AntDesign name="plus" size={14} color="#fff" /> */}
+        <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:40,height:40}} />
       </Pressable>
     </View>
   );
@@ -561,23 +603,19 @@ function SeatCard({
         <Text style={styles.seatTitleSmall} numberOfLines={2}>
           {title}
         </Text>
-        <View style={{ marginHorizontal: -6 }}>{icon}</View>
+        <View style={{ marginHorizontal: -6,width:72,height:72 }}>{icon}</View>
       </View>
-      <View style={styles.seatStepper}>
-        <Pressable
-          style={[styles.seatBtn, styles.seatBtnMinus]}
-          onPress={onMinus}
-        >
-          <AntDesign name="minus" size={12} color="#111" />
-        </Pressable>
-        <Text style={styles.seatVal}>{value}</Text>
-        <Pressable
-          style={[styles.seatBtn, styles.seatBtnPlus]}
-          onPress={onPlus}
-        >
-          <AntDesign name="plus" size={12} color="#fff" />
-        </Pressable>
-      </View>
+       <View style={styles.seatStepper}>
+      <Pressable style={styles.stepBtn} onPress={onMinus}>
+        {/* <AntDesign name="minus" size={14} color="#111" /> */}
+        <Image source={require('../../assets/icons/minus-icon.png')} alt='minus' style={{width:40,height:40}} />
+      </Pressable>
+      <Text style={styles.stepVal}>{value}</Text>
+      <Pressable style={[styles.stepBtn, styles.stepBtnPlus]} onPress={onPlus}>
+        {/* <AntDesign name="plus" size={14} color="#fff" /> */}
+        <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:40,height:40}} />
+      </Pressable>
+    </View>
     </View>
   );
 }
@@ -587,7 +625,7 @@ const styles = StyleSheet.create({
   fill: { flex: 1 },
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: 'rgba(0,0,0,0.55)',
   },
   sheetWrap: {
     flex: 1,
@@ -612,7 +650,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginVertical: 12,
   },
   badge: {
     paddingHorizontal: 10,
@@ -627,18 +665,18 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F2F2F2',
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  title: { color: '#111', fontSize: 16, marginBottom: 10, fontFamily: FONTS.bold },
+  title: { color: '#201E20', fontSize: 20, marginBottom: 10, fontFamily: FONTS.semibold },
 
   block: {
     borderRadius: 14,
     backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#EFEFEF',
+    // borderWidth: 1,
+    // borderColor: '#EFEFEF',
   },
   row: {
     flexDirection: 'row',
@@ -647,30 +685,30 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   rowIcon: {
-    width: 40,
-    height: 40,
+    width: 48,
+    height: 48,
     borderRadius: 16,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
-  rowTitle: { color: '#111', fontFamily: FONTS.bold },
-  rowSub: { color: '#777', fontSize: 12, marginTop: 2, width: '90%', fontFamily: FONTS.regular },
-  separator: { height: 1, backgroundColor: '#F0F0F0', marginHorizontal: 8 },
+  rowTitle: { color: '#201E20', fontFamily: FONTS.regular,fontSize: 20 },
+  rowSub: { color: '#8D8E8F', fontSize: 14, marginTop: 0, width: '75%', fontFamily: FONTS.regular },
+  separator: { height: 1,width:290,alignItems:'center',justifyContent:'center',flexDirection:'row',alignContent:'center', backgroundColor: '#F0F0F0', },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   stepBtn: {
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#F6F7F8',
+    // backgroundColor: '#F6F7F8',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
     borderColor: '#EEE',
   },
   stepBtnPlus: { backgroundColor: '#111', borderColor: '#111' },
-  stepVal: { width: 20, textAlign: 'center', color: '#111', fontFamily: FONTS.bold },
+  stepVal: { width: 40, textAlign: 'center', color: '#201E20', fontFamily: FONTS.regular,fontSize: 32 },
 
   freePill: {
     alignSelf: 'flex-start',
@@ -686,19 +724,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  seatTitle: { color: '#111', fontFamily: FONTS.regular },
-  link: { color: '#6086C1', fontFamily: FONTS.semibold },
+  seatTitle: { color: '#201E20', fontFamily: FONTS.regular, fontSize: 20 },
+  link: { color: '#6086C1', fontFamily: FONTS.regular,fontSize: 16 },
 
   seatCard: {
-    width: 180,
-    borderRadius: 14,
+    width: 170,
+    height: 160,
+    borderRadius: 24,
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#CFCDCD',
-    padding: 12,
+    padding: 16,
     marginRight: 10,
   },
-  seatTitleSmall: { color: '#111', width: 80, fontFamily: FONTS.regular },
+  seatTitleSmall: { color: '#201E20', width: 80, fontFamily: FONTS.regular, fontSize: 16, marginBottom: 30 },
   seatStepper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -707,9 +746,9 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   seatBtn: {
-    width: 34,
-    height: 34,
-    borderRadius: 20,
+    width: 50,
+    height: 50,
+    borderRadius: 50,
     backgroundColor: '#F6F7F8',
     alignItems: 'center',
     justifyContent: 'center',
@@ -725,6 +764,20 @@ const styles = StyleSheet.create({
     color: '#111',
     fontFamily: FONTS.bold,
   },
+  dotsRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 16,
+  },
+  dot: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+  },
+  dotActive: { backgroundColor: '#222' },
+  dotInactive: { backgroundColor: '#D7D7D7' },
 
   bottomRow: {
     flexDirection: 'row',
@@ -737,25 +790,25 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 10,
-    height: 48,
+    height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     paddingHorizontal: 16,
     flex: 1,
-    marginRight: 14,
+    marginRight: 16,
   },
-  luggageText: { color: '#fff', fontFamily: FONTS.bold },
+  luggageText: { color: '#FCFCFC', fontFamily: FONTS.semibold, fontSize: 17 },
   mintCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 44,
+    height: 44,
+    borderRadius: 32,
     backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
-    right: 10,
+    right: 8,
   },
-  skip: { color: '#111', fontFamily: FONTS.bold },
+  skip: { color: '#201E20', fontFamily: FONTS.semibold, fontSize: 17,textDecorationLine:'underline',paddingRight:4 },
 });
 function Separator() {
   return <View style={styles.separator} />;

@@ -1,6 +1,6 @@
 // src/screens/LuggageScanInfoModal.tsx
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FONTS } from '../../src/theme/fonts';
@@ -27,7 +27,7 @@ export default function LuggageScanInfoModal({ navigation, route }: Props) {
           <View style={styles.header}>
             <Text style={styles.title}>Add Luggage</Text>
             <Pressable style={styles.close} onPress={() => navigation.goBack()}>
-              <Ionicons name="close" size={18} color="#111" />
+              <Ionicons name="close" size={24} color="#8D8E8F" />
             </Pressable>
           </View>
 
@@ -50,11 +50,16 @@ export default function LuggageScanInfoModal({ navigation, route }: Props) {
             title="Check your bag size"
             body="Move your phone again to place the cage over your bag to see if it fits the permitted cabin dimensions."
           />
-
+          <Sep />
           <Pressable style={styles.cta} onPress={start}>
             <Text style={styles.ctaText}>Scan now</Text>
             <View style={styles.ctaIcon}>
-              <Ionicons name="camera-outline" size={18} color="#111" />
+              <Image
+                              source={require('../../assets/icons/camera-bg-icon.png')}
+                              style={{ width: 44, height: 44 }}
+                              resizeMode="contain"
+                            />
+              {/* <Ionicons name="camera-outline" size={18} color="#111" /> */}
             </View>
           </Pressable>
         </View>
@@ -75,7 +80,7 @@ function Step({ title, body }: { title: string; body: string }) {
   );
 }
 function Sep() {
-  return <View style={{ height: 12 }} />;
+  return <View style={styles.stepDivider} />;
 }
 
 const styles = StyleSheet.create({
@@ -83,7 +88,7 @@ const styles = StyleSheet.create({
   // DIMMED
   backdrop: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.35)',
+    backgroundColor: 'rgba(0,0,0,0.55)',
   },
 
   sheetWrap: { flex: 1, justifyContent: 'flex-end' },
@@ -105,21 +110,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 8,
+    marginVertical: 16,
+    marginHorizontal: 6,
   },
-  title: { color: '#111', fontSize: 16, fontFamily: FONTS.bold },
+  title: { color: '#201E20', fontSize: 20, fontFamily: FONTS.semibold },
   close: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F2F2F2',
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
   },
 
   cta: {
-    marginTop: 16,
-    height: 48,
+    marginVertical: 14,
+    height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',
@@ -127,20 +133,28 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#FCFCFC', fontFamily: FONTS.semibold, fontSize: 17 },
   ctaIcon: {
-    width: 30,
-    height: 30,
+    width: 40,
+    // height: 30,
     borderRadius: 15,
-    backgroundColor: MINT,
+    // backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',
     right: 10,
   },
+  stepDivider: {
+    borderBottomWidth: 1,
+    borderColor: '#E0E0E0',
+    borderStyle: 'dotted',
+    marginVertical: 14,
+    width: '100%',
+    alignSelf: 'stretch',
+  },
 });
 const stepStyles = StyleSheet.create({
-  wrap: { flexDirection: 'row', gap: 10 },
+  wrap: { flexDirection: 'row', alignItems: 'flex-start' },
   bullet: {
     width: 6,
     height: 6,
@@ -148,6 +162,6 @@ const stepStyles = StyleSheet.create({
     backgroundColor: '#fff',
     marginTop: 8,
   },
-  title: { color: '#111', fontFamily: FONTS.bold },
-  body: { color: '#666', marginTop: 4, lineHeight: 18, fontFamily: FONTS.regular },
+  title: { color: '#201E20', fontFamily: FONTS.semibold,fontSize:16 },
+  body: { color: '#8D8E8F', marginTop: 4,letterSpacing:.2, lineHeight: 24, fontFamily: FONTS.regular,fontSize:16 },
 });

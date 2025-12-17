@@ -35,6 +35,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'AddLuggage'>;
 
 const MINT = '#B9FBE7';
 const SIZES: LuggageSize[] = ['XL', 'L', 'M', 'S', 'Carry-on', 'Backpack'];
+const FALLBACK_SIZE_ORDER: LuggageSize[] = ['Backpack', 'Carry-on', 'S', 'M', 'L', 'XL'];
 const IMAGES: any[] = [
   require('../../assets/icons/2xl.png'),
   require('../../assets/icons/l.png'),
@@ -51,6 +52,54 @@ const imagesBySize: Partial<Record<LuggageSize, any>> = {
   S: IMAGES[3],
   'Carry-on': IMAGES[4],
   Backpack: IMAGES[5],
+};
+
+type LuggageDimensions = NonNullable<LuggageType['dimensions']>;
+
+const formatSizeLabel = (label: string) => {
+  const words = label
+    .split(/\s+/)
+    .map(w => w.trim())
+    .filter(Boolean);
+  if (words.length === 0) return '';
+  if (words.length === 1) return words[0][0]?.toUpperCase() ?? '';
+  const first = words[0][0] ?? '';
+  const last = words[words.length - 1][0] ?? '';
+  return `${first}${last}`.toUpperCase();
+};
+
+const formatMeasurement = (value?: number | null, unit = 'cm') => {
+  if (value == null || !isFinite(Number(value))) return `-- ${unit}`;
+  const num = Math.round(Number(value) * 10) / 10;
+  const display = Number.isInteger(num) ? `${num}` : num.toFixed(1);
+  return `${display} ${unit}`;
+};
+
+const toKg = (value?: number | null) => {
+  if (value == null) return undefined;
+  const raw = Number(value);
+  if (!isFinite(raw)) return undefined;
+  const converted = raw > 400 ? raw / 1000 : raw;
+  return Math.round(converted * 10) / 10;
+};
+
+const getLengthValue = (dims?: LuggageDimensions | null) =>
+  dims?.length ?? dims?.legnth ?? dims?.width;
+
+const scaleBoxMeasurement = (
+  value?: number | null,
+  axis: 'width' | 'height' = 'height',
+) => {
+  if (!value || !isFinite(value)) {
+    return axis === 'height' ? 72 : 64;
+  }
+  const minInput = 32;
+  const maxInput = 120;
+  const minPx = axis === 'height' ? 64 : 58;
+  const maxPx = axis === 'height' ? 96 : 84;
+  const clamped = Math.min(Math.max(value, minInput), maxInput);
+  const ratio = (clamped - minInput) / (maxInput - minInput);
+  return minPx + ratio * (maxPx - minPx);
 };
 
 export default function AddLuggageModal({ navigation, route }: Props) {
@@ -135,26 +184,6 @@ export default function AddLuggageModal({ navigation, route }: Props) {
     (route.params?.initial ?? []).filter(i => i.size === 'Oversized'),
   );
 
-  // Build a flat LuggageItem[] from countsByLabel + oversized (for onDone compatibility)
-  const primaryFromCounts: LuggageItem[] = useMemo(() => {
-    const rows: LuggageItem[] = [];
-    Object.entries(countsByLabel).forEach(([label, qty]) => {
-      if (!qty) return;
-      rows.push({
-        size: label as LuggageSize,
-        count: qty,
-        weightKg,
-        dimsCm: { w: 36, h: 55 },
-      });
-    });
-    return rows;
-  }, [countsByLabel, weightKg]);
-
-  const items: LuggageItem[] = useMemo(
-    () => [...primaryFromCounts, ...oversized],
-    [primaryFromCounts, oversized],
-  );
-
   // Helpers
   const normalizeLabel = (value?: string) =>
     (value ?? '').toString().trim().toLowerCase();
@@ -198,6 +227,54 @@ export default function AddLuggageModal({ navigation, route }: Props) {
     });
     return map;
   }, [luggageTypes]);
+
+  const labelToType = useMemo(() => {
+    const map = new Map<string, LuggageType>();
+    luggageTypes?.forEach(type => {
+      map.set(type.label, type);
+    });
+    return map;
+  }, [luggageTypes]);
+
+  const sortedLuggageTypes = useMemo(() => {
+    if (!luggageTypes || luggageTypes.length === 0) return [];
+    const metric = (type: LuggageType) => {
+      const dims = type.dimensions ?? null;
+      const height = dims?.height ?? getLengthValue(dims) ?? 0;
+      const width = dims?.width ?? getLengthValue(dims) ?? 0;
+      if (!height && !width) return Number.MAX_SAFE_INTEGER;
+      return height * width;
+    };
+    return [...luggageTypes].sort((a, b) => {
+      const diff = metric(a) - metric(b);
+      if (diff !== 0) return diff;
+      return a.label.localeCompare(b.label);
+    });
+  }, [luggageTypes]);
+
+  // Build a flat LuggageItem[] from countsByLabel + oversized (for onDone compatibility)
+  const primaryFromCounts: LuggageItem[] = useMemo(() => {
+    const rows: LuggageItem[] = [];
+    Object.entries(countsByLabel).forEach(([label, qty]) => {
+      if (!qty) return;
+      const dims = labelToType.get(label)?.dimensions ?? null;
+      const width = dims?.width ?? getLengthValue(dims) ?? 36;
+      const height = dims?.height ?? getLengthValue(dims) ?? 55;
+      const derivedWeight = toKg(dims?.weight) ?? weightKg;
+      rows.push({
+        size: label as LuggageSize,
+        count: qty,
+        weightKg: derivedWeight,
+        dimsCm: { w: width, h: height },
+      });
+    });
+    return rows;
+  }, [countsByLabel, labelToType, weightKg]);
+
+  const items: LuggageItem[] = useMemo(
+    () => [...primaryFromCounts, ...oversized],
+    [primaryFromCounts, oversized],
+  );
 
   // Build final API payload: [{luggage_type_id, quantity}, ...]
   const selectedLuggage = useMemo<SelectedLuggagePayload[]>(() => {
@@ -244,9 +321,19 @@ export default function AddLuggageModal({ navigation, route }: Props) {
   }, [countsByLabel, oversized, labelToId]);
 
   const apiLabelToImageUrl = (label: string): string | null => {
-    const t = luggageTypes.find(x => x.label === label);
-    return t?.image_url ?? null;
+    const type = labelToType.get(label);
+    return type?.image_url ?? null;
   };
+
+  const selectedType = labelToType.get(selected);
+  const selectedDimensions = selectedType?.dimensions ?? null;
+  const fallbackLength = getLengthValue(selectedDimensions);
+  const previewHeightCm = selectedDimensions?.height ?? fallbackLength ?? 55;
+  const previewLengthCm = fallbackLength ?? 36;
+  const previewWeightKg = toKg(selectedDimensions?.weight) ?? weightKg;
+  const previewHeightLabel = formatMeasurement(previewHeightCm);
+  const previewLengthLabel = formatMeasurement(previewLengthCm);
+  const previewWeightLabel = formatMeasurement(previewWeightKg, 'kg');
 
   const exit = (emit = true) => {
     if (emit) route.params?.onDone?.(items);
@@ -277,14 +364,14 @@ export default function AddLuggageModal({ navigation, route }: Props) {
         style={[styles.stepBtn, styles.stepBtnMinus]}
         onPress={() => setCountForSelected(n => n - 1)}
       >
-        <AntDesign name="minus" size={16} color="#111" />
+         <Image source={require('../../assets/icons/minus-bg-white.png')} alt='minus' style={{width:38,height:38}} />
       </Pressable>
       <Text style={styles.stepVal}>{currentCount}</Text>
       <Pressable
         style={[styles.stepBtn, styles.stepBtnPlus]}
         onPress={() => setCountForSelected(n => n + 1)}
       >
-        <AntDesign name="plus" size={16} color="#fff" />
+        <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:38,height:38}} />
       </Pressable>
     </View>
   );
@@ -309,7 +396,7 @@ export default function AddLuggageModal({ navigation, route }: Props) {
           <View style={styles.header}>
             <Text style={styles.title}>Add Luggage</Text>
             <Pressable style={styles.close} onPress={() => exit(true)}>
-              <Ionicons name="close" size={18} color="#111" />
+              <Ionicons name="close" size={23} color="#8D8E8F" />
             </Pressable>
           </View>
 
@@ -354,10 +441,12 @@ export default function AddLuggageModal({ navigation, route }: Props) {
                   />
                 );
               })()}
-              <Text style={styles.leftDim}>55 cm</Text>
-              <Text style={styles.weightBubble}>{`${weightKg} kg`}</Text>
+              <Text style={styles.leftDim}>{previewHeightLabel}</Text>
+              <View style={styles.weightBubble}>
+                <Text style={styles.weightText}>{previewWeightLabel}</Text>
+              </View>
             </View>
-            <Text style={styles.dimBottom}>36 cm</Text>
+            <Text style={styles.dimBottom}>{previewLengthLabel}</Text>
           </View>
 
           {/* Stepper */}
@@ -376,15 +465,15 @@ export default function AddLuggageModal({ navigation, route }: Props) {
               }
             >
               <Image
-                source={require('../../assets/icons/cameraIcon.png')}
-                style={{ width: 20, height: 20 }}
+                source={require('../../assets/icons/camera-bg-icon.png')}
+                style={{ width: 56, height: 56 }}
                 resizeMode="contain"
               />
             </Pressable>
 
             <View style={styles.scanLabelRow}>
               <Text style={styles.scanText}>Scan Bag size</Text>
-              <Ionicons
+              {/* <Ionicons
                 name="information-circle-outline"
                 size={16}
                 color="#111"
@@ -393,7 +482,14 @@ export default function AddLuggageModal({ navigation, route }: Props) {
                     onStartScan: () => {},
                   })
                 }
-              />
+              /> */}
+              <Pressable onPress={() =>
+                  navigation.navigate('LuggageScanInfo', {
+                    onStartScan: () => {},
+                  })
+                }>
+              <Image source={require('../../assets/icons/info-icon.png')} alt='info' style={{width:19.5,height:19.5}} />
+              </Pressable>
             </View>
           </View>
 
@@ -401,54 +497,74 @@ export default function AddLuggageModal({ navigation, route }: Props) {
           <FlatList
             horizontal
             data={
-              luggageTypes.length > 0 ? luggageTypes.map(t => t.label) : SIZES
+              sortedLuggageTypes.length > 0 ? sortedLuggageTypes : FALLBACK_SIZE_ORDER
             }
-            keyExtractor={s => s}
+            keyExtractor={value =>
+              typeof value === 'string' ? value : `${value.id}-${value.label}`
+            }
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{
               paddingHorizontal: 10,
               paddingVertical: 6,
             }}
             renderItem={({ item }) => {
-              const boxSize =
-                item === 'XL' ? 80 : item === 'L' ? 70 : item === 'M' ? 60 : 50;
-              const imgSize = Math.max(28, boxSize - 28);
-              const isSelected = selected === item;
-              const url = apiLabelToImageUrl(item);
+              const label = typeof item === 'string' ? item : item.label;
+              const dims =
+                typeof item === 'string' ? undefined : item.dimensions ?? null;
+              const iconUrl =
+                typeof item === 'string' ? null : item.icon_url ?? null;
+              const isSelected = selected === label;
+              const boxHeight = scaleBoxMeasurement(
+                dims?.height ?? getLengthValue(dims),
+                'height',
+              );
+              const boxWidth = scaleBoxMeasurement(
+                dims?.width ?? getLengthValue(dims),
+                'width',
+              );
+              const imgSize = Math.max(26, Math.min(boxHeight, boxWidth) - 28);
+
               const localSrc =
-                item === 'Backpack'
+                label === 'Backpack'
                   ? require('../../assets/icons/backpack-icon.png')
-                  : item === 'Carry-on'
+                  : label === 'Carry-on'
                   ? require('../../assets/icons/carryon-icon.png')
-                  : item === 'XL'
+                  : label === 'XL'
                   ? require('../../assets/icons/2xl-icon.png')
-                  : item === 'L'
+                  : label === 'L'
                   ? require('../../assets/icons/l-icon.png')
-                  : item === 'M'
+                  : label === 'M'
                   ? require('../../assets/icons/m-icon.png')
                   : require('../../assets/icons/s-icon.png');
 
-              const qty = countsByLabel[item] ?? 0;
+              const qty = countsByLabel[label] ?? 0;
 
               return (
                 <Pressable
                   onPress={() => {
-                    setSelected(item);
+                    setSelected(label);
                     // ensure the label exists in the map
-                    setCountsByLabel(prev => ({ ...prev, [item]: prev[item] ?? 0 }));
+                    setCountsByLabel(prev => ({
+                      ...prev,
+                      [label]: prev[label] ?? 0,
+                    }));
                   }}
                   style={styles.sizePress}
                 >
                   <View
                     style={[
                       styles.sizeBox,
-                      { width: boxSize, height: boxSize, borderRadius: 16 },
+                      {
+                        width: boxWidth,
+                        height: boxHeight,
+                        borderRadius: 16,
+                      },
                       isSelected && styles.sizeBoxSelected,
                     ]}
                   >
-                    {url ? (
+                    {iconUrl ? (
                       <Image
-                        source={{ uri: url }}
+                        source={{ uri: iconUrl }}
                         style={{ width: imgSize, height: imgSize }}
                         resizeMode="contain"
                       />
@@ -467,7 +583,7 @@ export default function AddLuggageModal({ navigation, route }: Props) {
                       </View>
                     )}
                   </View>
-                  <Text style={styles.sizeLabel}>{item}</Text>
+                  <Text style={styles.sizeLabel}>{formatSizeLabel(label)}</Text>
                 </Pressable>
               );
             }}
@@ -486,7 +602,7 @@ export default function AddLuggageModal({ navigation, route }: Props) {
           >
             <Image
               source={require('../../assets/icons/addOversized.png')}
-              style={{ width: 26, height: 26, marginRight: 4 }}
+              style={{ width: 44, height: 44, marginRight: 4 }}
               resizeMode="contain"
             />
             <Text style={styles.overText}>+ Add Oversized</Text>
@@ -525,14 +641,21 @@ export default function AddLuggageModal({ navigation, route }: Props) {
               }
             }}
           >
+            {route.params?.when ? (
             <Text style={styles.ctaText}>
-              {route.params?.when ? 'Fare Options' : '+ Date & Time'}
+              Fare Options
             </Text>
+            ): (
+              <Text style={styles.ctaText}>
+                `+Date&Time <AntDesign style={{marginTop:4}} name="arrowright" size={20} color="#fff" />
+              </Text>
+            )}
             <View style={styles.ctaIcon}>
               {route.params?.when ? (
                 <AntDesign name="arrowright" size={18} color="#111" />
               ) : (
-                <Ionicons name="calendar-outline" size={18} color="#111" />
+                // <Ionicons name="calendar-outline" size={18} color="#111" />
+                <Image source={require('../../assets/icons/date-time-icon.png')} alt='calendar' style={{width:44,height:44}} />
               )}
             </View>
           </Pressable>
@@ -567,36 +690,41 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 8,
   },
-  title: { color: '#111', fontSize: 16, fontFamily: FONTS.bold },
+  title: { color: '#201E20', fontSize: 20, fontFamily: FONTS.semibold },
   close: {
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: '#F2F2F2',
+    // backgroundColor: '#F2F2F2',
     alignItems: 'center',
     justifyContent: 'center',
   },
 
-  previewWrap: { alignItems: 'center', marginTop: 6, marginBottom: 6 },
+  previewWrap: { alignItems: 'center', marginTop: 70, marginBottom: 6 },
   sizeBadge: {
     position: 'absolute',
-    top: -6,
-    backgroundColor: MINT,
-    borderRadius: 14,
+    top: -50,
+    backgroundColor: "#B1FBE3",
+    borderRadius: 50,
+    // width: 44,
+    // height: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingRight: 14,
+    paddingVertical: 6,
     zIndex: 1,
   },
-  sizeText: { color: '#111', fontFamily: FONTS.bold },
+  sizeText: { color: '#111', fontFamily: FONTS.regular, fontSize: 24 },
   previewBox: {
-    width: 160,
-    height: 150,
+    width: 200,
+    height: 170,
     borderRadius: 18,
     alignItems: 'center',
     justifyContent: 'center',
     padding: 12,
   },
-  previewImage: { width: 120, height: 84, margin: 6 },
+  previewImage: { minWidth: 130, minHeight: 154, margin: 6 },
   corner: {
     position: 'absolute',
     width: 25,
@@ -613,8 +741,8 @@ const styles = StyleSheet.create({
   cornerBR: { top: undefined, bottom: 8, left: undefined, right: 8, transform: [{ rotate: '180deg' }] },
   leftDim: {
     position: 'absolute',
-    left: -28,
-    top: '55%',
+    left: -16,
+    top: '60%',
     transform: [{ translateY: -8 }],
     color: '#111',
     fontSize: 12,
@@ -623,18 +751,20 @@ const styles = StyleSheet.create({
   weightBubble: {
     position: 'absolute',
     right: -30,
-    top: '55%',
+    top: '49%',
     transform: [{ translateY: -12 }],
-    backgroundColor: '#111',
-    color: '#fff',
-    borderRadius: 18,
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    overflow: 'hidden',
-    fontSize: 12,
-    minWidth: 48,
-    textAlign: 'center',
+    backgroundColor: '#201E20',
+    minWidth: 60,
+    height: 60,
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  weightText: {
+    color: '#FCFCFC',
     fontFamily: FONTS.regular,
+    fontSize: 15,
   },
   dimBottom: { marginBottom: 6, color: '#777', fontSize: 12, fontFamily: FONTS.regular },
 
@@ -642,45 +772,47 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
-    marginTop: 10,
+    justifyContent: 'space-between',
+    gap: 16,
+    // marginVertical: 10,
     backgroundColor: '#EFEFEF',
-    borderRadius: 24,
-    height: 48,
-    paddingHorizontal: 8,
+    borderRadius: 30,
+    height: 50,
+    paddingHorizontal: 6,
+    minWidth: 200,
     borderWidth: 1,
-    borderColor: '#EEE',
+    borderColor: '#CFCDCD',
   },
   stepBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: '#F6F7F8',
+    width: 42,
+    height: 42,
+    borderRadius: 23,
+    backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     borderWidth: 1,
-    borderColor: '#EEE',
+    borderColor: '#E4E4E4',
   },
   stepBtnMinus: { backgroundColor: '#fff' },
-  stepBtnPlus: { backgroundColor: '#111', borderColor: '#111' },
+  stepBtnPlus: { backgroundColor: '#111', borderWidth: 0 },
   stepVal: {
-    width: 30,
+    flex: 1,
     textAlign: 'center',
-    color: '#111',
-    fontFamily: FONTS.bold,
-    fontSize: 18,
+    color: '#201E20',
+    fontFamily: FONTS.regular,
+    fontSize: 32,
   },
-  scanSection: { alignItems: 'center', justifyContent: 'center', marginTop: 14 },
+  scanSection: { alignItems: 'center', justifyContent: 'center', marginVertical: 24 },
   camBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: MINT,
+    // width: 36,
+    // height: 36,
+    // borderRadius: 18,
+    // backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  scanLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 8 },
-  scanText: { color: '#111', fontFamily: FONTS.bold },
+  scanLabelRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 4 },
+  scanText: { color: '#111', fontFamily: FONTS.semibold, fontSize: 16,marginRight:4 },
 
   sizePress: { alignItems: 'center', marginRight: 14, justifyContent: 'flex-end' },
   sizeBox: {
@@ -716,11 +848,11 @@ const styles = StyleSheet.create({
     marginTop: 22,
     alignSelf: 'center',
   },
-  overText: { color: '#111', fontFamily: FONTS.bold },
+  overText: { color: '#111', fontFamily: FONTS.semibold, fontSize: 17 },
 
   cta: {
-    marginTop: 14,
-    height: 48,
+    marginVertical: 14,
+    height: 56,
     borderRadius: 28,
     backgroundColor: '#111',
     flexDirection: 'row',
@@ -728,12 +860,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 10,
   },
-  ctaText: { color: '#fff', fontFamily: FONTS.bold },
+  ctaText: { color: '#FCFCFC', fontFamily: FONTS.semibold, fontSize: 17 },
   ctaIcon: {
-    width: 30,
-    height: 30,
+    width: 44,
+    height: 44,
     borderRadius: 15,
-    backgroundColor: MINT,
+    // backgroundColor: MINT,
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',

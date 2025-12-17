@@ -1,6 +1,6 @@
 // src/screens/AirportDetailsScreen.tsx
 import React, { useMemo, useRef, useState } from 'react';
-import { View, Text, FlatList, Pressable, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Pressable, StyleSheet, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { FONTS } from '../../src/theme/fonts';
@@ -39,7 +39,11 @@ export default function AirportDetailsScreen({ navigation, route }: Props) {
       }}
     >
       <View style={styles.pin}>
-        <Ionicons name="location-outline" size={16} color="#111" />
+        <Image
+          source={require('../../assets/icons/loc-icon.png')}
+          alt="location-icon"
+          style={{ width: 15, height: 21 }}
+        />
       </View>
       <View style={{ flex: 1 }}>
         <Text style={styles.title} numberOfLines={1}>
@@ -59,8 +63,7 @@ export default function AirportDetailsScreen({ navigation, route }: Props) {
         <Pressable onPress={() => navigation.goBack()} style={styles.hBtn}>
           <Ionicons name="chevron-back" size={18} color="#111" />
         </Pressable>
-        <Text style={styles.hTitle}>{screenTitle}</Text>
-        <View style={{ width: 36 }} />
+        {/* <Text style={styles.hTitle}>{screenTitle}</Text> */}
       </View>
 
       {/* Rounded scrollable card */}
@@ -74,19 +77,15 @@ export default function AirportDetailsScreen({ navigation, route }: Props) {
           keyExtractor={it => it.id}
           renderItem={renderItem}
           ItemSeparatorComponent={() => <View style={styles.sep} />}
-          contentContainerStyle={{ paddingVertical: 8, paddingRight: 8 }}
+          contentContainerStyle={{ paddingVertical: 12, paddingRight: 12 }}
           showsVerticalScrollIndicator={false}
           onContentSizeChange={(_, h) => setContentH(h)}
           onScroll={e => setScrollY(e.nativeEvent.contentOffset.y)}
-          scrollEventThrottle={16}
+          scrollEventThrottle={22}
         />
 
         {/* Custom scrollbar */}
-        <ScrollBar
-          viewportH={viewportH}
-          contentH={contentH}
-          scrollY={scrollY}
-        />
+        <ScrollBar viewportH={viewportH} contentH={contentH} scrollY={scrollY} />
       </View>
     </SafeAreaView>
   );
@@ -101,8 +100,15 @@ function ScrollBar({
   contentH: number;
   scrollY: number;
 }) {
+  // only show when content is noticeably taller than viewport
+  const hasScrollableContent = contentH > viewportH + 24; // small threshold
+
+  if (!viewportH || !hasScrollableContent) return null;
+
   const PADDING = 10;
   const trackH = Math.max(0, viewportH - PADDING * 2);
+  if (trackH <= 0) return null;
+
   const minThumb = 28;
   const thumbH = Math.max(
     minThumb,
@@ -114,8 +120,6 @@ function ScrollBar({
     maxThumbTravel,
     (scrollY / maxScroll) * maxThumbTravel,
   );
-
-  if (trackH <= 0) return null;
 
   return (
     <View
@@ -155,17 +159,11 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     margin: 16,
-    borderRadius: 18,
+    borderRadius: 24,
     backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#EFEFEF',
-    paddingHorizontal: 10,
-    // subtle shadow
-    // shadowColor: '#000',
-    // shadowOpacity: 0.06,
-    // shadowRadius: 10,
-    // shadowOffset: { width: 0, height: 4 },
-    // elevation: 2,
+    borderWidth: 0.5,
+    borderColor: '#CFCDCD',
+    paddingHorizontal: 20,
   },
 
   row: {
@@ -179,26 +177,38 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-    backgroundColor: '#F6F7F8',
     alignItems: 'center',
     justifyContent: 'center',
   },
-  title: { color: '#111', fontFamily: FONTS.bold },
-  subtitle: { color: '#8A8A8A', marginTop: 2, fontSize: 12, fontFamily: FONTS.regular },
-  sep: { height: 1, backgroundColor: '#F0F0F0' },
+  title: { color: '#201E20', fontFamily: FONTS.regular, fontSize: 16 },
+  subtitle: {
+    color: '#8D8E8F',
+    marginTop: 2,
+    fontSize: 14,
+    fontFamily: FONTS.regular,
+  },
+
+  // divider: start under text column
+  // 28 (pin) + 10 (gap) ≈ 38
+  sep: {
+    height: 1,
+    backgroundColor: '#F0F0F0',
+    marginLeft: 38,
+    marginBottom: 8,
+  },
 
   // custom scrollbar
   scrollTrack: {
     position: 'absolute',
     right: 6,
-    width: 3,
+    width: 2,
     borderRadius: 3,
     backgroundColor: '#F2F2F2',
   },
   scrollThumb: {
     position: 'absolute',
     width: 6,
-    left: -1,
+    left: -6,
     right: 0,
     borderRadius: 3,
     backgroundColor: '#8D8E8F',
