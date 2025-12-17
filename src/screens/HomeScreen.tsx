@@ -281,8 +281,8 @@ export default function HomeScreen({ navigation, route }: Props) {
         <View style={styles.searchRow}>
           <Ionicons name="search" size={18} color="#9AA0A6" />
           <Pressable style={{ flex: 1 }} onPress={openPlaces}>
-            <Text style={{ color: '#000000', fontFamily: FONTS.medium }}>
-              Where are you going?
+            <Text style={{ color: '#000000', fontFamily: FONTS.regular, fontSize: 16}}>
+              Where are you going? a
             </Text>
           </Pressable>
           <Pressable
@@ -444,7 +444,7 @@ const styles = StyleSheet.create({
   },
 
   greeting: {
-    fontSize: 18,
+    fontSize: 20,
     color: '#111',
     marginTop: 12,
     marginBottom: 20,

@@ -7,12 +7,19 @@
       "./assets/fonts"
     ]
   },
+
   "scripts": {
+    "apk:debug": "cd android && ./gradlew assembleDebug",
+    "apk:release": "cd android && ./gradlew assembleRelease",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "lint:rules": "eslint \"{src,__mocks__}/**/*.{js,jsx,ts,tsx}\" --cache",
+    "lint:code-format": "prettier --check \"{src,__mocks__}/**/*.{js,json,md,ts,tsx,yml,yaml}\"",
+    "lint:type-check": "tsc",
+    "lint": "npm run lint:rules && npm run lint:code-format && npm run lint:type-check",
+    "lint:fix": "npm run lint:rules -- --fix && npm run lint:code-format -- --write && npm run lint:type-check"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^2.2.0",
