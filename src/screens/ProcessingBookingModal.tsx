@@ -287,12 +287,21 @@ export default function ProcessingBookingModal({ navigation, route }: Props) {
         <View
           style={[styles.headerRow, { paddingHorizontal: 20, marginTop: 50 }]}
         >
-          <Pressable
-            style={styles.backCircle}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons name="chevron-back" size={18} color="#111" />
-          </Pressable>
+         
+                 <View style={styles.headerRow}>
+                   <Pressable
+                     style={styles.backCircle}
+                     onPress={() => navigation.goBack()}
+                   >
+                     <Image
+                                   source={require('../../assets/icons/left-line-arrow-icon.png')}
+                                   alt="left-arrow"
+                                   style={{ height: 88, width: 98 }}
+                                 />
+                   </Pressable>
+                   {/* <Text style={styles.headerTitle}>Schedule a Ride</Text> */}
+                   <View style={{ width: 36, height: 36 }} />
+                 </View>
           <View style={{ width: 36, height: 36 }} />
         </View>
       </View>
@@ -363,6 +372,9 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   backCircle: {
+    position: 'absolute',
+    top: -20,
+    left: 20,
     width: 36,
     height: 36,
     borderRadius: 18,

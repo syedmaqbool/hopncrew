@@ -1,265 +1,28 @@
-export type RootStackParamList = {
-  RideSelection: undefined;
-  Login: undefined;
-  SetUpFace: undefined;
-  FaceScanning: undefined;
-  App: undefined;
-  Home: { dest?: Destination } | undefined; // ← Home can receive { dest }
-  Details: { id?: string } | undefined;
-  // Otp: { dial: string; phone: string };
-  Otp: { email: string; user: User } | undefined;
-  Signup: undefined;
-  Location: undefined;
-  MapTracking: undefined;
-  PlaceSearch: { onPick?: (d: Destination) => void } | undefined;
-  Trip:
-    | {
-        start?: Destination;
-        dest?: Destination;
-        flow?: 'regular' | 'airport';
-        when?: Date;
-      }
-    | undefined;
-  FlightDetails:
-    | {
-        airportCode?: string;
-        initialWhen?: Date;
-        from?: Destination;
-        start?: Destination;
-        dest?: Destination;
-      }
-    | undefined;
-  FlightDeparture:
-    | {
-        airportCode?: string;
-        from?: Destination;
-        when?: Date;
-        onPick?: (d: Destination) => void;
-      }
-    | undefined;
-  SelectDeparture:
-    | {
-        onPick?: (d: Destination) => void;
-        onPickAirline?: (code: string) => void;
-        when?: Date;
-      }
-    | undefined;
-  SelectedAirport:
-    | {
-        airport: Destination;
-        airline?: string;
-        when?: Date;
-        onDone?: (p: { airport: Destination; airline?: string }) => void;
-      }
-    | undefined;
-  AirportDetails:
-    | {
-        airportCode?: string;
-        title?: string;
-        items?: AirportPOI[];
-        onPick?: (poi: AirportPOI) => void;
-      }
-    | undefined;
-  SaveFavorite:
-    | { address?: string; onSave?: (f: FavouritePayload) => void }
-    | undefined;
-  SaveFavoriteDetails:
-    | {
-        initialAddress?: string;
-        isStarred?: boolean;
-        onConfirm?: (f: FavouritePayload) => void;
-      }
-    | undefined;
-  AddPassenger:
-    | {
-        initial?: PassengerCounts;
-        // pass current luggage separately (optional)
-        luggage?: LuggageItem[];
-        start?: Destination;
-        dest?: Destination;
-        when?: Date;
-        onDone?: (p: PassengerCounts) => void;
-        onEditLuggage?: (items: LuggageItem[]) => void;
-      }
-    | undefined;
-  AddLuggage:
-    | {
-        initial?: LuggageItem[];
-        start?: Destination;
-        dest?: Destination;
-        when?: Date;
-        passengers?: number;
-        onDone?: (items: LuggageItem[]) => void;
-      }
-    | undefined;
-  LuggageScanInfo:
-    | {
-        onStartScan?: () => void; // optional callback when user taps “Scan now”
-      }
-    | undefined;
+import type { NavigatorScreenParams } from '@react-navigation/native';
+export type AssignedVehicleParams =
+  | {
+      start?: Destination;
+      dest?: Destination;
+      etaMinutes?: number;
+      riderName?: string;
+      driver?: {
+        name: string;
+        rating?: number;
+        years?: number;
+        km?: string;
+        verified?: boolean;
+        avatar?: string;
+      };
+      vehicle?: {
+        label: string;
+        plate: string;
+        image?: string;
+      };
+    }
+  | undefined;
 
-  ChildSeatInfo: undefined;
-
-  OversizedLuggage:
-    | {
-        initial?: OversizedItemCounts;
-        onDone?: (items: OversizedItemCounts) => void;
-      }
-    | undefined;
-
-  // ScheduleRide:
-  //   | {
-  //       initial?: Date;
-  //       onPick?: (when: Date) => void;
-  //     }
-  //   | undefined;
-  WhyChooseUs: { onClose?: () => void } | undefined;
-
-  FareOptions:
-    | {
-        etaMinutes?: number;
-        quotes: FareQuote[];
-        payMethod?: string; // e.g., "Card"
-        start?: Destination;
-        dest?: Destination;
-        when?: Date;
-        passengers?: number;
-        luggage?: SelectedLuggagePayload[];
-        onConfirm?: (
-          quote: FareQuote,
-          opts: { specialRequest?: string; payMethod: string },
-        ) => void;
-      }
-    | undefined;
-
-  SpecialRequest:
-    | {
-        initial?: SpecialRequestPayload;
-        onDone?: (p: SpecialRequestPayload) => void;
-        onCancel?: () => void;
-      }
-    | undefined;
-  CoupenPopup:
-    | {
-        initialCode?: string;
-        onApply?: (code: string) => void;
-      }
-    | undefined;
-
-  Policies:
-    | {
-        onClose?: () => void;
-        onSelect?: (id: string) => void; // optional callback when a row is tapped
-      }
-    | undefined;
-  PassengerWait: undefined;
-  DriverLate: undefined;
-  CancelChange: undefined;
-  Refund: undefined;
-  GuaranteedPickup: undefined;
-  Tolls: undefined;
-
-  ConfirmRequest:
-    | {
-        quote: FareQuote;
-        payMethod: string;
-        special?: SpecialRequestPayload | null;
-        start?: Destination;
-        dest?: Destination;
-        when?: Date;
-        onConfirm?: (p: {
-          quote: FareQuote;
-          payMethod: string;
-          special?: SpecialRequestPayload | null;
-          coupon?: string | null;
-        }) => void;
-      }
-    | undefined;
-
-  PaymentBreakdown: {
-    title?: string;
-    rows: PaymentRow[];
-    footnote?: string;
-    currency?: string; // e.g. 'USD'
-    locale?: string; // e.g. 'en-US'
-  };
-  PaymentMethods: {
-    selected?: PayMethodKey;
-    cards?: SavedCard[];
-    start?: Destination;
-    dest?: Destination;
-    onSelect?: (p: { method: PayMethodKey; cardId?: string }) => void;
-  };
-  AddCard: {
-    onAdded?: (card: SavedCard) => void;
-  };
-  Processing:
-    | {
-        durationMs?: number;
-        onDone?: () => void;
-        start?: Destination;
-        dest?: Destination;
-      }
-    | undefined;
-  BookingReceived:
-    | {
-        onContinue?: () => void; // called when user taps I Agree & Continue
-        start?: Destination;
-        dest?: Destination;
-      }
-    | undefined;
-  BookingReceivedTerms:
-    | {
-        onOkay?: () => void;
-        onCancel?: () => void;
-      }
-    | undefined;
-  CancelRide:
-    | {
-        onSubmit?: (reason: string) => void;
-        onKeep?: () => void;
-      }
-    | undefined;
-  ConfirmCancelPopup:
-    | {
-        onOk?: () => void;
-      }
-    | undefined;
-  NoRideAvaiable:
-    | {
-        onContact?: () => void;
-        onOk?: () => void;
-        onRetry?: () => void;
-      }
-    | undefined;
-  RideConfirmed:
-    | {
-        onOk?: () => void;
-        start?: Destination;
-        dest?: Destination;
-      }
-    | undefined;
-  AssignedVehicle:
-    | {
-        start?: Destination;
-        dest?: Destination;
-        etaMinutes?: number;
-        riderName?: string;
-        driver?: {
-          name: string;
-          rating?: number;
-          years?: number;
-          km?: string;
-          verified?: boolean;
-          avatar?: string;
-        };
-        vehicle?: {
-          label: string;
-          plate: string;
-          image?: string;
-        };
-      }
-    | undefined;
+export type AppDrawerParamList = {
+  Home: undefined;
   ContactSupport:
     | {
         name?: string;

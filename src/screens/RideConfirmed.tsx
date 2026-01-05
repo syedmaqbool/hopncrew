@@ -14,9 +14,12 @@ const MINT = '#B9FBE7';
 export default function RideConfirmed({ navigation, route }: Props) {
   const onOk = () => {
     if (typeof route.params?.onOk === 'function') route.params.onOk();
-    navigation.replace('AssignedVehicle', {
-      start: route.params?.start,
-      dest: route.params?.dest,
+    navigation.replace('App', {
+      screen: 'AssignedVehicle',
+      params: {
+        start: route.params?.start,
+        dest: route.params?.dest,
+      },
     });
   };
 

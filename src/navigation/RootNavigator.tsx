@@ -42,7 +42,6 @@ import CancelRideModal from '../screens/CancelRideModal';
 import ConfirmCancelPopup from '../screens/ConfirmCancelPopup';
 import NoRideAvaiable from '../screens/NoRideAvaiable';
 import RideConfirmed from '../screens/RideConfirmed';
-import AssignedVehicle from '../screens/AssignedVehicle';
 import ContactSupport from '../screens/ContactSupport';
 import EnRoutePickupModal from '../screens/EnRoutePickupModal';
 import EditProfileModal from '../screens/EditProfileModal';
@@ -166,11 +165,6 @@ export default function RootNavigator({
       <Stack.Screen
         name="Processing"
         component={ProcessingBookingModal}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name="AssignedVehicle"
-        component={AssignedVehicle}
         options={{ headerShown: false }}
       />
       <Stack.Screen

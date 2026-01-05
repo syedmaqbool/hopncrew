@@ -382,15 +382,11 @@ export default function AddLuggageModal({ navigation, route }: Props) {
       <Pressable style={styles.backdrop} onPress={() => exit(true)} />
 
       <SafeAreaView edges={['bottom']} style={styles.sheetWrap}>
-        <Animated.View
-          style={[
-            styles.sheet,
-            {
-              transform: [
-                { translateY: Animated.add(slideY, keyboardTranslate) },
-              ],
-            },
-          ]}
+        <View
+        
+          style={
+            styles.sheet
+          }
         >
           {/* Header */}
           <View style={styles.header}>
@@ -659,7 +655,7 @@ export default function AddLuggageModal({ navigation, route }: Props) {
               )}
             </View>
           </Pressable>
-        </Animated.View>
+        </View>
       </SafeAreaView>
     </View>
   );

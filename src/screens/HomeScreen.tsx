@@ -28,7 +28,7 @@ import type { RootStackParamList } from '../navigation/types';
 import type { DrawerNavigationProp } from '@react-navigation/drawer';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import assets from '../../assets';
-import type { AppDrawerParamList } from '../navigation/AppDrawer';
+import type { AppDrawerParamList } from '../navigation/types';
 import { useAuth } from '../context/AuthContext';
 import { getAirports } from '../services/app';
 

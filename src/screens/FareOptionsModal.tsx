@@ -44,9 +44,39 @@ const MAP_STYLE = 'mapbox://styles/mapbox/streets-v12';
 const MAPBOX_TOKEN =
   'pk.eyJ1IjoicmFmYXlhc2FkMDEiLCJhIjoiY21oazdxanQwMDR5cTJrc2NiZGZiZ3phMyJ9.beHDnNh5y6l-9ThZ1TR64A';
 
+const DEMO_START = { latitude: 24.8607, longitude: 67.0011 };
+const DEMO_DEST = { latitude: 24.9009, longitude: 67.1204 };
+const DEMO_QUOTES = [
+  {
+    id: 'eco',
+    tier: 'Economy',
+    seatText: 'Sedan x2',
+    price: 19,
+    oldPrice: 24,
+    image: null,
+  },
+  {
+    id: 'prm',
+    tier: 'Premium',
+    seatText: 'SUV x2',
+    price: 32,
+    oldPrice: 45,
+    image: null,
+  },
+  {
+    id: 'esc',
+    tier: 'Escalade',
+    seatText: 'Or Similar',
+    price: 51,
+    oldPrice: 85,
+    image: null,
+  },
+];
+
 export default function FareOptionsScreen({ navigation, route }: Props) {
   const insets = useSafeAreaInsets();
   const cameraRef = useRef<MapboxGL.Camera>(null);
+  const isDemo = !route.params?.start || !route.params?.dest;
 
   const [etaMinutes, setEtaMinutes] = useState<number>(
     route.params?.etaMinutes ?? 0,
@@ -73,8 +103,8 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
   const [loading, setLoading] = useState(false);
   const [selectedId, setSelectedId] = useState<string | undefined>(undefined);
 
-  const start = route.params?.start; // { latitude, longitude }
-  const dest = route.params?.dest; // { latitude, longitude }
+  const start = route.params?.start ?? (isDemo ? DEMO_START : undefined); // { latitude, longitude }
+  const dest = route.params?.dest ?? (isDemo ? DEMO_DEST : undefined); // { latitude, longitude }
 
   // === Map helpers
   const toLngLat = (p?: { latitude: number; longitude: number }) =>
@@ -180,6 +210,14 @@ export default function FareOptionsScreen({ navigation, route }: Props) {
 
   // === Fare calc
   useEffect(() => {
+    if (isDemo) {
+      setLoading(false);
+      setEtaMinutes(12);
+      setVehicleOptions([]);
+      setQuotes(DEMO_QUOTES);
+      setSelectedId(DEMO_QUOTES[0]?.id);
+      return;
+    }
     if (!start || !dest) return;
     (async () => {
       setLoading(true);

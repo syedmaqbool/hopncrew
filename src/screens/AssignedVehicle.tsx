@@ -1,19 +1,20 @@
 // src/screens/AssignedVehicle.tsx
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import type { DrawerScreenProps } from '@react-navigation/drawer';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Image, Pressable, StyleSheet, Text, View,Platform, useWindowDimensions,Dimensions  } from 'react-native';
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { DrawerActions, useNavigation } from '@react-navigation/native';
 import MapboxGL from '@rnmapbox/maps';
+import type { DrawerNavigationProp } from '@react-navigation/drawer';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import type { RootStackParamList } from '../navigation/types';
+import type { AppDrawerParamList } from '../navigation/types';
 import assets from '../../assets';
 import { FONTS } from '../../src/theme/fonts';
 
-type Props = NativeStackScreenProps<RootStackParamList, 'AssignedVehicle'>;
+type Props = DrawerScreenProps<AppDrawerParamList, 'AssignedVehicle'>;
 
 const MAP_STYLE = 'mapbox://styles/mapbox/streets-v12';
 const MAPBOX_TOKEN =
@@ -41,9 +42,11 @@ const sheetPlatformStyle = Platform.select({
   android: { height: Math.round(height * 0.4) }, // 40% of screen height
 });
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const start: LatLng =
     (route.params?.start as any) ??
     ({ latitude: 43.6532, longitude: -79.3832 } as LatLng);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const dest: LatLng =
     (route.params?.dest as any) ??
     ({ latitude: 43.6426, longitude: -79.3871 } as LatLng);
@@ -51,6 +54,7 @@ const sheetPlatformStyle = Platform.select({
   const destName = (route.params?.dest as any)?.description ?? 'Drop-off';
 
   // optional waypoints + labels can be passed from previous screen
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const waypoints: LatLng[] = (route.params?.waypoints as any) ?? [];
 
   // labels to render like the mock (pass in via params if you have real values)
@@ -103,13 +107,16 @@ const sheetPlatformStyle = Platform.select({
     () => waypoints.map(w => [w.longitude, w.latitude] as [number, number]),
     [waypoints],
   );
+  const drawer = useNavigation<DrawerNavigationProp<AppDrawerParamList>>();
+
+  const openMenu = () => drawer.dispatch(DrawerActions.openDrawer());
 
   const [routeShape, setRouteShape] = useState<any | null>(null);
   const [routeCoords, setRouteCoords] = useState<[number, number][]>([]);
-  const carCoord = useMemo<[number, number] | undefined>(
-    () => (routeCoords.length > 0 ? routeCoords[0] : startLL),
-    [routeCoords, startLL],
-  );
+  // const carCoord = useMemo<[number, number] | undefined>(
+  //   () => (routeCoords.length > 0 ? routeCoords[0] : startLL),
+  //   [routeCoords, startLL],
+  // );
 
   const bounds = useMemo(() => {
     const coords =
@@ -181,7 +188,7 @@ const sheetPlatformStyle = Platform.select({
       }
     };
     fetchRoute();
-  }, [startLL?.[0], startLL?.[1], endLL?.[0], endLL?.[1], wpLL.length]);
+  }, [endLL, startLL, wpLL, wpLL.length]);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -298,14 +305,21 @@ const sheetPlatformStyle = Platform.select({
 
         {/* header overlays */}
         <View style={[styles.headerRow, { paddingHorizontal: 16 }]}>
-          {/* menu circle (mock shows hamburger) */}
+          {/* menu circle (mock shows hamburger)
           <Pressable
             style={styles.roundBtn}
             onPress={() => navigation.goBack()}
           >
             <MaterialCommunityIcons name="menu" size={18} color="#111" />
-          </Pressable>
+          </Pressable> */}
 
+        {/* Top-left menu button */}
+        <Pressable style={styles.iconBtnTL} onPress={openMenu}>
+          <Image
+            source={assets.images.hamIcon}
+            style={{ width: 44, height: 44, borderRadius: 20 }}
+          />
+        </Pressable>
           {/* <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}> */}
           {/* Driver Live pill */}
           {/* <Pressable style={styles.livePill} onPress={() => {}}>
@@ -458,6 +472,32 @@ const sheetPlatformStyle = Platform.select({
 }
 
 const styles = StyleSheet.create({
+  
+  iconBtnTL: {
+    position: 'absolute',
+    top: 60,
+    left: 25,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+  },
+  iconBtnTR: {
+    position: 'absolute',
+    top: 45,
+    right: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    elevation: 2,
+  },
+
   mapWrap: { flex: 0.4, backgroundColor: '#E8ECEF' },
   headerRow: {
     position: 'absolute',

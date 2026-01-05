@@ -152,13 +152,13 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
             <Image
               source={require('../../assets/icons/left-line-arrow-icon.png')}
               alt="left-arrow"
-              style={{ height: 88, width: 98 }}
+              style={{ height: 70, width: 70 }}
             />
           </Pressable>
 
           <Text style={styles.headerTitle}>Schedule a Ride</Text>
 
-          <View style={{ width: 36, height: 36 }} />
+          {/* <View style={{ width: 26, height: 26 }} /> */}
         </View>
       </ImageBackground>
 
@@ -260,7 +260,11 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
               Square hold funds and charge after drop-off
             </Text>
             <View style={styles.infoCircle}>
-              <Image source={require('../../assets/icons/info-icon.png')} alt='info' style={{height:13,width:13}} />
+              <Image
+                source={require('../../assets/icons/info-icon.png')}
+                alt="info"
+                style={{ height: 13, width: 13 }}
+              />
               {/* <Ionicons name="information" size={12} color="#111" /> */}
             </View>
           </View>
@@ -268,7 +272,11 @@ export default function ScheduleRideScreen({ navigation, route }: Props | any) {
           <Pressable style={styles.cta} onPress={confirm}>
             <Text style={styles.ctaText}>Check Fare</Text>
             <View style={styles.ctaIcon}>
-              <Image source={require('../../assets/icons/right-line-arrow-icon.png')} alt='right-arrow' style={{width:22,height:12}} />
+              <Image
+                source={require('../../assets/icons/right-line-arrow-icon.png')}
+                alt="right-arrow"
+                style={{ width: 22, height: 12 }}
+              />
               {/* <AntDesign name="arrowright" size={18} color="#111" /> */}
             </View>
           </Pressable>
@@ -316,7 +324,7 @@ function Wheel({
   ) as React.ComponentType<any>;
 
   return (
-    <View style={[styles.wheelCol, { width }]}>
+    <View style={[styles.wheelCol]}>
       <AnimatedFlatList
         data={extendedData}
         keyExtractor={(_s: string, i: number) => `${i}`}
@@ -401,21 +409,21 @@ const styles = StyleSheet.create({
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#FFFFFF',
+    // backgroundColor: '#FFFFFF',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.06,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
+    // shadowColor: '#000',
+    // shadowOpacity: 0.06,
+    // shadowRadius: 6,
+    // shadowOffset: { width: 0, height: 2 },
+    // elevation: 3,
   },
   headerTitle: { color: '#201E20', fontSize: 18, fontFamily: FONTS.regular },
 
   sheet: {
     flex: 1,
     backgroundColor: '#FFFFFF',
-    marginTop: -16,
+    marginTop: -76,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingTop: 12,
@@ -505,10 +513,16 @@ const styles = StyleSheet.create({
   },
   infoPadded: { paddingVertical: 0 },
   infoIcon: { width: 24, height: 24, resizeMode: 'contain' },
-  infoTitle: { color: '#201E20', fontFamily: FONTS.semibold,fontSize: 16 },
-  infoSub: { color: '#8D8E8F', marginTop: 0, fontFamily: FONTS.regular,fontSize: 14,lineHeight:20 },
+  infoTitle: { color: '#201E20', fontFamily: FONTS.semibold, fontSize: 16 },
+  infoSub: {
+    color: '#8D8E8F',
+    marginTop: 0,
+    fontFamily: FONTS.regular,
+    fontSize: 14,
+    lineHeight: 20,
+  },
 
-  footer: { paddingHorizontal: 10,paddingTop:40, backgroundColor: '#FFFFFF' },
+  footer: { paddingHorizontal: 10, paddingTop: 40, backgroundColor: '#FFFFFF' },
   toggleCard: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -561,7 +575,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 32,
-    backgroundColor: "#B1FBE3",
+    backgroundColor: '#B1FBE3',
     alignItems: 'center',
     justifyContent: 'center',
     position: 'absolute',

@@ -228,7 +228,7 @@ export default function TripScreen({ navigation, route }: Props) {
         {/* <View style={{ flex: 1 }} /> */}
 
         {/* Info bullets */}
-        <View style={{ gap: 18, height:355, flexDirection:'column', justifyContent:'flex-end',alignItems:'flex-end' }}>
+        <View style={{ gap: 18, height:255, flexDirection:'column', justifyContent:'flex-end',alignItems:'flex-end' }}>
           <View style={styles.bullet}>
             <Image
               source={assets.images.traffic}
@@ -289,7 +289,7 @@ const styles = StyleSheet.create({
   hBtn: {
     width: 44,
     height: 44,
-    borderRadius: 18,
+    borderRadius: 50,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',

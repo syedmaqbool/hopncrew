@@ -23,7 +23,7 @@ const MINT = '#B9FBE7';
 
 export default function ChildSeatInfoModal({ navigation }: Props) {
   const [seatTypes, setSeatTypes] = useState<ChildSeatType[]>([]);
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const { width: screenWidth, height: screenHeight } = useWindowDimensions();
   const [activeIndex, setActiveIndex] = useState(0);
   const listRef = useRef<FlatList<ChildSeatType>>(null);
@@ -31,23 +31,31 @@ export default function ChildSeatInfoModal({ navigation }: Props) {
   // Modal width (center popup)
   const MODAL_HORIZONTAL_MARGIN = 24;
   const MODAL_MAX_WIDTH = 420;
-  const modalWidth = Math.min(screenWidth - MODAL_HORIZONTAL_MARGIN * 2, MODAL_MAX_WIDTH);
+  const modalWidth = Math.min(
+    screenWidth - MODAL_HORIZONTAL_MARGIN * 2,
+    MODAL_MAX_WIDTH,
+  );
 
   // 🔧 Card sizing: 1 full + ~half next card visible *inside the modal*
   const CARD_SPACING = 16;
   const CARD_WIDTH = (modalWidth - CARD_SPACING) / 1.5; // 1.5 cards in viewport
   const SNAP_INTERVAL = CARD_WIDTH + CARD_SPACING;
+  const CARD_HEIGHT = Math.min(520, Math.max(360, screenHeight * 0.6));
+  const IMAGE_SIZE = Math.min(180, Math.max(120, CARD_WIDTH * 0.75));
+  const FREE_ICON_W = Math.min(68, Math.max(44, modalWidth * 0.16));
+  const FREE_ICON_H = Math.round(FREE_ICON_W * 0.56);
+  const DOT_WIDTH = Math.min(32, Math.max(18, modalWidth * 0.08));
 
   useEffect(() => {
     (async () => {
       try {
-        setLoading(true);
+        // setLoading(true);
         const list = await getChildSeatTypes();
         setSeatTypes(list);
       } catch {
         setSeatTypes([]);
       } finally {
-        setLoading(false);
+        // setLoading(false);
       }
     })();
   }, []);
@@ -70,7 +78,7 @@ export default function ChildSeatInfoModal({ navigation }: Props) {
           <Image
             source={require('../../assets/icons/free-icon.png')}
             alt="free-icon"
-            style={{ width: 68, height: 38 }}
+            style={{ width: FREE_ICON_W, height: FREE_ICON_H }}
           />
 
           <View style={{ marginTop: 8 }}>
@@ -97,20 +105,34 @@ export default function ChildSeatInfoModal({ navigation }: Props) {
                     styles.card,
                     {
                       width: CARD_WIDTH,
-                      marginRight: index === seatTypes.length - 1 ? 0 : CARD_SPACING,
+                      height: CARD_HEIGHT,
+                      marginRight:
+                        index === seatTypes.length - 1 ? 0 : CARD_SPACING,
                     },
                   ]}
                 >
                   <Text style={styles.cardTitle}>{item.label}</Text>
                   <View style={styles.cardImageWrap}>
                     {item.image_url ? (
-                      <Image source={{ uri: item.image_url }} style={styles.cardImage} />
+                      <Image
+                        source={{ uri: item.image_url }}
+                        style={{
+                          width: IMAGE_SIZE,
+                          height: IMAGE_SIZE,
+                          resizeMode: 'contain',
+                        }}
+                      />
                     ) : (
-                      <View style={styles.cardImagePlaceholder}>
+                      <View
+                        style={[
+                          styles.cardImagePlaceholder,
+                          { width: IMAGE_SIZE, height: IMAGE_SIZE },
+                        ]}
+                      >
                         <Text
                           style={{
                             color: '#111',
-                            fontSize: 34,
+                            fontSize: Math.round(IMAGE_SIZE * 0.18),
                             fontWeight: '800',
                           }}
                         >
@@ -131,12 +153,13 @@ export default function ChildSeatInfoModal({ navigation }: Props) {
           </View>
 
           {/* 🔄 Navigation lines */}
-          <View style={styles.sliderDots}>
+          <View style={[styles.sliderDots, { width: modalWidth }]}>
             {seatTypes.map((_, i) => (
               <View
                 key={i}
                 style={[
                   styles.dot,
+                  { width: DOT_WIDTH },
                   i === activeIndex ? styles.dotActive : styles.dotInactive,
                 ]}
               />
@@ -196,8 +219,6 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ECECEC',
     padding: 20,
-    height: 564,
-    width: 224,
   },
   cardTitle: {
     color: '#201E20',
@@ -211,10 +232,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginBottom: 16,
   },
-  cardImage: { width: 192, height: 192, resizeMode: 'contain' },
   cardImagePlaceholder: {
-    width: 192,
-    height: 192,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 20,
@@ -230,12 +248,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    gap: 12,
+    flexWrap: 'wrap',
     marginVertical: 16,
     paddingTop: 8,
   },
   dot: {
-    width: 40,
+    marginHorizontal: 4,
+    marginVertical: 4,
     height: 2,
     borderRadius: 2,
   },

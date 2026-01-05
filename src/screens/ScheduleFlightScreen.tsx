@@ -125,7 +125,7 @@ export default function ScheduleFlightScreen({ navigation, route }: Props) {
         >
           Arrival to {airportCode}
         </Text>
-        <Text style={styles.bigTitle}>Data and Time</Text>
+        <Text style={styles.bigTitle}>Date and Time</Text>
 
         {/* Main content - fixed (no page scroll) */}
         <View style={styles.content}>

@@ -301,7 +301,7 @@ export default function AddPassengerModal({ navigation, route }: Props) {
                   <ActivityIndicator size="large" color={'#000'} />
                 </View>
               ) : (
-                passengerTypes.map((pt, idx) => {
+                passengerTypes.map((pt) => {
                   const idStr = String(pt.id);
                   const value = paxCounts[idStr] ?? 0;
                   const fallbackIcon = (() => {
@@ -540,9 +540,9 @@ function Row({
   return (
     <View style={styles.row}>
       <View style={styles.rowIcon}>{icon}</View>
-      <View>
-        <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-        <View style={{ flex: 1 }}>
+      <View style={styles.rowContent}>
+        <View style={styles.rowTop}>
+        <View style={styles.rowTextWrap}>
           <Text style={styles.rowTitle}>{title}</Text>
           <Text style={styles.rowSub} numberOfLines={1} ellipsizeMode="tail">{subtitle}</Text>
         </View>
@@ -566,12 +566,12 @@ function Stepper({
     <View style={styles.stepper}>
       <Pressable style={styles.stepBtn} onPress={onMinus}>
         {/* <AntDesign name="minus" size={14} color="#111" /> */}
-        <Image source={require('../../assets/icons/minus-icon.png')} alt='minus' style={{width:40,height:40}} />
+        <Image source={require('../../assets/icons/minus-icon.png')} alt='minus' style={{width:30,height:30}} />
       </Pressable>
       <Text style={styles.stepVal}>{value}</Text>
       <Pressable style={[styles.stepBtn, styles.stepBtnPlus]} onPress={onPlus}>
         {/* <AntDesign name="plus" size={14} color="#fff" /> */}
-        <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:40,height:40}} />
+        <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:30,height:30}} />
       </Pressable>
     </View>
   );
@@ -608,12 +608,12 @@ function SeatCard({
        <View style={styles.seatStepper}>
       <Pressable style={styles.stepBtn} onPress={onMinus}>
         {/* <AntDesign name="minus" size={14} color="#111" /> */}
-        <Image source={require('../../assets/icons/minus-icon.png')} alt='minus' style={{width:40,height:40}} />
+        <Image source={require('../../assets/icons/minus-icon.png')} alt='minus' style={{width:30,height:30}} />
       </Pressable>
       <Text style={styles.stepVal}>{value}</Text>
       <Pressable style={[styles.stepBtn, styles.stepBtnPlus]} onPress={onPlus}>
         {/* <AntDesign name="plus" size={14} color="#fff" /> */}
-        <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:40,height:40}} />
+        <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:30,height:30}} />
       </Pressable>
     </View>
     </View>
@@ -680,26 +680,39 @@ const styles = StyleSheet.create({
   },
   row: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     paddingVertical: 10,
     paddingHorizontal: 8,
   },
   rowIcon: {
-    width: 48,
-    height: 48,
+    width: 38,
+    height: 38,
     borderRadius: 16,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
     marginRight: 10,
   },
-  rowTitle: { color: '#201E20', fontFamily: FONTS.regular,fontSize: 20 },
-  rowSub: { color: '#8D8E8F', fontSize: 14, marginTop: 0, width: '75%', fontFamily: FONTS.regular },
-  separator: { height: 1,width:290,alignItems:'center',justifyContent:'center',flexDirection:'row',alignContent:'center', backgroundColor: '#F0F0F0', },
+  rowContent: {
+    flex: 1,
+    minWidth: 0,
+  },
+  rowTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  rowTextWrap: {
+    flex: 1,
+    minWidth: 0,
+  },
+  rowTitle: { color: '#201E20', fontFamily: FONTS.regular,fontSize: 18 },
+  rowSub: { color: '#8D8E8F', fontSize: 14, marginTop: 0, flexShrink: 1, fontFamily: FONTS.regular },
+  // separator: { height: 1,width: '90%',flexDirection:'row',alignContent:'center', backgroundColor: '#F0F0F0', },
   stepper: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   stepBtn: {
-    width: 28,
-    height: 28,
+    width: 18,
+    height: 18,
     borderRadius: 14,
     // backgroundColor: '#F6F7F8',
     alignItems: 'center',
@@ -708,7 +721,7 @@ const styles = StyleSheet.create({
     borderColor: '#EEE',
   },
   stepBtnPlus: { backgroundColor: '#111', borderColor: '#111' },
-  stepVal: { width: 40, textAlign: 'center', color: '#201E20', fontFamily: FONTS.regular,fontSize: 32 },
+  stepVal: { width: 30, textAlign: 'center', color: '#201E20', fontFamily: FONTS.regular,fontSize: 20 },
 
   freePill: {
     alignSelf: 'flex-start',
@@ -728,16 +741,16 @@ const styles = StyleSheet.create({
   link: { color: '#6086C1', fontFamily: FONTS.regular,fontSize: 16 },
 
   seatCard: {
-    width: 170,
-    height: 160,
+    width: 150,
+    height: 140,
     borderRadius: 24,
     backgroundColor: '#fff',
     borderWidth: 1,
     borderColor: '#CFCDCD',
-    padding: 16,
+    padding: 10,
     marginRight: 10,
   },
-  seatTitleSmall: { color: '#201E20', width: 80, fontFamily: FONTS.regular, fontSize: 16, marginBottom: 30 },
+  seatTitleSmall: { color: '#201E20', width: 70, fontFamily: FONTS.regular, fontSize: 15, marginBottom: 30 },
   seatStepper: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -811,5 +824,5 @@ const styles = StyleSheet.create({
   skip: { color: '#201E20', fontFamily: FONTS.semibold, fontSize: 17,textDecorationLine:'underline',paddingRight:4 },
 });
 function Separator() {
-  return <View style={styles.separator} />;
+  return <View  />;
 }

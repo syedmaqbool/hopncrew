@@ -16,19 +16,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAuth } from '../context/AuthContext';
 import HomeScreen from '../screens/HomeScreen';
+import AssignedVehicle from '../screens/AssignedVehicle';
 import { FONTS } from '../theme/fonts';
+import type { AppDrawerParamList } from './types';
 import assets from '../../assets';
-
-export type AppDrawerParamList = {
-  Home: undefined;
-  MyRides: undefined;
-  Wallet: undefined;
-  Payment: undefined;
-  Loyalty: undefined;
-  Notifications: undefined;
-  HelpCenter: undefined;
-  Settings: undefined;
-};
 
 const Drawer = createDrawerNavigator<AppDrawerParamList>();
 
@@ -47,6 +38,7 @@ export default function AppDrawer() {
       drawerContent={props => <CustomDrawerContent {...props} />}
     >
       <Drawer.Screen name="Home" component={HomeScreen} />
+      <Drawer.Screen name="AssignedVehicle" component={AssignedVehicle} />
     </Drawer.Navigator>
   );
 }

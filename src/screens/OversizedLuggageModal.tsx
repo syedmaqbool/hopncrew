@@ -145,7 +145,7 @@ export default function OversizedLuggageModal({ navigation, route }: Props) {
                         style={styles.stepBtn}
                         onPress={() => dec(item.id)}
                       >
-                        <Image source={require('../../assets/icons/minus-icon.png')} alt='minus' style={{width:40,height:40}} />
+                        <Image source={require('../../assets/icons/minus-icon.png')} alt='minus' style={{width:25,height:25}} />
                         {/* <AntDesign name="minus" size={14} color="#111" /> */}
                       </Pressable>
                       <Text style={styles.stepVal}>{val}</Text>
@@ -153,7 +153,7 @@ export default function OversizedLuggageModal({ navigation, route }: Props) {
                         style={[styles.stepBtn, styles.stepBtnDark]}
                         onPress={() => inc(item.id)}
                       >
-                         <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:40,height:40}} />
+                         <Image source={require('../../assets/icons/plus-bg-black-icon.png')} alt='plus' style={{width:25,height:25}} />
                         {/* <AntDesign name="plus" size={14} color="#fff" /> */}
                       </Pressable>
                     </View>
@@ -235,10 +235,10 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#CFCDCD',
     borderRadius: 24,
-    padding: 12,
+    padding:8,
     marginBottom: 10,
     backgroundColor: '#fff',
-    height: 128,
+    height: 100,
     width: 183,
   },
   cardTop: {
@@ -257,7 +257,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   stepBtn: {
-    width: 30,
+    width: 0,
     height: 30,
     borderRadius: 14,
     borderWidth: 1,
@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   stepBtnDark: { backgroundColor: '#111' },
-  stepVal: { width: 24, textAlign: 'center', color: '#111', fontFamily: FONTS.regular, fontSize:32 },
+  stepVal: { width: 15, textAlign: 'center', color: '#111', fontFamily: FONTS.regular, fontSize:32 },
 
   cta: {
     marginVertical: 14,
